@@ -3,7 +3,7 @@
 !!! note
     This thing is a work in progress.
 
-## Setup Development Environment
+## Sub Chapter 1
 
 === "Windows"
 
@@ -16,7 +16,7 @@
 
     === "SubTab2"
 
-        SubTab2Content
+        Sub2Content
 
     === "SubTab3"
 
@@ -45,7 +45,7 @@
 
     === "SubTab2"
 
-    A lot of things to tell
+    SubTab2Content
 
 === "ArchLinux"
 
@@ -71,6 +71,19 @@
 === "OSX"
 
     Who needs osx?
+
+## Sub Chapter 2
+
+Text can be {--deleted--} and replacement text {++added++}. This can also be
+combined into {~~one~>a single~~} operation. {==Highlighting==} is also
+possible {>>and comments can be added inline<<}.
+
+{==
+
+Formatting kan also be applied to blocks by putting the opening and closing
+tags on separate lines and adding new lines between the tags and the content.
+
+==}
 
 ## Report a bug
 
