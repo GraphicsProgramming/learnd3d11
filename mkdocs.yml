@@ -1,0 +1,50 @@
+site_name: learnd3d11
+site_author: deccer
+site_url: https://graphicsprogramming.github.io/learnd3d11
+repo_name: deccer/uostudio
+repo_url: https://github.com/graphicsprogramming/learnd3d11
+site_description: Learn D3D11
+copyright: Copyright 2022 deccer
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: yellow
+    accent: pink
+  font:
+    code: Roboto Mono
+  language: en
+  features:
+    - tabs
+    - instant
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/graphicsprogramming/learnd3d11
+      name: Graphics Programming on Github
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/6mgNGk7
+      name: Graphics Programming on discord
+markdown_extensions:
+  - admonition
+  - footnotes
+  - meta
+  - markdown.extensions.toc:
+      permalink: true
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.tabbed
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.critic:
+      mode: view
+  - pymdownx.betterem:
+      smart_enable: all
+nav:
+  - Home: index.md
+  - About: about.md
