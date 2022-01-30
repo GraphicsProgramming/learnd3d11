@@ -1,16 +1,24 @@
-site_name: learnd3d11
+site_name: LearnD3D11
 site_author: deccer
 site_url: https://graphicsprogramming.github.io/learnd3d11
 repo_name: graphicsprogramming/learnd3d11
 repo_url: https://github.com/graphicsprogramming/learnd3d11
 site_description: Learn D3D11
-copyright: Copyright 2022 deccer
+copyright: Copyright 2022 Graphics Programmin
 theme:
   name: material
   palette:
-    scheme: default
-    primary: green
-    accent: yellow
+    - scheme: default
+      primary: green
+      accent: yellow
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
   font:
     code: Roboto Mono
   language: en
