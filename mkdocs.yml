@@ -65,4 +65,7 @@ markdown_extensions:
       smart_enable: all
 nav:
   - Home: index.md
+  - 'Nav With Sub':
+      - 'Sub1': 'sub1/sub1.md'
+      - 'Sub2': 'sub2/sub2.md'
   - About: about.md
