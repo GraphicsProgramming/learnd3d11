@@ -4,7 +4,7 @@ site_url: https://graphicsprogramming.github.io/learnd3d11
 repo_name: graphicsprogramming/learnd3d11
 repo_url: https://github.com/graphicsprogramming/learnd3d11
 site_description: Learn D3D11
-copyright: Copyright 2022 Graphics Programmin
+copyright: Copyright 2022 Graphics Programming
 theme:
   name: material
   palette:
