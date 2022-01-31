@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32113.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cpp", "Cpp", "{0AC134D5-97CD-4724-A717-1C0C8EC76F05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cs", "Cs", "{16878C85-013A-4EF7-92DF-F18954B9170D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloWindow", "Cpp\1-getting-started\HelloWindow\HelloWindow.vcxproj", "{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}.Debug|x64.ActiveCfg = Debug|x64
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}.Debug|x64.Build.0 = Debug|x64
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}.Release|x64.ActiveCfg = Release|x64
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55} = {0AC134D5-97CD-4724-A717-1C0C8EC76F05}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
+	EndGlobalSection
+EndGlobal

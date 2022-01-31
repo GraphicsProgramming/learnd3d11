@@ -351,3 +351,6 @@ MigrationBackup/
 
 # MkDocs
 site/
+
+bin\
+obj\
