@@ -7,7 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cpp", "Cpp", "{0AC134D5-97C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cs", "Cs", "{16878C85-013A-4EF7-92DF-F18954B9170D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloWindow", "Cpp\1-getting-started\HelloWindow\HelloWindow.vcxproj", "{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Getting-Started", "1-Getting-Started", "{69E36221-7B54-4891-AB39-B9F2C5025815}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-HellowWindow", "Cpp\1-getting-started\1-HelloWindow\1-HellowWindow.vcxproj", "{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,7 +26,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55} = {0AC134D5-97CD-4724-A717-1C0C8EC76F05}
+		{69E36221-7B54-4891-AB39-B9F2C5025815} = {0AC134D5-97CD-4724-A717-1C0C8EC76F05}
+		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
