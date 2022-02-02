@@ -47,15 +47,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)</OutDir>
     <IntDir>obj\$(Configuration)</IntDir>
-    <IncludePath>$(SolutionDir)..\..\lib\glfw-3.3.6\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)</OutDir>
     <IntDir>obj\$(Configuration)</IntDir>
-    <IncludePath>$(SolutionDir)..\..\lib\glfw-3.3.6\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
