@@ -50,6 +50,8 @@ Compiling this code with the subsystem set to windows (we must use wWinMain as t
 
 Therefore we won't use the `WM_PAINT` message at all. We will still need to write a message handler function to handle mouse and keyboard inputs for example...
 
+Unfortunately, we'll have to handle the WM_QUIT and WM_CLOSE messages to terminate the application process when the window is closed. Therefore closing the window when debugging won't close the application. It should be terminated using task manager for example.
+
 ## 5.) You have created a window!
 
 This is the first step in creating a native DirectX application. In the next tutorial, you'll write the message handler function (`wndClass.lpfnWndProc`).
