@@ -13,6 +13,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-HelloWindow", "Cpp\1-gett
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2-HelloFroge", "Cpp\1-getting-started\2-HelloFroge\2-HelloFroge.vcxproj", "{664B6593-747C-4D41-AB59-0D0E792D0FA2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_items", "_items", "{315B2447-825D-406E-9347-509070A87B31}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\LICENSE = ..\LICENSE
+		..\mkdocs.yml = ..\mkdocs.yml
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
