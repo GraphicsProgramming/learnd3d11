@@ -354,3 +354,6 @@ site/
 
 bin\
 obj\
+
+# JetBrains's solution cache
+.idea\
