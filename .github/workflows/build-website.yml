@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'docs/**'
+      - 'src/**'
 jobs:
   update-docs:
     runs-on: ubuntu-latest
