@@ -31,7 +31,7 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "dxguid.lib")
 
 template<UINT TDebugNameLength>
-inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char (&debugName)[TDebugNameLength])
+inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
 {
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
@@ -652,7 +652,7 @@ bool Load()
         std::cout << "D3D11: Unable to create linear sampler state\n";
         return false;
     }
-    
+
     if (!LoadTexture(g_ImagingFactory, L"Assets/Textures/T_Froge.png", &g_TextureSrv))
     {
         return false;
@@ -713,6 +713,10 @@ void Cleanup()
     g_DepthStencilView.Reset();
     g_DepthStencilBuffer.Reset();
     g_BackBufferRtv.Reset();
+
+    g_RasterizerState.Reset();
+    g_DepthStencilState.Reset();
+    g_LinearSamplerState.Reset();
 
     for (auto i = 0; i < NumConstantBufferTypes; i++)
     {
