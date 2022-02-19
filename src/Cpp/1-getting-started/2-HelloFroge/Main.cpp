@@ -8,6 +8,7 @@
 #include <windows.h>
 #endif
 #include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 
 // DirectX includes
 #include <d3d11.h>
@@ -50,34 +51,34 @@ enum ConstantBufferType
     NumConstantBufferTypes
 };
 
-Microsoft::WRL::ComPtr<IDXGIFactory1> g_Factory;
+ComPtr<IDXGIFactory1> g_Factory;
 
 GLFWwindow* g_Window = nullptr;
 
-Microsoft::WRL::ComPtr<ID3D11Debug> g_Debug = nullptr;
-Microsoft::WRL::ComPtr<ID3D11Device> g_Device = nullptr;
-Microsoft::WRL::ComPtr<ID3D11DeviceContext> g_DeviceContext = nullptr;
+ComPtr<ID3D11Debug> g_Debug = nullptr;
+ComPtr<ID3D11Device> g_Device = nullptr;
+ComPtr<ID3D11DeviceContext> g_DeviceContext = nullptr;
 DXGI_SWAP_CHAIN_DESC g_SwapChainDescriptor = {};
-Microsoft::WRL::ComPtr<IDXGISwapChain> g_SwapChain = nullptr;
-Microsoft::WRL::ComPtr<ID3D11RenderTargetView> g_BackBufferRtv = nullptr;
-Microsoft::WRL::ComPtr<ID3D11DepthStencilView> g_DepthStencilView = nullptr;
-Microsoft::WRL::ComPtr<ID3D11Texture2D> g_DepthStencilBuffer = nullptr;
-Microsoft::WRL::ComPtr<ID3D11DepthStencilState> g_DepthStencilState = nullptr;
-Microsoft::WRL::ComPtr<ID3D11RasterizerState> g_RasterizerState = nullptr;
+ComPtr<IDXGISwapChain> g_SwapChain = nullptr;
+ComPtr<ID3D11RenderTargetView> g_BackBufferRtv = nullptr;
+ComPtr<ID3D11DepthStencilView> g_DepthStencilView = nullptr;
+ComPtr<ID3D11Texture2D> g_DepthStencilBuffer = nullptr;
+ComPtr<ID3D11DepthStencilState> g_DepthStencilState = nullptr;
+ComPtr<ID3D11RasterizerState> g_RasterizerState = nullptr;
 D3D11_VIEWPORT g_ViewPort = {};
 
-Microsoft::WRL::ComPtr<ID3D11InputLayout> g_InputLayout = nullptr;
-Microsoft::WRL::ComPtr<ID3D11VertexShader> g_VertexShader = nullptr;
-Microsoft::WRL::ComPtr<ID3D10Blob> g_VertexShaderBlob = nullptr;
-Microsoft::WRL::ComPtr<ID3D11PixelShader> g_PixelShader = nullptr;
+ComPtr<ID3D11InputLayout> g_InputLayout = nullptr;
+ComPtr<ID3D11VertexShader> g_VertexShader = nullptr;
+ComPtr<ID3D10Blob> g_VertexShaderBlob = nullptr;
+ComPtr<ID3D11PixelShader> g_PixelShader = nullptr;
 
 IWICImagingFactory* g_ImagingFactory = nullptr;
-Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> g_TextureSrv = nullptr;
-Microsoft::WRL::ComPtr<ID3D11SamplerState> g_LinearSamplerState = nullptr;
+ComPtr<ID3D11ShaderResourceView> g_TextureSrv = nullptr;
+ComPtr<ID3D11SamplerState> g_LinearSamplerState = nullptr;
 
-Microsoft::WRL::ComPtr<ID3D11Buffer> g_VertexBuffer = nullptr;
-Microsoft::WRL::ComPtr<ID3D11Buffer> g_IndexBuffer = nullptr;
-Microsoft::WRL::ComPtr<ID3D11Buffer> g_ConstantBuffers[ConstantBufferType::NumConstantBufferTypes];
+ComPtr<ID3D11Buffer> g_VertexBuffer = nullptr;
+ComPtr<ID3D11Buffer> g_IndexBuffer = nullptr;
+ComPtr<ID3D11Buffer> g_ConstantBuffers[NumConstantBufferTypes];
 
 constexpr float g_ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
@@ -169,11 +170,11 @@ bool Initialize()
 
     constexpr D3D_FEATURE_LEVEL d3dFeatureLevels[] =
     {
-        D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0
+        D3D_FEATURE_LEVEL_11_0
     };
     constexpr UINT deviceCreationFlags =
-        D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT |
-        D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT |
+        D3D11_CREATE_DEVICE_DEBUG;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -201,7 +202,7 @@ bool Initialize()
     }
     else
     {
-        Microsoft::WRL::ComPtr<ID3D11InfoQueue> debugInfoQueue = nullptr;
+        ComPtr<ID3D11InfoQueue> debugInfoQueue = nullptr;
         if (FAILED(g_Debug.As(&debugInfoQueue)))
         {
             std::cout << "D3D11: Unable to grab the info queue interface from the debug interface\n";
@@ -234,14 +235,14 @@ bool Initialize()
     g_SwapChainDescriptor.BufferCount = 2;
     g_SwapChainDescriptor.BufferDesc.Width = windowWidth;
     g_SwapChainDescriptor.BufferDesc.Height = windowHeight;
-    g_SwapChainDescriptor.BufferDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+    g_SwapChainDescriptor.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     g_SwapChainDescriptor.BufferDesc.RefreshRate = refreshRate;
-    g_SwapChainDescriptor.BufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_STRETCHED;
+    g_SwapChainDescriptor.BufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
     g_SwapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     g_SwapChainDescriptor.OutputWindow = nativeWindowHandle;
     g_SwapChainDescriptor.SampleDesc.Count = 1;
     g_SwapChainDescriptor.SampleDesc.Quality = 0;
-    g_SwapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    g_SwapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     g_SwapChainDescriptor.Windowed = true;
 
     if (FAILED(g_Factory->CreateSwapChain(g_Device.Get(), &g_SwapChainDescriptor, &g_SwapChain)))
@@ -270,15 +271,15 @@ bool Initialize()
     ZeroMemory(&depthStencilBufferDescriptor, sizeof(D3D11_TEXTURE2D_DESC));
 
     depthStencilBufferDescriptor.ArraySize = 1;
-    depthStencilBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
+    depthStencilBufferDescriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
     depthStencilBufferDescriptor.CPUAccessFlags = 0;
-    depthStencilBufferDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilBufferDescriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     depthStencilBufferDescriptor.Width = windowWidth;
     depthStencilBufferDescriptor.Height = windowHeight;
     depthStencilBufferDescriptor.MipLevels = 1;
     depthStencilBufferDescriptor.SampleDesc.Count = 1;
     depthStencilBufferDescriptor.SampleDesc.Quality = 0;
-    depthStencilBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+    depthStencilBufferDescriptor.Usage = D3D11_USAGE_DEFAULT;
     if (FAILED(g_Device->CreateTexture2D(&depthStencilBufferDescriptor, nullptr, &g_DepthStencilBuffer)))
     {
         std::cout << "D3D11: Unable to create depth stencil buffer\n";
@@ -505,7 +506,7 @@ bool LoadTexture(IWICImagingFactory* imagingFactory, const std::wstring_view fil
     ZeroMemory(&textureDescriptor, sizeof(D3D11_TEXTURE2D_DESC));
     textureDescriptor.ArraySize = 1;
     textureDescriptor.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    textureDescriptor.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+    textureDescriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     textureDescriptor.Format = textureFormat;
     textureDescriptor.MipLevels = 1;// +floor(log2(DirectX::XMMax(imageWidth, imageHeight)));
     textureDescriptor.Height = imageHeight;
@@ -554,11 +555,11 @@ bool Load()
     D3D11_RASTERIZER_DESC rasterizerDescriptor;
     ZeroMemory(&rasterizerDescriptor, sizeof(D3D11_RASTERIZER_DESC));
     rasterizerDescriptor.AntialiasedLineEnable = false;
-    rasterizerDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+    rasterizerDescriptor.CullMode = D3D11_CULL_BACK;
     rasterizerDescriptor.DepthBias = 0;
     rasterizerDescriptor.DepthBiasClamp = 0.0f;
     rasterizerDescriptor.DepthClipEnable = true;
-    rasterizerDescriptor.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+    rasterizerDescriptor.FillMode = D3D11_FILL_SOLID;
     rasterizerDescriptor.FrontCounterClockwise = false;
     rasterizerDescriptor.MultisampleEnable = false;
     rasterizerDescriptor.ScissorEnable = false;
@@ -583,7 +584,7 @@ bool Load()
 
     const D3D11_BUFFER_DESC vertexBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(VertexPositionColorUv) * _countof(g_Vertices),
-        D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER);
+        D3D11_BIND_VERTEX_BUFFER);
     constexpr D3D11_SUBRESOURCE_DATA vertexBufferData = { g_Vertices, 0, 0 };
     if (FAILED(g_Device->CreateBuffer(&vertexBufferDescriptor, &vertexBufferData, &g_VertexBuffer)))
     {
@@ -593,7 +594,7 @@ bool Load()
 
     const D3D11_BUFFER_DESC indexBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(std::uint16_t) * _countof(g_Indices),
-        D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER);
+        D3D11_BIND_INDEX_BUFFER);
     constexpr D3D11_SUBRESOURCE_DATA indexBufferData = { g_Indices, 0, 0 };
     if (FAILED(g_Device->CreateBuffer(&indexBufferDescriptor, &indexBufferData, &g_IndexBuffer)))
     {
@@ -642,10 +643,10 @@ bool Load()
 
     D3D11_SAMPLER_DESC linearSamplerStateDescriptor;
     ZeroMemory(&linearSamplerStateDescriptor, sizeof(D3D11_SAMPLER_DESC));
-    linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+    linearSamplerStateDescriptor.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(g_Device->CreateSamplerState(&linearSamplerStateDescriptor, &g_LinearSamplerState)))
     {
         std::cout << "D3D11: Unable to create linear sampler state\n";
@@ -681,7 +682,7 @@ void Render()
     constexpr UINT vertexBufferOffset = 0;
 
     g_DeviceContext->ClearRenderTargetView(g_BackBufferRtv.Get(), g_ClearColor);
-    g_DeviceContext->ClearDepthStencilView(g_DepthStencilView.Get(), D3D10_CLEAR_FLAG::D3D10_CLEAR_DEPTH, 1.0, 0);
+    g_DeviceContext->ClearDepthStencilView(g_DepthStencilView.Get(), D3D10_CLEAR_DEPTH, 1.0, 0);
 
     g_DeviceContext->IASetInputLayout(g_InputLayout.Get());
     g_DeviceContext->IASetIndexBuffer(g_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
@@ -713,7 +714,7 @@ void Cleanup()
     g_DepthStencilBuffer.Reset();
     g_BackBufferRtv.Reset();
 
-    for (auto i = 0; i < ConstantBufferType::NumConstantBufferTypes; i++)
+    for (auto i = 0; i < NumConstantBufferTypes; i++)
     {
         g_ConstantBuffers[i].Reset();
     }
@@ -726,7 +727,7 @@ void Cleanup()
 
     g_DeviceContext.Reset();
 
-    g_Debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_IGNORE_INTERNAL);
+    g_Debug->ReportLiveDeviceObjects(D3D11_RLDO_IGNORE_INTERNAL);
     g_Debug.Reset();
 
     g_Device.Reset();
