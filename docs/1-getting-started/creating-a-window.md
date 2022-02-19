@@ -45,7 +45,7 @@ while(GetMessage(&msg,MainWindow,0,0))
   TranslateMessage(&msg);
   DispatchMessage(&msg);
 }
-
+```
 Compiling this code with the subsystem set to windows (we must use wWinMain as the entry-point function), you'll see a window being created! It is not entirely functional, namely there's a visual glitch when resizing for example. This happends because we don't redraw the window. We don't need this in the context of a purely native DirectX application...
 
 Therefore we won't use the `WM_PAINT` message at all. We will still need to write a message handler function to handle mouse and keyboard inputs for example...
