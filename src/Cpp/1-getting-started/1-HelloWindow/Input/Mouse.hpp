@@ -19,8 +19,8 @@ public:
 
     static void HandleMousePosition(
         GLFWwindow* window,
-        const double_t x,
-        const double_t y);
+        const double x,
+        const double y);
 
     Mouse();
     ~Mouse() = default;
@@ -30,16 +30,16 @@ public:
         const int32_t action);
 
     void HandleMouseMove(
-        const float_t x,
-        const float_t y);
+        const float x,
+        const float y);
 
     void HideCursor();
 
     void ShowCursor();
 
     void Update(
-        const float_t& centerX,
-        const float_t& centerY);
+        const float& centerX,
+        const float& centerY);
 
     [[nodiscard]] bool IsButtonDown(int32_t button) const;
     [[nodiscard]] bool IsButtonPressed(int32_t button) const;

@@ -20,10 +20,13 @@ public:
     ~Keyboard() = default;
 
     [[nodiscard]] bool IsKeyDown(const int32_t key) const;
+
     [[nodiscard]] bool IsKeyPressed(const int32_t key) const;
+
     [[nodiscard]] bool IsKeyUp(const int32_t key) const;
 
     void Update();
+
     void HandleKey(
         const int32_t key,
         const int32_t action);

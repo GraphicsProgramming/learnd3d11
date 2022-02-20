@@ -15,16 +15,16 @@ public:
     ~Input();
 
     void Update(
-        const float_t centerX,
-        const float_t centerY);
+        const float centerX,
+        const float centerY);
 
     void HandleKeyPressed(
         const int32_t key,
         const int32_t action);
 
     void HandleMouseMove(
-        const double_t x,
-        const double_t y);
+        const double x,
+        const double y);
 
     [[nodiscard]] Keyboard& GetKeyboard();
     [[nodiscard]] Mouse& GetMouse();
