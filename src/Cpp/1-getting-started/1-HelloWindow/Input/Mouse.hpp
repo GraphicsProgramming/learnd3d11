@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <set>
 
+// ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
 
 class Mouse
@@ -12,39 +13,44 @@ class Mouse
 public:
     static void HandleMouseButtonPressed(
         GLFWwindow* window,
-        const std::int32_t button,
-        const std::int32_t action,
-        const std::int32_t modifiers);
+        const int32_t button,
+        const int32_t action,
+        const int32_t modifiers);
+
     static void HandleMousePosition(
         GLFWwindow* window,
-        const double x,
-        const double y);
+        const double_t x,
+        const double_t y);
 
     Mouse();
     ~Mouse() = default;
 
     void HandleButton(
-        const std::int32_t button,
-        const std::int32_t action);
-    void HandleMouseMove(
-        const float x,
-        const float y);
-    void HideCursor();
-    void ShowCursor();
-    void Update(
-        const float& centerX,
-        const float& centerY);
+        const int32_t button,
+        const int32_t action);
 
-    [[nodiscard]] bool IsButtonDown(std::int32_t button) const;
-    [[nodiscard]] bool IsButtonPressed(std::int32_t button) const;
-    [[nodiscard]] bool IsButtonUp(std::int32_t button) const;
+    void HandleMouseMove(
+        const float_t x,
+        const float_t y);
+
+    void HideCursor();
+
+    void ShowCursor();
+
+    void Update(
+        const float_t& centerX,
+        const float_t& centerY);
+
+    [[nodiscard]] bool IsButtonDown(int32_t button) const;
+    [[nodiscard]] bool IsButtonPressed(int32_t button) const;
+    [[nodiscard]] bool IsButtonUp(int32_t button) const;
 
     DirectX::XMFLOAT2 CursorPosition;
     DirectX::XMFLOAT2 DeltaPosition;
 
 private:
-    std::set<std::int32_t> _buttonsDown{};
-    std::set<std::int32_t> _buttonsPressed{};
-    std::set<std::int32_t> _buttonsUp{};
+    std::set<int32_t> _buttonsDown{};
+    std::set<int32_t> _buttonsPressed{};
+    std::set<int32_t> _buttonsUp{};
     bool _isCaptured;
 };
