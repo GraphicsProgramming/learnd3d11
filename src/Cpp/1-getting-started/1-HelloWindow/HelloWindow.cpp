@@ -1,9 +1,9 @@
 #include "HelloWindow.hpp"
+#include "Input/Input.hpp"
 
 #include <iostream>
 #include <string>
-
-#include "Input/Input.hpp"
+#include <GLFW/glfw3.h>
 
 HelloWindowApplication::HelloWindowApplication(
     const std::int32_t width,
