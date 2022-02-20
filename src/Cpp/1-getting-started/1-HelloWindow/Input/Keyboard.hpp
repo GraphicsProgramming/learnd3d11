@@ -9,8 +9,7 @@ struct GLFWwindow;
 class Keyboard
 {
 public:
-    static void HandleKeys(
-        GLFWwindow* window,
+    static void HandleKeys(GLFWwindow* window,
         const std::int32_t key,
         const std::int32_t scanCode,
         const std::int32_t action,

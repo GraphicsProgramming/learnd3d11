@@ -10,30 +10,20 @@ struct GLFWwindow;
 class Mouse
 {
 public:
-    static void HandleMouseButtonPressed(
-        GLFWwindow* window,
+    static void HandleMouseButtonPressed(GLFWwindow* window,
         const std::int32_t button,
         const std::int32_t action,
         const std::int32_t modifiers);
-    static void HandleMousePosition(
-        GLFWwindow* window,
-        const double x,
-        const double y);
+    static void HandleMousePosition(GLFWwindow* window, const double x, const double y);
 
     Mouse();
     ~Mouse() = default;
 
-    void HandleButton(
-        const std::int32_t button,
-        const std::int32_t action);
-    void HandleMouseMove(
-        const float x,
-        const float y);
+    void HandleButton(const std::int32_t button, const std::int32_t action);
+    void HandleMouseMove(const float x, const float y);
     void HideCursor();
     void ShowCursor();
-    void Update(
-        const float& centerX,
-        const float& centerY);
+    void Update(const float& centerX, const float& centerY);
 
     [[nodiscard]] bool IsButtonDown(std::int32_t button) const;
     [[nodiscard]] bool IsButtonPressed(std::int32_t button) const;

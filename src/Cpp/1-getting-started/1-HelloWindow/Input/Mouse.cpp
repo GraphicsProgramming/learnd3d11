@@ -3,8 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-void Mouse::HandleMouseButtonPressed(
-    GLFWwindow* window,
+void Mouse::HandleMouseButtonPressed(GLFWwindow* window,
     const std::int32_t button,
     const std::int32_t action,
     const std::int32_t modifiers)
@@ -14,22 +13,15 @@ void Mouse::HandleMouseButtonPressed(
     input->HandleKeyPressed(button, action);
 }
 
-void Mouse::HandleMousePosition(
-    GLFWwindow* window,
-    const double x,
-    const double y)
+void Mouse::HandleMousePosition(GLFWwindow* window, const double x, const double y)
 {
     const auto input = static_cast<Input*>(glfwGetWindowUserPointer(window));
     input->HandleMouseMove(x, y);
 }
 
-Mouse::Mouse(): CursorPosition(), DeltaPosition(), _isCaptured(false)
-{
-}
+Mouse::Mouse() : CursorPosition(), DeltaPosition(), _isCaptured(false) {}
 
-void Mouse::HandleButton(
-    const std::int32_t button,
-    const std::int32_t action)
+void Mouse::HandleButton(const std::int32_t button, const std::int32_t action)
 {
     // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
     switch (action)
@@ -45,13 +37,9 @@ void Mouse::HandleButton(
     }
 }
 
-void Mouse::HandleMouseMove(
-    const float x,
-    const float y)
+void Mouse::HandleMouseMove(const float x, const float y)
 {
-    DeltaPosition = DirectX::XMFLOAT2(
-        x - CursorPosition.x,
-        y - CursorPosition.y);
+    DeltaPosition = DirectX::XMFLOAT2(x - CursorPosition.x, y - CursorPosition.y);
 
     CursorPosition = DirectX::XMFLOAT2(x, y);
 }
@@ -85,9 +73,7 @@ void Mouse::ShowCursor()
     _isCaptured = false;
 }
 
-void Mouse::Update(
-    const float& centerX,
-    const float& centerY)
+void Mouse::Update(const float& centerX, const float& centerY)
 {
     const auto window = glfwGetCurrentContext();
     _buttonsDown.clear();
