@@ -22,9 +22,7 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(_window))
     {
-        _input->Update(
-            static_cast<float>(_width) / 2.0f,
-            static_cast<float>(_height) / 2.0f);
+        _input->Update(static_cast<float>(_width) / 2.0f, static_cast<float>(_height) / 2.0f);
         glfwPollEvents();
         Update();
         Render();

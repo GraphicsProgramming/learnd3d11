@@ -29,26 +29,18 @@ Mouse& Input::GetMouse()
     return _mouse;
 }
 
-void Input::HandleKeyPressed(
-    const std::int32_t key,
-    const std::int32_t action)
+void Input::HandleKeyPressed(const std::int32_t key, const std::int32_t action)
 {
     _keyboard.HandleKey(key, action);
     _mouse.HandleButton(key, action);
 }
 
-void Input::HandleMouseMove(
-    const double x,
-    const double y)
+void Input::HandleMouseMove(const double x, const double y)
 {
-    _mouse.HandleMouseMove(
-        static_cast<float>(x),
-        static_cast<float>(y));
+    _mouse.HandleMouseMove(static_cast<float>(x), static_cast<float>(y));
 }
 
-void Input::Update(
-    const float centerX,
-    const float centerY)
+void Input::Update(const float centerX, const float centerY)
 {
     _keyboard.Update();
     _mouse.Update(centerX, centerY);

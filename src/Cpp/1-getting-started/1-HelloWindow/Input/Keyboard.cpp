@@ -3,8 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-void Keyboard::HandleKeys(
-    GLFWwindow* window,
+void Keyboard::HandleKeys(GLFWwindow* window,
     const std::int32_t key,
     const std::int32_t scanCode,
     const std::int32_t action,
