@@ -11,7 +11,7 @@ wndClass.lpfnWndProc = DefWindowProc; //function used to handle messages. We're 
 wndClass.lpszClassName = TEXT("DirectXApplication_Tutorial"); //The TEXT() macro function is used to assure the projects compiles if UNICODE support is either enabled or disabled.
 ```
 
-To note that a custom cursor, application icons and flags can be set in this structure.
+Note that custom cursors, application icons, and flags for this window can optionally be set here.
 
 ## 2.) Register the window class
 
@@ -20,12 +20,12 @@ We register a window class using the RegisterClass function.
 ```cpp
 if(RegisterClass(&wndClass) == 0) 
 {
-  MessageBox(nullptr,TEXT("Cannot register the window class!"),TEXT("Error!"),MB_ICONERROR | MB_OK);
+  MessageBox(nullptr,TEXT("Cannot register the window class!"), TEXT("Error!"), MB_ICONERROR | MB_OK);
   return -1;
-}
+} 
 ```
 
-Is it most of the time safe to directly call RegisterClass, without checking if the function failed.
+Most of the time it is safe to call RegisterClass without checking if the function failed.
 
 ## 3.) Finally, create the window.
 
@@ -35,7 +35,7 @@ Functions are created using the CreateWindowEx or CreateWindow functions. Create
 HWND MainWindow = CreateWindowEx(0, TEXT("DirectXApplication_Tutorial"), TEXT("Hello DirectX!"), WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 800, 600, nullptr, nullptr, hInstance, 0);
 if(MainWindow == nullptr)
 {
-  MessageBox(nullptr,TEXT("Cannot create the window!"),TEXT("Error"),MB_ICONERROR | MB_OK);
+  MessageBox(nullptr, TEXT("Cannot create the window!"), TEXT("Error"), MB_ICONERROR | MB_OK);
   return -2;
 }
 ```
