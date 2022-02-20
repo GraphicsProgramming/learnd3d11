@@ -18,7 +18,11 @@ To note that a custom cursor, application icons and flags can be set in this str
 We register a window class using the RegisterClass function.
 
 ```cpp
-if(RegisterClass(&wndClass) == 0) throw std::exception("Failed to register the window class!");; //registers the window class. A window class defines how the button behaves, i.e a button, or a label... We throw an exception if RegisterClass somehow fails...
+if(RegisterClass(&wndClass) == 0) 
+{
+  MessageBox(nullptr,TEXT("Cannot register the window class!"),TEXT("Error!"),MB_ICONERROR | MB_OK);
+  return -1;
+}
 ```
 
 Is it most of the time safe to directly call RegisterClass, without checking if the function failed.
@@ -29,14 +33,18 @@ Functions are created using the CreateWindowEx or CreateWindow functions. Create
 
 ```cpp
 HWND MainWindow = CreateWindowEx(0, TEXT("DirectXApplication_Tutorial"), TEXT("Hello DirectX!"), WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 800, 600, nullptr, nullptr, hInstance, 0);
-if(MainWindow == nullptr) throw std::exception("Failed to create the window!");
+if(MainWindow == nullptr)
+{
+  MessageBox(nullptr,TEXT("Cannot create the window!"),TEXT("Error"),MB_ICONERROR | MB_OK);
+  return -2;
+}
 ```
 
-## 4.) It is required to write the message cycle to keep our application running:
+## 4.) It is required to write the message loop to keep our application running:
 
-This cycle keeps our application "alive". It handles the messages that are sent to our window.
+This loop keeps our application "alive". It handles the messages that are sent to our window.
 
-`TranslateMessage()` converts virtual keys messages to character input messages. `DispatchMessage()` handles the message itself by calling `wndClass.lpfnWndProc` and by removing the message from the queue (in some cases, new messages can be sent.)
+`TranslateMessage()` converts virtual keys messages to character input messages. `DispatchMessage()` handles the message itself by calling `wndClass.lpfnWndProc` and by removing the message from the queue (in some cases, new messages can be sent).
 
 ```cpp
 MSG msg;
