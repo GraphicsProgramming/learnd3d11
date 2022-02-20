@@ -170,11 +170,11 @@ bool Initialize()
 
     constexpr D3D_FEATURE_LEVEL d3dFeatureLevels[] =
     {
-        D3D_FEATURE_LEVEL_11_0
+        D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0
     };
     constexpr UINT deviceCreationFlags =
-        D3D11_CREATE_DEVICE_BGRA_SUPPORT |
-        D3D11_CREATE_DEVICE_DEBUG;
+        D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT |
+        D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -200,38 +200,34 @@ bool Initialize()
         std::cout << "D3D11: Unable to grab the debug interface from device\n";
         return false;
     }
-    else
+
+    ComPtr<ID3D11InfoQueue> debugInfoQueue = nullptr;
+    if (FAILED(g_Debug.As(&debugInfoQueue)))
     {
-        ComPtr<ID3D11InfoQueue> debugInfoQueue = nullptr;
-        if (FAILED(g_Debug.As(&debugInfoQueue)))
-        {
-            std::cout << "D3D11: Unable to grab the info queue interface from the debug interface\n";
-            return false;
-        }
-        else
-        {
-            debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-            debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-
-            D3D11_MESSAGE_ID hide[] =
-            {
-                D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
-                // Add more message IDs here as needed
-            };
-
-            D3D11_INFO_QUEUE_FILTER filter = {};
-            filter.DenyList.NumIDs = _countof(hide);
-            filter.DenyList.pIDList = hide;
-            debugInfoQueue->AddStorageFilterEntries(&filter);
-            debugInfoQueue->Release();
-        }
+        std::cout << "D3D11: Unable to grab the info queue interface from the debug interface\n";
+        return false;
     }
+
+    debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+    debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_ERROR, true);
+
+    D3D11_MESSAGE_ID hide[] =
+    {
+        D3D11_MESSAGE_ID::D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+        // Add more message IDs here as needed
+    };
+
+    D3D11_INFO_QUEUE_FILTER filter = {};
+    filter.DenyList.NumIDs = _countof(hide);
+    filter.DenyList.pIDList = hide;
+    debugInfoQueue->AddStorageFilterEntries(&filter);
+    debugInfoQueue->Release();
+
 
     const auto nativeWindowHandle = glfwGetWin32Window(g_Window);
     g_Factory->MakeWindowAssociation(nativeWindowHandle, 0);
 
     constexpr DXGI_RATIONAL refreshRate = { 0, 1 };
-    ZeroMemory(&g_SwapChainDescriptor, sizeof(DXGI_SWAP_CHAIN_DESC));
     g_SwapChainDescriptor.BufferCount = 2;
     g_SwapChainDescriptor.BufferDesc.Width = windowWidth;
     g_SwapChainDescriptor.BufferDesc.Height = windowHeight;
@@ -267,19 +263,17 @@ bool Initialize()
 
     backBuffer->Release();
 
-    D3D11_TEXTURE2D_DESC depthStencilBufferDescriptor;
-    ZeroMemory(&depthStencilBufferDescriptor, sizeof(D3D11_TEXTURE2D_DESC));
-
+    D3D11_TEXTURE2D_DESC depthStencilBufferDescriptor = {};
     depthStencilBufferDescriptor.ArraySize = 1;
-    depthStencilBufferDescriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
     depthStencilBufferDescriptor.CPUAccessFlags = 0;
-    depthStencilBufferDescriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilBufferDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT;
     depthStencilBufferDescriptor.Width = windowWidth;
     depthStencilBufferDescriptor.Height = windowHeight;
     depthStencilBufferDescriptor.MipLevels = 1;
     depthStencilBufferDescriptor.SampleDesc.Count = 1;
     depthStencilBufferDescriptor.SampleDesc.Quality = 0;
-    depthStencilBufferDescriptor.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
     if (FAILED(g_Device->CreateTexture2D(&depthStencilBufferDescriptor, nullptr, &g_DepthStencilBuffer)))
     {
         std::cout << "D3D11: Unable to create depth stencil buffer\n";
@@ -392,21 +386,21 @@ DXGI_FORMAT GetTextureFormat(const WICPixelFormatGUID pixelFormat)
 {
     static std::unordered_map<WICPixelFormatGUID, DXGI_FORMAT> pixelFormatToTextureFormat =
     {
-        {GUID_WICPixelFormat128bppRGBAFloat, DXGI_FORMAT_R32G32B32A32_FLOAT},
-        {GUID_WICPixelFormat64bppRGBAHalf, DXGI_FORMAT_R16G16B16A16_FLOAT},
-        {GUID_WICPixelFormat64bppRGBA, DXGI_FORMAT_R16G16B16A16_UNORM},
-        {GUID_WICPixelFormat32bppRGBA, DXGI_FORMAT_R8G8B8A8_UNORM},
-        {GUID_WICPixelFormat32bppBGRA, DXGI_FORMAT_B8G8R8A8_UNORM},
-        {GUID_WICPixelFormat32bppBGR, DXGI_FORMAT_B8G8R8X8_UNORM},
-        {GUID_WICPixelFormat32bppRGBA1010102XR, DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM},
-        {GUID_WICPixelFormat32bppRGBA1010102, DXGI_FORMAT_R10G10B10A2_UNORM},
-        {GUID_WICPixelFormat16bppBGRA5551, DXGI_FORMAT_B5G5R5A1_UNORM},
-        {GUID_WICPixelFormat16bppBGR565, DXGI_FORMAT_B5G6R5_UNORM},
-        {GUID_WICPixelFormat32bppGrayFloat, DXGI_FORMAT_R32_FLOAT},
-        {GUID_WICPixelFormat16bppGrayHalf, DXGI_FORMAT_R16_FLOAT},
-        {GUID_WICPixelFormat16bppGray, DXGI_FORMAT_R16_UNORM},
-        {GUID_WICPixelFormat8bppGray, DXGI_FORMAT_R8_UNORM},
-        {GUID_WICPixelFormat8bppAlpha, DXGI_FORMAT_A8_UNORM},
+        {GUID_WICPixelFormat128bppRGBAFloat, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT},
+        {GUID_WICPixelFormat64bppRGBAHalf, DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_FLOAT},
+        {GUID_WICPixelFormat64bppRGBA, DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM},
+        {GUID_WICPixelFormat32bppRGBA, DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM},
+        {GUID_WICPixelFormat32bppBGRA, DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM},
+        {GUID_WICPixelFormat32bppBGR, DXGI_FORMAT::DXGI_FORMAT_B8G8R8X8_UNORM},
+        {GUID_WICPixelFormat32bppRGBA1010102XR, DXGI_FORMAT::DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM},
+        {GUID_WICPixelFormat32bppRGBA1010102, DXGI_FORMAT::DXGI_FORMAT_R10G10B10A2_UNORM},
+        {GUID_WICPixelFormat16bppBGRA5551, DXGI_FORMAT::DXGI_FORMAT_B5G5R5A1_UNORM},
+        {GUID_WICPixelFormat16bppBGR565, DXGI_FORMAT::DXGI_FORMAT_B5G6R5_UNORM},
+        {GUID_WICPixelFormat32bppGrayFloat, DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT},
+        {GUID_WICPixelFormat16bppGrayHalf, DXGI_FORMAT::DXGI_FORMAT_R16_FLOAT},
+        {GUID_WICPixelFormat16bppGray, DXGI_FORMAT::DXGI_FORMAT_R16_UNORM},
+        {GUID_WICPixelFormat8bppGray, DXGI_FORMAT::DXGI_FORMAT_R8_UNORM},
+        {GUID_WICPixelFormat8bppAlpha, DXGI_FORMAT::DXGI_FORMAT_A8_UNORM},
     };
 
     if (pixelFormatToTextureFormat.find(pixelFormat) != pixelFormatToTextureFormat.end())
@@ -423,21 +417,21 @@ std::int8_t GetBitsPerPixel(const DXGI_FORMAT& textureFormat)
 
     static std::unordered_map<DXGI_FORMAT, std::int8_t> textureFormatToBitsPerPixel =
     {
-        {DXGI_FORMAT_R32G32B32A32_FLOAT, 128},
-        {DXGI_FORMAT_R16G16B16A16_FLOAT, 64},
-        {DXGI_FORMAT_R16G16B16A16_UNORM, 64},
-        {DXGI_FORMAT_R8G8B8A8_UNORM, 32},
-        {DXGI_FORMAT_B8G8R8A8_UNORM, 32},
-        {DXGI_FORMAT_B8G8R8X8_UNORM, 32},
-        {DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM, 32},
-        {DXGI_FORMAT_R10G10B10A2_UNORM, 32},
-        {DXGI_FORMAT_B5G5R5A1_UNORM, 16},
-        {DXGI_FORMAT_B5G6R5_UNORM, 16},
-        {DXGI_FORMAT_R32_FLOAT, 32},
-        {DXGI_FORMAT_R16_FLOAT, 16},
-        {DXGI_FORMAT_R16_UNORM, 16},
-        {DXGI_FORMAT_R8_UNORM, 8},
-        {DXGI_FORMAT_A8_UNORM, 16},
+        {DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, 128},
+        {DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_FLOAT, 64},
+        {DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM, 64},
+        {DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_B8G8R8X8_UNORM, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_R10G10B10A2_UNORM, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_B5G5R5A1_UNORM, 16},
+        {DXGI_FORMAT::DXGI_FORMAT_B5G6R5_UNORM, 16},
+        {DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT, 32},
+        {DXGI_FORMAT::DXGI_FORMAT_R16_FLOAT, 16},
+        {DXGI_FORMAT::DXGI_FORMAT_R16_UNORM, 16},
+        {DXGI_FORMAT::DXGI_FORMAT_R8_UNORM, 8},
+        {DXGI_FORMAT::DXGI_FORMAT_A8_UNORM, 16},
     };
 
     return textureFormatToBitsPerPixel[textureFormat];
@@ -503,17 +497,16 @@ bool LoadTexture(IWICImagingFactory* imagingFactory, const std::wstring_view fil
     }
 
     D3D11_TEXTURE2D_DESC textureDescriptor = {};
-    ZeroMemory(&textureDescriptor, sizeof(D3D11_TEXTURE2D_DESC));
     textureDescriptor.ArraySize = 1;
-    textureDescriptor.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    textureDescriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    textureDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
+    textureDescriptor.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
     textureDescriptor.Format = textureFormat;
     textureDescriptor.MipLevels = 1;// +floor(log2(DirectX::XMMax(imageWidth, imageHeight)));
     textureDescriptor.Height = imageHeight;
     textureDescriptor.Width = imageWidth;
     textureDescriptor.SampleDesc.Quality = 0;
     textureDescriptor.SampleDesc.Count = 1;
-    textureDescriptor.Usage = D3D11_USAGE_DEFAULT;
+    textureDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 
     const D3D11_SUBRESOURCE_DATA textureData = { pixelData.data(), bytesPerRow, 0 };
 
@@ -540,11 +533,10 @@ bool LoadTexture(IWICImagingFactory* imagingFactory, const std::wstring_view fil
 
 bool Load()
 {
-    D3D11_DEPTH_STENCIL_DESC depthStencilDescriptor;
-    ZeroMemory(&depthStencilDescriptor, sizeof(D3D11_DEPTH_STENCIL_DESC));
+    D3D11_DEPTH_STENCIL_DESC depthStencilDescriptor = {};
     depthStencilDescriptor.DepthEnable = true;
-    depthStencilDescriptor.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_LESS;
+    depthStencilDescriptor.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
     depthStencilDescriptor.StencilEnable = false;
     if (FAILED(g_Device->CreateDepthStencilState(&depthStencilDescriptor, &g_DepthStencilState)))
     {
@@ -552,14 +544,13 @@ bool Load()
         return false;
     }
 
-    D3D11_RASTERIZER_DESC rasterizerDescriptor;
-    ZeroMemory(&rasterizerDescriptor, sizeof(D3D11_RASTERIZER_DESC));
+    D3D11_RASTERIZER_DESC rasterizerDescriptor = {};
     rasterizerDescriptor.AntialiasedLineEnable = false;
-    rasterizerDescriptor.CullMode = D3D11_CULL_BACK;
+    rasterizerDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     rasterizerDescriptor.DepthBias = 0;
     rasterizerDescriptor.DepthBiasClamp = 0.0f;
     rasterizerDescriptor.DepthClipEnable = true;
-    rasterizerDescriptor.FillMode = D3D11_FILL_SOLID;
+    rasterizerDescriptor.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
     rasterizerDescriptor.FrontCounterClockwise = false;
     rasterizerDescriptor.MultisampleEnable = false;
     rasterizerDescriptor.ScissorEnable = false;
@@ -584,7 +575,7 @@ bool Load()
 
     const D3D11_BUFFER_DESC vertexBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(VertexPositionColorUv) * _countof(g_Vertices),
-        D3D11_BIND_VERTEX_BUFFER);
+        D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER);
     constexpr D3D11_SUBRESOURCE_DATA vertexBufferData = { g_Vertices, 0, 0 };
     if (FAILED(g_Device->CreateBuffer(&vertexBufferDescriptor, &vertexBufferData, &g_VertexBuffer)))
     {
@@ -594,7 +585,7 @@ bool Load()
 
     const D3D11_BUFFER_DESC indexBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(std::uint16_t) * _countof(g_Indices),
-        D3D11_BIND_INDEX_BUFFER);
+        D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER);
     constexpr D3D11_SUBRESOURCE_DATA indexBufferData = { g_Indices, 0, 0 };
     if (FAILED(g_Device->CreateBuffer(&indexBufferDescriptor, &indexBufferData, &g_IndexBuffer)))
     {
@@ -604,9 +595,9 @@ bool Load()
 
     D3D11_INPUT_ELEMENT_DESC vertexPositionColorLayoutDescriptor[] =
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColorUv, Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColorUv, Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(VertexPositionColorUv, Uv), D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        { "POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColorUv, Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColorUv, Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(VertexPositionColorUv, Uv), D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
     if (FAILED(g_Device->CreateInputLayout(
         vertexPositionColorLayoutDescriptor,
@@ -624,7 +615,7 @@ bool Load()
 
     const D3D11_BUFFER_DESC constantBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(DirectX::XMMATRIX),
-        D3D11_BIND_CONSTANT_BUFFER);
+        D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER);
     if (FAILED(g_Device->CreateBuffer(&constantBufferDescriptor, nullptr, &g_ConstantBuffers[0])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
@@ -641,12 +632,11 @@ bool Load()
         return false;
     }
 
-    D3D11_SAMPLER_DESC linearSamplerStateDescriptor;
-    ZeroMemory(&linearSamplerStateDescriptor, sizeof(D3D11_SAMPLER_DESC));
-    linearSamplerStateDescriptor.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
+    linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(g_Device->CreateSamplerState(&linearSamplerStateDescriptor, &g_LinearSamplerState)))
     {
         std::cout << "D3D11: Unable to create linear sampler state\n";
@@ -682,12 +672,12 @@ void Render()
     constexpr UINT vertexBufferOffset = 0;
 
     g_DeviceContext->ClearRenderTargetView(g_BackBufferRtv.Get(), g_ClearColor);
-    g_DeviceContext->ClearDepthStencilView(g_DepthStencilView.Get(), D3D10_CLEAR_DEPTH, 1.0, 0);
+    g_DeviceContext->ClearDepthStencilView(g_DepthStencilView.Get(), D3D10_CLEAR_FLAG::D3D10_CLEAR_DEPTH, 1.0, 0);
 
     g_DeviceContext->IASetInputLayout(g_InputLayout.Get());
-    g_DeviceContext->IASetIndexBuffer(g_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+    g_DeviceContext->IASetIndexBuffer(g_IndexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0);
     g_DeviceContext->IASetVertexBuffers(0, 1, g_VertexBuffer.GetAddressOf(), &g_VertexBufferStride, &vertexBufferOffset);
-    g_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    g_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     g_DeviceContext->VSSetShader(g_VertexShader.Get(), nullptr, 0);
     g_DeviceContext->VSSetConstantBuffers(0, 3, g_ConstantBuffers->GetAddressOf());
@@ -731,7 +721,7 @@ void Cleanup()
 
     g_DeviceContext.Reset();
 
-    g_Debug->ReportLiveDeviceObjects(D3D11_RLDO_IGNORE_INTERNAL);
+    g_Debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_IGNORE_INTERNAL);
     g_Debug.Reset();
 
     g_Device.Reset();
@@ -744,8 +734,8 @@ int main(int argc, char* argv[])
 {
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif    
-    IGNORE(CoInitialize(nullptr));
+#endif
+
     if (!Initialize())
     {
         Cleanup();
