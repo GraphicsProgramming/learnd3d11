@@ -7,7 +7,7 @@ Application::Application(
     const std::int32_t width,
     const std::int32_t height,
     const std::string_view title)
-    : _window(nullptr), _width(width), _height(height), _title(title), _input(nullptr)
+    : _input(nullptr), _window(nullptr), _width(width), _height(height), _title(title)
 {
 }
 
