@@ -55,6 +55,7 @@ bool Application::Initialize()
     }
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     _window = glfwCreateWindow(_width, _height, _title.data(), nullptr, nullptr);
     if (_window == nullptr)
     {
