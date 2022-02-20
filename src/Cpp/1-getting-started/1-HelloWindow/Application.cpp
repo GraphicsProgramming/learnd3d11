@@ -1,6 +1,8 @@
 #include "Application.hpp"
 #include "Input/Input.hpp"
 
+#include <GLFW/glfw3.h>
+
 Application::Application(
     const std::int32_t width,
     const std::int32_t height,
