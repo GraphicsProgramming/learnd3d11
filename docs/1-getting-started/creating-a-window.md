@@ -1,6 +1,6 @@
 # Creating a Window
 
-Creating a window using the Windows API library (a.k.a WINAPI32) can be made by following these steps:"
+Creating a window using the Windows API library (a.k.a. WINAPI32) can be achieved through the following steps:
 
 ## 1.) Fill a window class structure (WNDCLASS)
 
