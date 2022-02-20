@@ -6,10 +6,18 @@ Creating a window using the Windows API library (a.k.a. WINAPI32) can be achieve
 
 ```cpp
 WNDCLASS wndClass = {};
-wndClass.hInstance = hInstance; //hInstance from wWinMain/WinMain
-wndClass.lpfnWndProc = DefWindowProc; //function used to handle messages. We're currently using the default window message handling procedure. We will create our message handler function later...
-wndClass.lpszClassName = TEXT("DirectXApplication_Tutorial"); //The TEXT() macro function is used to assure the projects compiles if UNICODE support is either enabled or disabled.
+wndClass.hInstance = hInstance;
+wndClass.lpfnWndProc = DefWindowProc;
+wndClass.lpszClassName = TEXT("DirectXApplication_Tutorial");
 ```
+
+Explanation for the structure fields:
+
+- `wndClass.hInstance` represents the handle to the application module. It is usually given as a argument in the `wWwinMain` entry-point function.
+
+- `wndClass.lpfnWndProc` represents a pointer to the function used to handle messages. We're currently using the default window message handling procedure. We will create our message handler function later...
+
+- `wndClass.lpszClassName` represents an identifier for the window class. The TEXT() macro function is used to assure the projects compiles if UNICODE support is either enabled or disabled.
 
 Note that custom cursors, application icons, and flags for this window can optionally be set here.
 
