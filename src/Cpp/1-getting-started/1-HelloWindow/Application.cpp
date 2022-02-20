@@ -3,11 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
-Application::Application(
-    const std::int32_t width,
-    const std::int32_t height,
-    const std::string_view title)
-    : _input(nullptr), _window(nullptr), _width(width), _height(height), _title(title)
+Application::Application(const std::string_view title)
+    : _input(nullptr), _window(nullptr), _width(0), _height(0), _title(title)
 {
 }
 
@@ -54,6 +51,11 @@ bool Application::Initialize()
         return false;
     }
 
+    const auto primaryMonitor = glfwGetPrimaryMonitor();
+    const auto videoMode = glfwGetVideoMode(primaryMonitor);
+    _width = static_cast<std::int32_t>(videoMode->width * 0.9f);
+    _height = static_cast<std::int32_t>(videoMode->height * 0.9f);
+
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     _window = glfwCreateWindow(_width, _height, _title.data(), nullptr, nullptr);
@@ -64,8 +66,6 @@ bool Application::Initialize()
     }
     _input = std::make_unique<Input>(_window);
 
-    const auto primaryMonitor = glfwGetPrimaryMonitor();
-    const auto videoMode = glfwGetVideoMode(primaryMonitor);
     const auto windowLeft = videoMode->width / 2 - _width / 2;
     const auto windowTop = videoMode->height / 2 - _height / 2;
     glfwSetWindowPos(_window, windowLeft, windowTop);

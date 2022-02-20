@@ -2,13 +2,10 @@
 
 #include "Application.hpp"
 
-class HelloWindowApplication : public Application
+class HelloWindowApplication final : public Application
 {
 public:
-    HelloWindowApplication(
-    const std::int32_t width,
-    const std::int32_t height,
-    const std::string_view title);
+    HelloWindowApplication(const std::string_view title);
 
 protected:
     void Update() override;

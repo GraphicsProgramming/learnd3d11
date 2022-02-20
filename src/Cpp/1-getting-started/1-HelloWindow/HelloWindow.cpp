@@ -5,11 +5,8 @@
 #include <string>
 #include <GLFW/glfw3.h>
 
-HelloWindowApplication::HelloWindowApplication(
-    const std::int32_t width,
-    const std::int32_t height,
-    const std::string_view title)
-        : Application(width, height, title)
+HelloWindowApplication::HelloWindowApplication(const std::string_view title)
+    : Application(title)
 {
 }
 

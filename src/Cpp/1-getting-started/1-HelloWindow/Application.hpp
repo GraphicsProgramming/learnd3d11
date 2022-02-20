@@ -11,10 +11,7 @@ class Input;
 class Application
 {
 public:
-    Application(
-        const std::int32_t width,
-        const std::int32_t height,
-        const std::string_view title);
+    Application(const std::string_view title);
     virtual ~Application();
     void Run();
 
