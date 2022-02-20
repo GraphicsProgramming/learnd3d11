@@ -30,7 +30,7 @@ protected:
 
 private:
     GLFWwindow* _window = nullptr;
-    std::int32_t _width = 0;
-    std::int32_t _height = 0;
+    int32_t _width = 0;
+    int32_t _height = 0;
     std::string_view _title;
 };

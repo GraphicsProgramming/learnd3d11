@@ -52,8 +52,8 @@ bool Application::Initialize()
 
     const auto primaryMonitor = glfwGetPrimaryMonitor();
     const auto videoMode = glfwGetVideoMode(primaryMonitor);
-    _width = static_cast<std::int32_t>(videoMode->width * 0.9f);
-    _height = static_cast<std::int32_t>(videoMode->height * 0.9f);
+    _width = static_cast<int32_t>(videoMode->width * 0.9f);
+    _height = static_cast<int32_t>(videoMode->height * 0.9f);
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -65,29 +65,29 @@ bool Application::Initialize()
     }
     _input = std::make_unique<Input>(_window);
 
-    const std::int32_t windowLeft = videoMode->width / 2 - _width / 2;
-    const std::int32_t windowTop = videoMode->height / 2 - _height / 2;
+    const int32_t windowLeft = videoMode->width / 2 - _width / 2;
+    const int32_t windowTop = videoMode->height / 2 - _height / 2;
     glfwSetWindowPos(_window, windowLeft, windowTop);
 
     return true;
 }
 
-bool Application::IsKeyDown(const std::int32_t key) const
+bool Application::IsKeyDown(const int32_t key) const
 {
     return _input->GetKeyboard().IsKeyDown(key);
 }
 
-bool Application::IsKeyPressed(const std::int32_t key) const
+bool Application::IsKeyPressed(const int32_t key) const
 {
     return _input->GetKeyboard().IsKeyPressed(key);
 }
 
-bool Application::IsKeyUp(const std::int32_t key) const
+bool Application::IsKeyUp(const int32_t key) const
 {
     return _input->GetKeyboard().IsKeyUp(key);
 }
 
-bool Application::IsButtonPressed(const std::int32_t button) const
+bool Application::IsButtonPressed(const int32_t button) const
 {
     return _input->GetMouse().IsButtonPressed(button);
 }

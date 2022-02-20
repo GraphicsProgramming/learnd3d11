@@ -5,9 +5,9 @@
 
 void Mouse::HandleMouseButtonPressed(
     GLFWwindow* window,
-    const std::int32_t button,
-    const std::int32_t action,
-    const std::int32_t modifiers)
+    const int32_t button,
+    const int32_t action,
+    const int32_t modifiers)
 {
     _CRT_UNUSED(modifiers);
     const auto input = static_cast<Input*>(glfwGetWindowUserPointer(window));
@@ -16,8 +16,8 @@ void Mouse::HandleMouseButtonPressed(
 
 void Mouse::HandleMousePosition(
     GLFWwindow* window,
-    const double x,
-    const double y)
+    const double_t x,
+    const double_t y)
 {
     const auto input = static_cast<Input*>(glfwGetWindowUserPointer(window));
     input->HandleMouseMove(x, y);
@@ -28,8 +28,8 @@ Mouse::Mouse(): CursorPosition(), DeltaPosition(), _isCaptured(false)
 }
 
 void Mouse::HandleButton(
-    const std::int32_t button,
-    const std::int32_t action)
+    const int32_t button,
+    const int32_t action)
 {
     // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
     switch (action)
@@ -46,8 +46,8 @@ void Mouse::HandleButton(
 }
 
 void Mouse::HandleMouseMove(
-    const float x,
-    const float y)
+    const float_t x,
+    const float_t y)
 {
     DeltaPosition = DirectX::XMFLOAT2(
         x - CursorPosition.x,
@@ -63,17 +63,17 @@ void Mouse::HideCursor()
     _isCaptured = true;
 }
 
-bool Mouse::IsButtonDown(const std::int32_t button) const
+bool Mouse::IsButtonDown(const int32_t button) const
 {
     return _buttonsDown.count(button) != 0;
 }
 
-bool Mouse::IsButtonPressed(const std::int32_t button) const
+bool Mouse::IsButtonPressed(const int32_t button) const
 {
     return _buttonsPressed.count(button) != 0;
 }
 
-bool Mouse::IsButtonUp(const std::int32_t button) const
+bool Mouse::IsButtonUp(const int32_t button) const
 {
     return _buttonsUp.count(button) != 0;
 }
@@ -86,8 +86,8 @@ void Mouse::ShowCursor()
 }
 
 void Mouse::Update(
-    const float& centerX,
-    const float& centerY)
+    const float_t& centerX,
+    const float_t& centerY)
 {
     const auto window = glfwGetCurrentContext();
     _buttonsDown.clear();

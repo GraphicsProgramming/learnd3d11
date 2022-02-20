@@ -15,15 +15,16 @@ public:
     ~Input();
 
     void Update(
-        const float centerX,
-        const float centerY);
+        const float_t centerX,
+        const float_t centerY);
 
     void HandleKeyPressed(
-        std::int32_t button,
-        std::int32_t action);
+        const int32_t key,
+        const int32_t action);
+
     void HandleMouseMove(
-        const double x,
-        const double y);
+        const double_t x,
+        const double_t y);
 
     [[nodiscard]] Keyboard& GetKeyboard();
     [[nodiscard]] Mouse& GetMouse();
