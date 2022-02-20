@@ -16,8 +16,8 @@ void Mouse::HandleMouseButtonPressed(
 
 void Mouse::HandleMousePosition(
     GLFWwindow* window,
-    const double_t x,
-    const double_t y)
+    const double x,
+    const double y)
 {
     const auto input = static_cast<Input*>(glfwGetWindowUserPointer(window));
     input->HandleMouseMove(x, y);
@@ -46,8 +46,8 @@ void Mouse::HandleButton(
 }
 
 void Mouse::HandleMouseMove(
-    const float_t x,
-    const float_t y)
+    const float x,
+    const float y)
 {
     DeltaPosition = DirectX::XMFLOAT2(
         x - CursorPosition.x,
@@ -86,8 +86,8 @@ void Mouse::ShowCursor()
 }
 
 void Mouse::Update(
-    const float_t& centerX,
-    const float_t& centerY)
+    const float& centerX,
+    const float& centerY)
 {
     const auto window = glfwGetCurrentContext();
     _buttonsDown.clear();

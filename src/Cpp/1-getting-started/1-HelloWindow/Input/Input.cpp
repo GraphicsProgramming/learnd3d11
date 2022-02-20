@@ -38,8 +38,8 @@ void Input::HandleKeyPressed(
 }
 
 void Input::HandleMouseMove(
-    const double_t x,
-    const double_t y)
+    const double x,
+    const double y)
 {
     _mouse.HandleMouseMove(
         static_cast<float>(x),
@@ -47,8 +47,8 @@ void Input::HandleMouseMove(
 }
 
 void Input::Update(
-    const float_t centerX,
-    const float_t centerY)
+    const float centerX,
+    const float centerY)
 {
     _keyboard.Update();
     _mouse.Update(centerX, centerY);
