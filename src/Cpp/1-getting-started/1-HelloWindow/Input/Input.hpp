@@ -15,16 +15,22 @@ public:
     Input(GLFWwindow* window);
     ~Input();
 
-    void Update(float centerX, float centerY);
+    void Update(
+        const float centerX,
+        const float centerY);
 
-    void HandleKeyPressed(std::int32_t button, std::int32_t action);
-    void HandleMouseMove(double x, double y);
+    void HandleKeyPressed(
+        std::int32_t button,
+        std::int32_t action);
+    void HandleMouseMove(
+        const double x,
+        const double y);
 
     [[nodiscard]] Keyboard& GetKeyboard();
     [[nodiscard]] Mouse& GetMouse();
 
 private:
-    GLFWwindow* _window;
+    GLFWwindow* _window = nullptr;
     Keyboard _keyboard;
     Mouse _mouse;
 

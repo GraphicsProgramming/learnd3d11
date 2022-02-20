@@ -26,11 +26,11 @@ protected:
     virtual void Render() = 0;
     virtual void Update() = 0;
 
-    std::unique_ptr<Input> _input;
+    std::unique_ptr<Input> _input = nullptr;
 
 private:
-    GLFWwindow* _window;
-    std::int32_t _width;
-    std::int32_t _height;
+    GLFWwindow* _window = nullptr;
+    std::int32_t _width = 0;
+    std::int32_t _height = 0;
     std::string_view _title;
 };

@@ -4,8 +4,8 @@
 #include <GLFW/glfw3.h>
 
 Application::Application(const std::string_view title)
-    : _input(nullptr), _window(nullptr), _width(0), _height(0), _title(title)
 {
+    _title = title;
 }
 
 Application::~Application()
@@ -28,7 +28,6 @@ void Application::Run()
         glfwPollEvents();
         Update();
         Render();
-        glfwSwapBuffers(_window);
     }
 }
 
@@ -66,8 +65,8 @@ bool Application::Initialize()
     }
     _input = std::make_unique<Input>(_window);
 
-    const auto windowLeft = videoMode->width / 2 - _width / 2;
-    const auto windowTop = videoMode->height / 2 - _height / 2;
+    const std::int32_t windowLeft = videoMode->width / 2 - _width / 2;
+    const std::int32_t windowTop = videoMode->height / 2 - _height / 2;
     glfwSetWindowPos(_window, windowLeft, windowTop);
 
     return true;

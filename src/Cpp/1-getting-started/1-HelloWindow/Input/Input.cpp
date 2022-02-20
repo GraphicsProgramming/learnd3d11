@@ -2,10 +2,9 @@
 
 #include <GLFW/glfw3.h>
 
-#include <functional>
-
-Input::Input(GLFWwindow* window) : _window{window}
+Input::Input(GLFWwindow* window)
 {
+    _window = window;
     glfwSetWindowUserPointer(_window, this);
     glfwSetKeyCallback(_window, Keyboard::HandleKeys);
     glfwSetMouseButtonCallback(_window, Mouse::HandleMouseButtonPressed);
@@ -39,8 +38,8 @@ void Input::HandleKeyPressed(
 }
 
 void Input::HandleMouseMove(
-    double x,
-    double y)
+    const double x,
+    const double y)
 {
     _mouse.HandleMouseMove(
         static_cast<float>(x),
@@ -48,8 +47,8 @@ void Input::HandleMouseMove(
 }
 
 void Input::Update(
-    float centerX,
-    float centerY)
+    const float centerX,
+    const float centerY)
 {
     _keyboard.Update();
     _mouse.Update(centerX, centerY);
