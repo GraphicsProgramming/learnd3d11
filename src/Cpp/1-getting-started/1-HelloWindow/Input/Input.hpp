@@ -4,7 +4,6 @@
 #include "Mouse.hpp"
 
 #include <cstdint>
-#include <memory>
 
 // ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
