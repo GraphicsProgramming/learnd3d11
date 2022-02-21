@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_items", "_items", "{315B24
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11-HelloWin32Window", "Cpp\1-getting-started\11-HelloWin32Window\11-HelloWin32Window.vcxproj", "{770B0840-9342-4AED-9C9B-80F5B53E0BF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,10 @@ Global
 		{664B6593-747C-4D41-AB59-0D0E792D0FA2}.Debug|x64.Build.0 = Debug|x64
 		{664B6593-747C-4D41-AB59-0D0E792D0FA2}.Release|x64.ActiveCfg = Release|x64
 		{664B6593-747C-4D41-AB59-0D0E792D0FA2}.Release|x64.Build.0 = Release|x64
+		{770B0840-9342-4AED-9C9B-80F5B53E0BF2}.Debug|x64.ActiveCfg = Debug|x64
+		{770B0840-9342-4AED-9C9B-80F5B53E0BF2}.Debug|x64.Build.0 = Debug|x64
+		{770B0840-9342-4AED-9C9B-80F5B53E0BF2}.Release|x64.ActiveCfg = Release|x64
+		{770B0840-9342-4AED-9C9B-80F5B53E0BF2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +51,7 @@ Global
 		{69E36221-7B54-4891-AB39-B9F2C5025815} = {0AC134D5-97CD-4724-A717-1C0C8EC76F05}
 		{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 		{664B6593-747C-4D41-AB59-0D0E792D0FA2} = {69E36221-7B54-4891-AB39-B9F2C5025815}
+		{770B0840-9342-4AED-9C9B-80F5B53E0BF2} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
