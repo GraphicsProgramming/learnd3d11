@@ -14,6 +14,9 @@ HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
 
 HelloTriangleApplication::~HelloTriangleApplication()
 {
+    _triangle.reset();
+    _pipeline.reset();
+    _dxContext.reset();
     Application::Cleanup();
 }
 
@@ -34,9 +37,9 @@ bool HelloTriangleApplication::Initialize()
     }
     _pipeline = std::make_unique<GraphicsPipeline>();
     if (!_dxContext->MakeGraphicsPipeline(
-        L"Assets/Shaders/Main.vs.hlsl",
-        L"Assets/Shaders/Main.ps.hlsl",
-        _pipeline.get()))
+            L"Assets/Shaders/Main.vs.hlsl",
+            L"Assets/Shaders/Main.ps.hlsl",
+            _pipeline.get()))
     {
         std::cout << "Failed to create graphics pipeline\n";
         Cleanup();
@@ -51,7 +54,10 @@ bool HelloTriangleApplication::Initialize()
         0u, 1u, 2u
     };
     _triangle = std::make_unique<StaticMesh>();
-    if (!_dxContext->MakeStaticMesh(std::move(vertices), std::move(indices), _triangle.get()))
+    if (!_dxContext->MakeStaticMesh(
+            std::move(vertices),
+            std::move(indices),
+            _triangle.get()))
     {
         std::cout << "Failed to create triangle mesh\n";
         Cleanup();

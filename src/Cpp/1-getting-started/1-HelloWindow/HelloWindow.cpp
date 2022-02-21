@@ -5,10 +5,16 @@
 #include <string>
 #include <GLFW/glfw3.h>
 
-HelloWindowApplication::HelloTriangleApplication(const std::string_view title)
+HelloWindowApplication::HelloWindowApplication(const std::string_view title)
     : Application(title)
 {
 }
+
+bool HelloWindowApplication::Initialize()
+{
+    Application::Initialize();
+}
+
 
 void HelloWindowApplication::Render()
 {
