@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-LRESULT WindowCallback(HWND, UINT, WPARAM, LPARAM)
+LRESULT CALLBACK WindowCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    return 0;
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 int main(int argc, char* argv[]) {
