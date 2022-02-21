@@ -67,8 +67,6 @@ For the LearnD3D11 tutorial series we will be using the following third party li
 
 # 0. Initial Setup
 
-!!! note
-
 ```todo
 either clone repo, open empty solution with project and empty main.cpp
 or explain how to create a project in VS, set it up so that it makes sense,
@@ -113,9 +111,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    const int32_t windowLeft = videoMode->width / 2 - _width / 2;
-    const int32_t windowTop = videoMode->height / 2 - _height / 2;
-    glfwSetWindowPos(_window, windowLeft, windowTop);
+    const int32_t windowLeft = videoMode->width / 2 - width / 2;
+    const int32_t windowTop = videoMode->height / 2 - height / 2;
+    glfwSetWindowPos(window, windowLeft, windowTop);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -170,9 +168,9 @@ This will tell `GLFW` to not scale the window in any way, should you have setup 
 `GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its name, but over the years it also supports other APIs not just OpenGL. Now since `GLFW` automatically create a context for OpenGL we can tell it not to do it via that window hint.
 
 ```cpp
-    const int32_t windowLeft = videoMode->width / 2 - _width / 2;
-    const int32_t windowTop = videoMode->height / 2 - _height / 2;
-    glfwSetWindowPos(_window, windowLeft, windowTop);
+    const int32_t windowLeft = videoMode->width / 2 - width / 2;
+    const int32_t windowTop = videoMode->height / 2 - height / 2;
+    glfwSetWindowPos(window, windowLeft, windowTop);
 ```
 
 Should be fairly obvious. We like centered windows.
@@ -200,13 +198,9 @@ Now we clean up any resource we created, such as the window itself and the GLFW 
 
 ## Initialize Direct3D
 
-!!! note
-
 ```todo
 show whole d3d11 code again, basically HelloTriangle, using ComPtr for the D3D11 pieces
 ```
-
-!!! note
 
 ```todo
 then walking throught he code again
@@ -215,8 +209,6 @@ then walking throught he code again
 ## Abstraction into Application & D3D11Context
 
 # 2. Graphics Pipeline
-
-!!! note
 
 ```todo
 explain in an overview fashion with pics what directx pipeline is, how it roughly works and what it means and can do
