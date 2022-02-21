@@ -26,7 +26,6 @@ void Application::Run()
         glfwPollEvents();
         Update();
         Render();
-        glfwSwapBuffers(_window);
     }
 }
 

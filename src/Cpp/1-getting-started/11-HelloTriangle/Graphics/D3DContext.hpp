@@ -2,9 +2,8 @@
 
 #include <dxgi.h>
 #include <d3d11.h>
-#include <d3dcompiler.h>
 
-#include <string_view>
+#include <vector>
 
 #include <wrl/client.h>
 
@@ -17,6 +16,13 @@ struct GraphicsPipeline
     Microsoft::WRL::ComPtr<ID3D11InputLayout> inpuLayout;
 };
 
+struct StaticMesh
+{
+    Microsoft::WRL::ComPtr<ID3D11Buffer> vertices;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> indices;
+    // TODO: Something else maybe...?
+};
+
 class D3DContext
 {
 public:
@@ -24,9 +30,18 @@ public:
 
     [[nodiscard]] bool Initialize(const Application&);
     [[nodiscard]] bool MakeGraphicsPipeline(
-        const wchar_t* vertexPath,
-        const wchar_t* pixelPath,
-        GraphicsPipeline& outPipeline) const;
+        const wchar_t*    vertexPath,
+        const wchar_t*    pixelPath,
+        GraphicsPipeline* outPipeline) const;
+    [[nodiscard]] bool MakeStaticMesh(
+        std::vector<float>&&    vertices,
+        std::vector<uint32_t>&& indices,
+        StaticMesh*             outMesh) const;
+
+    [[nodiscard]] ID3D11Device*           GetDevice();
+    [[nodiscard]] ID3D11DeviceContext*    GetDeviceContext();
+    [[nodiscard]] IDXGISwapChain*         GetSwapChain();
+    [[nodiscard]] ID3D11RenderTargetView* GetRenderTarget();
 
 private:
     // Order of initialization matters for automatic destruction in reverse order
@@ -37,6 +52,7 @@ private:
 #endif
     Microsoft::WRL::ComPtr<ID3D11DeviceContext>    _deviceContext  = nullptr;
     Microsoft::WRL::ComPtr<IDXGIFactory1>          _dxgiFactory    = nullptr;
+    // Not sure if I should create a SwapChain object to make things a little more organized or leave it as is
     Microsoft::WRL::ComPtr<IDXGISwapChain>         _swapChain      = nullptr;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _renderTarget   = nullptr;
 };

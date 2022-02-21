@@ -1,5 +1,7 @@
 #include "D3DContext.hpp"
 
+#include <d3dcompiler.h>
+
 #include <iostream>
 #include <cassert>
 #include <utility>
@@ -123,9 +125,9 @@ bool D3DContext::Initialize(const Application& application)
 }
 
 bool D3DContext::MakeGraphicsPipeline(
-    const wchar_t* vertexPath,
-    const wchar_t* pixelPath,
-    GraphicsPipeline& outPipeline) const
+    const wchar_t*    vertexPath,
+    const wchar_t*    pixelPath,
+    GraphicsPipeline* outPipeline) const
 {
     UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if !defined(NDEBUG)
@@ -204,8 +206,66 @@ bool D3DContext::MakeGraphicsPipeline(
     {
         std::cout << "D3D11: Failed to create default vertex input layout\n";
     }
-    outPipeline.vertexShader = std::move(vertexShader);
-    outPipeline.pixelShader = std::move(pixelShader);
-    outPipeline.inpuLayout = std::move(inputLayout);
+    outPipeline->vertexShader = std::move(vertexShader);
+    outPipeline->pixelShader = std::move(pixelShader);
+    outPipeline->inpuLayout = std::move(inputLayout);
     return true;
+}
+
+bool D3DContext::MakeStaticMesh(
+    std::vector<float>&&    vertices,
+    std::vector<uint32_t>&& indices,
+    StaticMesh*             outMesh) const
+{
+
+    ComPtr<ID3D11Buffer> vertexBuffer;
+    D3D11_BUFFER_DESC bufferInfo = {};
+    bufferInfo.ByteWidth = vertices.size() * sizeof(float);
+    bufferInfo.Usage = D3D11_USAGE_IMMUTABLE;
+    bufferInfo.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    D3D11_SUBRESOURCE_DATA resourceData = {};
+    resourceData.pSysMem = vertices.data();
+    if (FAILED(_device->CreateBuffer(
+        &bufferInfo,
+        &resourceData,
+        &vertexBuffer)))
+    {
+        std::cout << "D3D11: Failed to create vertex buffer\n";
+        return false;
+    }
+    bufferInfo.ByteWidth = indices.size() * sizeof(uint32_t);
+    bufferInfo.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    resourceData.pSysMem = indices.data();
+    ComPtr<ID3D11Buffer> indexBuffer;
+    if (FAILED(_device->CreateBuffer(
+        &bufferInfo,
+        &resourceData,
+        &indexBuffer)))
+    {
+        std::cout << "D3D11: Failed to create index buffer\n";
+        return false;
+    }
+    outMesh->vertices = std::move(vertexBuffer);
+    outMesh->indices = std::move(indexBuffer);
+    return true;
+}
+
+ID3D11Device* D3DContext::GetDevice()
+{
+    return _device.Get();
+}
+
+ID3D11DeviceContext* D3DContext::GetDeviceContext()
+{
+    return _deviceContext.Get();
+}
+
+IDXGISwapChain* D3DContext::GetSwapChain()
+{
+    return _swapChain.Get();
+}
+
+ID3D11RenderTargetView* D3DContext::GetRenderTarget()
+{
+    return _renderTarget.Get();
 }
