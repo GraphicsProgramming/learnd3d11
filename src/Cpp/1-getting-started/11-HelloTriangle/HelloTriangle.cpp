@@ -1,4 +1,4 @@
-#include "HelloWindow.hpp"
+#include "HelloTriangle.hpp"
 #include "Input/Input.hpp"
 
 #include <iostream>
@@ -10,9 +10,33 @@ HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
 {
 }
 
+bool HelloTriangleApplication::Initialize()
+{
+    // Uhhh this is a mess and should be cleaned up.
+    if (!Application::Initialize())
+    {
+        return false;
+    }
+    if (!_dxContext.Initialize(*this))
+    {
+        Cleanup();
+        return false;
+    }
+    if (!_dxContext.MakeGraphicsPipeline(
+        L"Assets/Shaders/Main.vs.hlsl",
+        L"Assets/Shaders/Main.ps.hlsl",
+        _pipeline))
+    {
+        Cleanup();
+        return false;
+    }
+    return true;
+}
+
+
 void HelloTriangleApplication::Render()
 {
-
+    
 }
 
 void HelloTriangleApplication::Update()

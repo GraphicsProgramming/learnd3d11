@@ -1,7 +1,10 @@
 #include "Application.hpp"
+#include "Graphics/D3DContext.hpp"
 #include "Input/Input.hpp"
 
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 Application::Application(const std::string_view title)
     : _input(nullptr), _window(nullptr), _width(0), _height(0), _title(title)
@@ -80,6 +83,21 @@ bool Application::IsKeyPressed(const std::int32_t key) const
 bool Application::IsKeyUp(const std::int32_t key) const
 {
     return _input->GetKeyboard().IsKeyUp(key);
+}
+
+HWND Application::GetWindowHandle() const
+{
+    return glfwGetWin32Window(_window);
+}
+
+int32_t Application::GetWindowWidth() const
+{
+    return _width;
+}
+
+int32_t Application::GetWindowHeight() const
+{
+    return _height;
 }
 
 bool Application::IsButtonPressed(const std::int32_t button) const
