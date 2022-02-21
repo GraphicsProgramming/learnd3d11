@@ -33,6 +33,7 @@ int main()
     {
         glfwPollEvents();
     }
+    glfwDestroyWindow(windowHandle);
     glfwTerminate();
     return 0;
 }
