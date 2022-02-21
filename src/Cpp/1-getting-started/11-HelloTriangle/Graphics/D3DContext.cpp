@@ -213,9 +213,9 @@ bool D3DContext::MakeGraphicsPipeline(
 }
 
 bool D3DContext::MakeStaticMesh(
-    std::vector<float>&&    vertices,
-    std::vector<uint32_t>&& indices,
-    StaticMesh*             outMesh) const
+    const std::vector<float>&    vertices,
+    const std::vector<uint32_t>& indices,
+    StaticMesh*                  outMesh) const
 {
 
     ComPtr<ID3D11Buffer> vertexBuffer;
@@ -250,22 +250,22 @@ bool D3DContext::MakeStaticMesh(
     return true;
 }
 
-ID3D11Device* D3DContext::GetDevice()
+ID3D11Device* D3DContext::GetDevice() const
 {
     return _device.Get();
 }
 
-ID3D11DeviceContext* D3DContext::GetDeviceContext()
+ID3D11DeviceContext* D3DContext::GetDeviceContext() const
 {
     return _deviceContext.Get();
 }
 
-IDXGISwapChain* D3DContext::GetSwapChain()
+IDXGISwapChain* D3DContext::GetSwapChain() const
 {
     return _swapChain.Get();
 }
 
-ID3D11RenderTargetView* D3DContext::GetRenderTarget()
+ID3D11RenderTargetView* D3DContext::GetRenderTarget() const
 {
     return _renderTarget.Get();
 }

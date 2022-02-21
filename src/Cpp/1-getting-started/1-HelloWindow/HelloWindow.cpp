@@ -12,13 +12,12 @@ HelloWindowApplication::HelloWindowApplication(const std::string_view title)
 
 bool HelloWindowApplication::Initialize()
 {
-    Application::Initialize();
+    return Application::Initialize();
 }
 
 
 void HelloWindowApplication::Render()
 {
-
 }
 
 void HelloWindowApplication::Update()

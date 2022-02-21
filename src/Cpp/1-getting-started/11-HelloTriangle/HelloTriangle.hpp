@@ -11,7 +11,7 @@ class HelloTriangleApplication final : public Application
 {
 public:
     HelloTriangleApplication(const std::string_view title);
-    ~HelloTriangleApplication();
+    ~HelloTriangleApplication() override;
     bool Initialize() override;
 
 protected:

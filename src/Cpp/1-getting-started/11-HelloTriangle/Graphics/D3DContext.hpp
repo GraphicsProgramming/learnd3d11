@@ -3,6 +3,7 @@
 #include <dxgi.h>
 #include <d3d11.h>
 
+#include <cstdint>
 #include <vector>
 
 #include <wrl/client.h>
@@ -34,14 +35,14 @@ public:
         const wchar_t*    pixelPath,
         GraphicsPipeline* outPipeline) const;
     [[nodiscard]] bool MakeStaticMesh(
-        std::vector<float>&&    vertices,
-        std::vector<uint32_t>&& indices,
-        StaticMesh*             outMesh) const;
+        const std::vector<float>&    vertices,
+        const std::vector<uint32_t>& indices,
+        StaticMesh*                  outMesh) const;
 
-    [[nodiscard]] ID3D11Device*           GetDevice();
-    [[nodiscard]] ID3D11DeviceContext*    GetDeviceContext();
-    [[nodiscard]] IDXGISwapChain*         GetSwapChain();
-    [[nodiscard]] ID3D11RenderTargetView* GetRenderTarget();
+    [[nodiscard]] ID3D11Device*           GetDevice() const;
+    [[nodiscard]] ID3D11DeviceContext*    GetDeviceContext() const;
+    [[nodiscard]] IDXGISwapChain*         GetSwapChain() const;
+    [[nodiscard]] ID3D11RenderTargetView* GetRenderTarget() const;
 
 private:
     // Order of initialization matters for automatic destruction in reverse order

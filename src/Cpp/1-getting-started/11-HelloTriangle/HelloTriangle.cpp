@@ -14,6 +14,8 @@ HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
 
 HelloTriangleApplication::~HelloTriangleApplication()
 {
+    _dxContext->GetDeviceContext()->Flush();
+
     _triangle.reset();
     _pipeline.reset();
     _dxContext.reset();
@@ -32,7 +34,6 @@ bool HelloTriangleApplication::Initialize()
     if (!_dxContext->Initialize(*this))
     {
         std::cout << "Failed to initialize D3D\n";
-        Cleanup();
         return false;
     }
     _pipeline = std::make_unique<GraphicsPipeline>();
@@ -42,25 +43,23 @@ bool HelloTriangleApplication::Initialize()
             _pipeline.get()))
     {
         std::cout << "Failed to create graphics pipeline\n";
-        Cleanup();
         return false;
     }
-    std::vector vertices = {
+    const std::vector vertices = {
          0.0f,  0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
         -0.5f, -0.5f, 0.0f,
     };
-    std::vector indices = {
+    const std::vector indices = {
         0u, 1u, 2u
     };
     _triangle = std::make_unique<StaticMesh>();
     if (!_dxContext->MakeStaticMesh(
-            std::move(vertices),
-            std::move(indices),
+            vertices,
+            indices,
             _triangle.get()))
     {
         std::cout << "Failed to create triangle mesh\n";
-        Cleanup();
         return false;
     }
     return true;
