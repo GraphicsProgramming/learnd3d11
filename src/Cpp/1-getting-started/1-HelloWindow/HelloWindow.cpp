@@ -5,17 +5,17 @@
 #include <string>
 #include <GLFW/glfw3.h>
 
-HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
+HelloWindowApplication::HelloTriangleApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-void HelloTriangleApplication::Render()
+void HelloWindowApplication::Render()
 {
 
 }
 
-void HelloTriangleApplication::Update()
+void HelloWindowApplication::Update()
 {
     if (IsKeyPressed(GLFW_KEY_ESCAPE))
     {

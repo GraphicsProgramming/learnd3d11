@@ -2,10 +2,10 @@
 
 #include "Application.hpp"
 
-class HelloTriangleApplication final : public Application
+class HelloWindowApplication final : public Application
 {
 public:
-    HelloTriangleApplication(const std::string_view title);
+    HelloWindowApplication(const std::string_view title);
 
 protected:
     void Update() override;
