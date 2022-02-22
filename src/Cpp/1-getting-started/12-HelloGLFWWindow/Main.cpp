@@ -2,39 +2,46 @@
 
 #include <iostream>
 
-static void CenterWindow(GLFWwindow* windowHandle)
-{
-    const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    int32_t currentWidth = 0;
-    int32_t currentHeight = 0;
-    glfwGetFramebufferSize(windowHandle, &currentWidth, &currentHeight);
-    glfwSetWindowPos(
-        windowHandle,
-        videoMode->width / 2 - currentWidth / 2,
-        videoMode->height / 2 - currentHeight / 2);
-}
-
-int main()
+int main(int argc, char* argv[])
 {
     if (!glfwInit())
     {
-        std::cout << "Failed to initialize GLFW\n";
+        std::cout << "GLFW: Unable to initialize\n";
         return -1;
     }
-    const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    const int32_t windowWidth = static_cast<int32_t>(videoMode->width * 0.9f);
-    const int32_t windowHeight = static_cast<int32_t>(videoMode->height * 0.9f);
-    const char* windowTitle = "LearnD3D11 - Hello GLFW Window";
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+    const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
+    const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
+
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
-    GLFWwindow* windowHandle = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
-    CenterWindow(windowHandle);
-    while (!glfwWindowShouldClose(windowHandle))
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(
+        width,
+        height,
+        "LearnD3D11 - Hello Window",
+        nullptr,
+        nullptr);
+    if (window == nullptr)
+    {
+        std::cout << "GLFW: Unable to create window\n";
+        glfwTerminate();
+        return -1;
+    }
+
+    const int32_t windowLeft = videoMode->width / 2 - width / 2;
+    const int32_t windowTop = videoMode->height / 2 - height / 2;
+    glfwSetWindowPos(window, windowLeft, windowTop);
+
+    while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+        // future update code
+        // future render code
     }
-    glfwDestroyWindow(windowHandle);
+
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
