@@ -8,9 +8,16 @@ LRESULT CALLBACK WindowCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-int main(int argc, char* argv[]) {
-    const int windowWidth = 1280;
-    const int windowHeight = 720;
+
+
+int main(int argc, char* argv[])
+{
+    const int32_t monitorWidth = GetSystemMetrics(SM_CXSCREEN);
+    const int32_t monitorHeight = GetSystemMetrics(SM_CYSCREEN);
+    const int32_t windowWidth = static_cast<int32_t>(monitorWidth * 0.9f);
+    const int32_t windowHeight = static_cast<int32_t>(monitorHeight * 0.9f);
+    const int32_t windowLeft = monitorWidth / 2 - windowWidth / 2;
+    const int32_t windowTop = monitorHeight / 2 - windowHeight / 2;
     const wchar_t* windowClassName = L"SampleWindowClass";
     const wchar_t* windowTitle = L"Learn D3D11 - Hello Win32 Window";
     const HMODULE currentInstance = GetModuleHandle(nullptr); // Equivalent to the first parameter in WinMain()
@@ -39,8 +46,8 @@ int main(int argc, char* argv[]) {
         windowClassName,
         windowTitle,
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
+        windowLeft,
+        windowTop,
         windowWidth,
         windowHeight,
         nullptr,
