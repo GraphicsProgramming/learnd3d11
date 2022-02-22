@@ -14,6 +14,12 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
+struct VertexFormat
+{
+    float vertex[3];
+    float color[3];
+};
+
 HelloD3D11Application::HelloD3D11Application(const std::string_view title)
     : Application(title)
 {
@@ -201,7 +207,8 @@ bool HelloD3D11Application::Initialize()
     }
     constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexFormat, vertex), D3D11_INPUT_PER_VERTEX_DATA, 0},
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexFormat, color), D3D11_INPUT_PER_VERTEX_DATA, 0},
     };
     if (FAILED(_device->CreateInputLayout(
         vertexInputLayoutInfo,
@@ -213,11 +220,12 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to create default vertex input layout\n";
     }
     // This section to create the vertex and index buffer of the triangle
-    const float vertices[] =
+    const VertexFormat vertices[] =
     {
-         0.0f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
+        //         Vertex                  Color
+        { {  0.0f,  0.5f, 0.0f }, { 0.25f, 0.39f, 0.19f } },
+        { {  0.5f, -0.5f, 0.0f }, { 0.44f, 0.75f, 0.35f } },
+        { { -0.5f, -0.5f, 0.0f }, { 0.38f, 0.55f, 0.20f } },
     };
     D3D11_BUFFER_DESC bufferInfo = {};
     bufferInfo.ByteWidth = sizeof vertices;
@@ -266,7 +274,7 @@ void HelloD3D11Application::Render()
     viewport.MaxDepth = 1.0f;
 
     const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    const UINT vertexStride = sizeof(float[3]);
+    const UINT vertexStride = sizeof(VertexFormat);
     const UINT vertexOffset = 0;
 
     _deviceContext->OMSetRenderTargets(1, &_renderTarget, nullptr);
