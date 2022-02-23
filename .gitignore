@@ -357,3 +357,6 @@ obj\
 
 # JetBrains's solution cache
 .idea\
+
+# Ignore MkDocks backup files
+.bak
