@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11-HelloWin32Window", "Cpp\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12-HelloGLFWWindow", "Cpp\1-getting-started\12-HelloGLFWWindow\12-HelloGLFWWindow.vcxproj", "{B346866B-007C-46C1-9596-70381D63AC1F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13-HelloD3D11", "Cpp\1-getting-started\13-HelloD3D11\13-HelloD3D11.vcxproj", "{95C49C81-9A68-4535-956F-0B6BC09CB77D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -49,6 +51,10 @@ Global
 		{B346866B-007C-46C1-9596-70381D63AC1F}.Debug|x64.Build.0 = Debug|x64
 		{B346866B-007C-46C1-9596-70381D63AC1F}.Release|x64.ActiveCfg = Release|x64
 		{B346866B-007C-46C1-9596-70381D63AC1F}.Release|x64.Build.0 = Release|x64
+		{95C49C81-9A68-4535-956F-0B6BC09CB77D}.Debug|x64.ActiveCfg = Debug|x64
+		{95C49C81-9A68-4535-956F-0B6BC09CB77D}.Debug|x64.Build.0 = Debug|x64
+		{95C49C81-9A68-4535-956F-0B6BC09CB77D}.Release|x64.ActiveCfg = Release|x64
+		{95C49C81-9A68-4535-956F-0B6BC09CB77D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{664B6593-747C-4D41-AB59-0D0E792D0FA2} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 		{770B0840-9342-4AED-9C9B-80F5B53E0BF2} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 		{B346866B-007C-46C1-9596-70381D63AC1F} = {69E36221-7B54-4891-AB39-B9F2C5025815}
+		{95C49C81-9A68-4535-956F-0B6BC09CB77D} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
