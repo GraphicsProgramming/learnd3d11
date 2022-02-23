@@ -185,6 +185,11 @@ without thinking about odd fractionals to manually scale the windowsize for any 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 ```
 
+`GLFW` was initially meant to support development of OpenGL based applications,
+hence the gl in its name, but over the years it also supports other APIs not just OpenGL.
+Now since `GLFW` automatically creates a context for OpenGL we can tell it not to do
+it via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
+
 ```cpp
     const GLFWwindow* window = glfwCreateWindow(
         width,
@@ -203,11 +208,6 @@ without thinking about odd fractionals to manually scale the windowsize for any 
 This piece actually creates the window, if everything goes well. We pass in desired window
 dimensions and a title, and call [glfwCreateWindow](https://www.glfw.org/docs/3.3/group__window.html#ga3555a418df92ad53f917597fe2f64aeb).
 Make sure to check the return value, window creation can fail.
-
-`GLFW` was initially meant to support development of OpenGL based applications,
-hence the gl in its name, but over the years it also supports other APIs not just OpenGL.
-Now since `GLFW` automatically creates a context for OpenGL we can tell it not to do
-it via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
 
 ```cpp
     const int32_t windowLeft = videoMode->width / 2 - width / 2;
