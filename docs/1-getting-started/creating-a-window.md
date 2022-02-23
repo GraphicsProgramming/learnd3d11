@@ -80,10 +80,7 @@ We can write a quick workaround to fix this specific issue: We check the current
 MSG msg;
 while(GetMessage(&msg,MainWindow,0,0))
 {
-  if(msg == WM_CLOSE))
-  {
-    break;
-  }
+  if(msg == WM_CLOSE)) break;
   TranslateMessage(&msg);
   DispatchMessage(&msg);
 }
@@ -122,6 +119,7 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR cmdArgs,
   MSG msg;
   while(GetMessage(&msg,MainWindow,0,0))
   {
+    if(msg == WM_CLOSE)) break;
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
