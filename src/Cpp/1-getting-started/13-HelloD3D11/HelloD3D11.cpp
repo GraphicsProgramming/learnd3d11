@@ -36,9 +36,12 @@ HelloD3D11Application::~HelloD3D11Application()
     _renderTarget->Release();
     _swapChain->Release();
     _dxgiFactory->Release();
-    _deviceContext->Release();
+#if !defined(NDEBUG)
     _debugInfoQueue->Release();
+    _debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
     _debug->Release();
+#endif
+    _deviceContext->Release();
     _device->Release();
     Application::Cleanup();
 }
@@ -121,7 +124,7 @@ bool HelloD3D11Application::Initialize()
     swapchainInfo.Windowed = true;
     swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     swapchainInfo.Flags = {};
-
+    
     if (FAILED(_dxgiFactory->CreateSwapChain(_device, &swapchainInfo, &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
