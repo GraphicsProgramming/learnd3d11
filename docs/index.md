@@ -453,8 +453,6 @@ spit up into a more logical piece of work, which will make our life easier as we
 
 # 2. Graphics Pipeline
 
-!!! error "explain in an overview fashion with pics what directx pipeline is,
-
-    how it roughly works and what it means and can do"
+!!! error "explain in an overview fashion with pics what directx pipeline is, how it roughly works and what it means and can do"
 
 ![basically this](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
