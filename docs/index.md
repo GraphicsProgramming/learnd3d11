@@ -240,8 +240,7 @@ to not to do that anymore because you closed the window for example ([glfwWindow
     return 0;
 ```
 
-Now we clean up the resources we have created, such as the window itself and
-the `GLFW` system. Then simply return to the OS, without any error.
+Now we clean up the resources we have created, such as the window itself and the `GLFW` system. Then simply return to the OS, without any error.
 
 [glfwDestroyWindow](https://www.glfw.org/docs/3.3/group__window.html#gacdf43e51376051d2c091662e9fe3d7b2) will obviously destroy the window and [glfwTerminate](https://www.glfw.org/docs/3.3/group__init.html#gaaae48c0a18607ea4a4ba951d939f0901) cleans up `GLFW`.
 
