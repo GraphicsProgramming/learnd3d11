@@ -67,12 +67,9 @@ For the LearnD3D11 tutorial series we will be using the following third party li
 
 # 0. Initial Setup
 
-```todo
-either clone repo, open empty solution with project and empty main.cpp
-or explain how to create a project in VS, set it up so that it makes sense,
-explain include/lib folders, how to set output folder and why Win32 is not
-an option really anymore either
-```
+!!! question "Prepare empty project, readily setup with GLFW-lib and user can copy paste single steps, or provide a ready to use project"
+
+!!! question "If explain how to setup empty project, with how to 'install GLFW' make screenshots"
 
 Assume we cloned the empty main, already setup with GLFW
 
@@ -144,7 +141,7 @@ C++ needs to know where all the definitions and declarations are coming from.
     }
 ```
 
-Pretty obvious, right? Try to initialize `GLFW`. If it fails to do so, let the user know and end the program, since there is no point in going further.
+Pretty obvious, right? `glfwInit` tries to initialize `GLFW`. If it fails to do so, let the user know and end the program, since there is no point in going further.
 
 ```cpp
     const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
@@ -153,7 +150,7 @@ Pretty obvious, right? Try to initialize `GLFW`. If it fails to do so, let the u
     const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 ```
 
-This piece of code grabs the main monitor's resolution, so that we can derive a window width and height from it - and it will look similar no matter what resolution you use.
+This piece of code grabs the main monitor via [glfwGetPrimaryMonitor](https://www.glfw.org/docs/3.3/group__monitor.html#gac3adb24947eb709e1874028272e5dfc5) and its current resolution with [glfwGetVideoMode](https://www.glfw.org/docs/3.3/group__monitor.html#gaba376fa7e76634b4788bddc505d6c9d5), so that we can derive a window width and height from it - and it will look similar no matter what resolution you use.
 
 ```cpp
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
@@ -165,7 +162,7 @@ This will tell `GLFW` to not scale the window in any way, should you have setup 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 ```
 
-`GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its name, but over the years it also supports other APIs not just OpenGL. Now since `GLFW` automatically create a context for OpenGL we can tell it not to do it via that window hint.
+`GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its name, but over the years it also supports other APIs not just OpenGL. Now since `GLFW` automatically creates a context for OpenGL we can tell it not to do it via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
 
 ```cpp
     const int32_t windowLeft = videoMode->width / 2 - width / 2;
@@ -173,7 +170,9 @@ This will tell `GLFW` to not scale the window in any way, should you have setup 
     glfwSetWindowPos(window, windowLeft, windowTop);
 ```
 
-Should be fairly obvious. We like centered windows.
+I like centered windows, but `GLFW` will not place the window in a centered fashion, because of that we try to do it ourselves here with the help of a bit of math
+and [glfwSetWindowPos](https://www.glfw.org/docs/3.3/group__window.html#ga1abb6d690e8c88e0c8cd1751356dbca8). It sets the window position in screen coordinates, specified by the
+top left corner of the window.
 
 ```cpp
     while (!glfwWindowShouldClose(window))
@@ -184,7 +183,8 @@ Should be fairly obvious. We like centered windows.
     }
 ```
 
-That is more or less the heart of your application, the mainloop. You could also call it game loop, since in here everything happens. From reading keyboard and mouse input, reacting to it, to telling the graphics card to put a frog on the screen. It will also keep doing it, until it gets signaled to not to do that anymore because you closed the window for example, or hit Escape and mapped Escape to close the window.
+That is more or less the heart of your application, the mainloop. You could also call it game loop, since in here everything happens. From reading keyboard and mouse input, reacting to it, to telling the graphics card to put a frog on the screen. It will keep doing it, until it gets signaled to not to do that anymore because you closed the window for example ([glfwWindowShouldClose](https://www.glfw.org/docs/3.3/group__window.html#ga24e02fbfefbb81fc45320989f8140ab5)), or hit Escape and mapped Escape to close the window.
+[glfwPollEvents](https://www.glfw.org/docs/3.3/group__window.html#ga37bd57223967b4211d60ca1a0bf3c832) will make sure that `GLFW` knows about all required events coming from the operating system.
 
 ```cpp
     glfwDestroyWindow(window);
@@ -192,7 +192,9 @@ That is more or less the heart of your application, the mainloop. You could also
     return 0;
 ```
 
-Now we clean up any resource we created, such as the window itself and the GLFW system. Then simply return to the OS, without any error.
+Now we clean up the resources we have created, such as the window itself and the `GLFW` system. Then simply return to the OS, without any error.
+
+[glfwDestroyWindow](https://www.glfw.org/docs/3.3/group__window.html#gacdf43e51376051d2c091662e9fe3d7b2) will obviously destroy the window and [glfwTerminate](https://www.glfw.org/docs/3.3/group__init.html#gaaae48c0a18607ea4a4ba951d939f0901) cleans up `GLFW`.
 
 When you start the program, you should see something like this
 
