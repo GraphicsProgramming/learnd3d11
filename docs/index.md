@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
     const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
@@ -162,7 +162,7 @@ Pretty obvious, right? [glfwInit](https://www.glfw.org/docs/3.3/group__init.html
 let the user know and end the program, since there is no point in going further.
 
 ```cpp
-    const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
     const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
@@ -281,8 +281,8 @@ protected:
     virtual void Cleanup();
     void Close();
     virtual bool Initialize();
-    virtual void Render() = 0;
-    virtual void Update() = 0;
+    virtual void Render();
+    virtual void Update();
 
 private:
     GLFWwindow* _window = nullptr;
@@ -366,6 +366,14 @@ bool Application::Initialize()
 
     return true;
 }
+
+void Application::Render()
+{
+}
+
+void Application::Update()
+{
+}
 ```
 
 ### Main.cpp
@@ -426,8 +434,8 @@ You probably have noticed that
 ```cpp
     virtual void Cleanup();
     virtual bool Initialize();
-    virtual void Render() = 0;
-    virtual void Update() = 0;
+    virtual void Render();
+    virtual void Update();
 ```
 
 all the protected method in `Application` are virtual, that's because we will be deriving from `Application`
