@@ -64,6 +64,14 @@ markdown_extensions:
       mode: view
   - pymdownx.betterem:
       smart_enable: all
+  - pymdownx.arithmatex:
+      generic: true
 nav:
   - Introduction: index.md
   - About: about.md
+  
+  
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
