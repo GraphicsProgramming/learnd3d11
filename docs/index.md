@@ -52,9 +52,9 @@ For the LearnD3D11 tutorial series we will be using the following third party li
 
 - [GLFW](https://www.glfw.org) It provides the window to render our things in, as well as input handling via mouse and keyboard. Yes there are also alternatives like `SDL2` for instance. It serves the same purpose, we just decided to go with `GLFW`. You might also wonder about "I want to do it myself, from scratch" then you really could do it yourself; but its the year 2022 by the time we are writing this thing and the problem of creating a window and handling input has been solved many times already, why reinvent the wheel. We have a link [here](DIYWinApi.md) to show how you could do it).
 
-- [DirectXMath](...link...) As part of the Windows SDK will be the math library we use
+- [DirectXMath](...link...) As it is part of the Windows SDK, this is the math library we will use.
 
-- [Assimp](www.assimp.org) Assimp provides facilities to load mesh files of various file formats
+- [Assimp](www.assimp.org) Assimp provides facilities to load mesh files of various file formats.
 
 - [dear IMGUI](https://github.com/ocornut/imgui) dear IMGUI is an easy to use immediate mode graphics user interface library, its widely used in the industry and we will be using it to display interactive options
 
