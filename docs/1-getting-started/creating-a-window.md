@@ -2,7 +2,13 @@
 
 Creating a window using the Windows API library (a.k.a. WINAPI32) can be achieved through the following steps:
 
-## 1.) Fill a window class structure (WNDCLASS)
+## 1.) Setup
+
+- Make sure you have the Windows SDK and DirectX SDK installed. You can install these SDKs by going to Visual Studio Installer.
+- Set the entry point function to `int WINAPI wWinMain(HINSTANCE,HINSTANCE,PWSTR,int)`. If you're using MSVC this can be done by setting the subsystem to `Windows`.
+
+
+## 2.) Fill a window class structure (WNDCLASS)
 
 ```cpp
 WNDCLASS wndClass = {};
@@ -21,7 +27,7 @@ Explanation for the structure fields:
 
 Note that custom cursors, application icons, and flags for this window can optionally be set here.
 
-## 2.) Register the window class
+## 3.) Register the window class
 
 We register a window class using the RegisterClass function.
 
@@ -35,7 +41,7 @@ if(RegisterClass(&wndClass) == 0)
 
 Most of the time it is safe to call RegisterClass without checking if the function failed.
 
-## 3.) Finally, create the window.
+## 4.) Finally, create the window.
 
 Functions are created using the CreateWindowEx or CreateWindow functions. CreateWindowEx has an extra parameter, namely the first one, that allows custom flags. For example you can create a window that allows dropping a file.
 
@@ -48,7 +54,7 @@ if(MainWindow == nullptr)
 }
 ```
 
-## 4.) It is required to write the message loop to keep our application running:
+## 5.) It is required to write the message loop to keep our application running:
 
 This loop keeps our application "alive". It handles the messages that are sent to our window.
 
@@ -68,6 +74,57 @@ Therefore we won't use the `WM_PAINT` message at all. We will still need to writ
 
 Unfortunately, we'll have to handle the WM_QUIT and WM_CLOSE messages to terminate the application process when the window is closed. Therefore closing the window when debugging won't close the application. It should be terminated using task manager for example.
 
-## 5.) You have created a window!
+We can write a quick workaround to fix this specific issue: We check the current message in the message loop. If a quit message is being present (namely WM_CLOSE) we'll stop the loop and terminate the program execution.
+
+```cpp
+MSG msg;
+while(GetMessage(&msg,MainWindow,0,0))
+{
+  if(msg == WM_CLOSE))
+  {
+    break;
+  }
+  TranslateMessage(&msg);
+  DispatchMessage(&msg);
+}
+```
+The `WM_CLOSE` message is sent when the window is closed, either by pressing the `X` button, by pressing `Alt+F4` or by closing the window in the taskbar.
+
+## 6.) You have created a window!
 
 This is the first step in creating a native DirectX application. In the next tutorial, you'll write the message handler function (`wndClass.lpfnWndProc`).
+
+## 7.) Full source code
+
+```cpp
+#include <Windows.h>
+
+INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR cmdArgs,int nShowCmd)
+{
+  WNDCLASS wndClass = {};
+  wndClass.hInstance = hInstance;
+  wndClass.lpfnWndProc = DefWindowProc;
+  wndClass.lpszClassName = TEXT("DirectXApplication_Tutorial");  
+  
+  if(RegisterClass(&wndClass) == 0) 
+  {
+    MessageBox(nullptr,TEXT("Cannot register the window class!"), TEXT("Error!"), MB_ICONERROR | MB_OK);
+    return -1;
+  }
+  
+  HWND MainWindow = CreateWindowEx(0, TEXT("DirectXApplication_Tutorial"), TEXT("Hello DirectX!"), WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 800, 600, nullptr, nullptr, hInstance, 0);
+  if(MainWindow == nullptr)
+  {
+    MessageBox(nullptr, TEXT("Cannot create the window!"), TEXT("Error"), MB_ICONERROR | MB_OK);
+    return -2;
+  }
+
+  MSG msg;
+  while(GetMessage(&msg,MainWindow,0,0))
+  {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+  
+  return 0; //Indicate to the operating system that we didn't have any errors or problems regarding exceptions, error codes, etc.
+}```
