@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
     }
 
     const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-    const GLFWvidMode* videoMode = glfwGetVideoMode(primaryMonitor);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
     const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 
@@ -148,7 +148,7 @@ Pretty obvious, right? Try to initialize `GLFW`. If it fails to do so, let the u
 
 ```cpp
     const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-    const GLFWvidMode* videoMode = glfwGetVideoMode(primaryMonitor);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
     const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 ```
@@ -194,24 +194,26 @@ That is more or less the heart of your application, the mainloop. You could also
 
 Now we clean up any resource we created, such as the window itself and the GLFW system. Then simply return to the OS, without any error.
 
+When you start the program, you should see something like this
+
+!!! error "Abstract current main into Application.cpp, explain Initialize/Update/Render/Cleanup
+
+!!! error "Add image to show HelloWindow in action"
+
+!!! error "Add Link to next chapter here"
+
 # 1. Hello Triangle
 
 ## Initialize Direct3D
 
-```todo
-show whole d3d11 code again, basically HelloTriangle, using ComPtr for the D3D11 pieces
-```
+!!! error "Show whole D3D11 code with Application"
 
-```todo
-then walking throught he code again
-```
+!!! error "Then walk through the code again"
 
 ## Abstraction into Application & D3D11Context
 
 # 2. Graphics Pipeline
 
-```todo
-explain in an overview fashion with pics what directx pipeline is, how it roughly works and what it means and can do
-```
+!!! error "explain in an overview fashion with pics what directx pipeline is, how it roughly works and what it means and can do"
 
 ![basically this](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
