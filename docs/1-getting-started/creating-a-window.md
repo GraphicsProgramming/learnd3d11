@@ -5,7 +5,7 @@ Creating a window using the Windows API library (a.k.a. WINAPI32) can be achieve
 ## 1.) Setup
 
 - Make sure you have the Windows SDK and DirectX SDK installed. You can install these SDKs by going to Visual Studio Installer.
-- Set the entry point function to `int WINAPI wWinMain(HINSTANCE,HINSTANCE,PWSTR,int)`. If you're using MSVC this can be done by setting the subsystem to `Windows`.
+- Set the entry point function to `int WINAPI wWinMain(HINSTANCE,HINSTANCE,PWSTR,int)`. If you're using MSVC this can be done by setting the subsystem to `Windows` (`/SUBSYSTEM:WINDOWS` compiler setting).
 
 
 ## 2.) Fill a window class structure (WNDCLASS)
@@ -72,19 +72,30 @@ Compiling this code with the subsystem set to windows (we must use wWinMain as t
 
 Therefore we won't use the `WM_PAINT` message at all. We will still need to write a message handler function to handle mouse and keyboard inputs for example...
 
-Unfortunately, we'll have to handle the WM_QUIT and WM_CLOSE messages to terminate the application process when the window is closed. Therefore closing the window when debugging won't close the application. It should be terminated using task manager for example.
+Unfortunately, we'll have to handle the WM_CLOSE message to terminate the application process when the window is closed. Therefore closing the window when debugging won't close the application. It should be terminated using task manager for example.
 
-We can write a quick workaround to fix this specific issue: We check the current message in the message loop. If a quit message is being present (namely WM_CLOSE) we'll stop the loop and terminate the program execution.
+We can write a quick workaround to fix this specific issue: We will have to replace `DefWindowProc` with our own function that handles `WM_CLOSE` and that also calls `DefWindowProc` after handling the messages.
 
+First we write our message handling function:
 ```cpp
-MSG msg;
-while(GetMessage(&msg,MainWindow,0,0))
+LRESULT WINAPI WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-  if(msg == WM_CLOSE)) break;
-  TranslateMessage(&msg);
-  DispatchMessage(&msg);
-}
+    switch(msg)
+    {
+        case WM_CLOSE:
+        {
+            exit(0);
+            break;
+        }
+    }
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}```
+
+Then we replace `wndClass.lpfnWndProc` with our function `WindowProc` so the line of code looks like this:
+```cpp
+wndClass.lpfnWndProc = WindowProc;
 ```
+
 The `WM_CLOSE` message is sent when the window is closed, either by pressing the `X` button, by pressing `Alt+F4` or by closing the window in the taskbar.
 
 ## 6.) You have created a window!
@@ -95,6 +106,19 @@ This is the first step in creating a native DirectX application. In the next tut
 
 ```cpp
 #include <Windows.h>
+
+LRESULT WINAPI WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch(msg)
+    {
+        case WM_CLOSE:
+        {
+            exit(0);
+            break;
+        }
+    }
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR cmdArgs,int nShowCmd)
 {
@@ -119,7 +143,6 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR cmdArgs,
   MSG msg;
   while(GetMessage(&msg,MainWindow,0,0))
   {
-    if(msg == WM_CLOSE)) break;
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
