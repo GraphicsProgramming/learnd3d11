@@ -17,10 +17,9 @@ public:
     ~HelloCOMApplication() override;
     bool Initialize() override;
 protected:
-    static void OnResize(
-        GLFWwindow* window,
-        int32_t     width,
-        int32_t     height);
+    void OnResize(
+        int32_t width,
+        int32_t height) override;
     void Update() override;
     void Render() override;
 private:

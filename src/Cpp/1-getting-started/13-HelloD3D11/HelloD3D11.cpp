@@ -5,6 +5,8 @@
 #include <GLFW/glfw3native.h>
 
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+#include <DirectXColors.h>
 
 #include <iostream>
 
@@ -14,10 +16,13 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-struct VertexFormat
+using Position = DirectX::XMFLOAT3;
+using Color = DirectX::XMFLOAT3;
+
+struct VertexPositionColor
 {
-    float vertex[3];
-    float color[3];
+    Position position;
+    Color color;
 };
 
 HelloD3D11Application::HelloD3D11Application(const std::string_view title)
@@ -60,14 +65,14 @@ bool HelloD3D11Application::Initialize()
         return false;
     }
     _dxgiFactory->MakeWindowAssociation(nativeWindow, 0);
-    constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL_11_0;
-    UINT deviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+    UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if !defined(NDEBUG)
-    deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
 #endif
     if (FAILED(D3D11CreateDevice(
         nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
+        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
         deviceFlags,
         &deviceFeatureLevel,
@@ -91,12 +96,12 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to get Debug Info Queue\n";
         return false;
     }
-    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_ERROR, true);
 
     D3D11_MESSAGE_ID hide[] =
     {
-        D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+        D3D11_MESSAGE_ID::D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
         // Add more message IDs here as needed
     };
 
@@ -107,21 +112,21 @@ bool HelloD3D11Application::Initialize()
     _debugInfoQueue->Release();
 #endif
 
-    DXGI_SWAP_CHAIN_DESC swapchainInfo;
+    DXGI_SWAP_CHAIN_DESC swapchainInfo = {};
     swapchainInfo.BufferDesc.Width = GetWindowWidth();
     swapchainInfo.BufferDesc.Height = GetWindowHeight();
     swapchainInfo.BufferDesc.RefreshRate.Numerator = 0;
     swapchainInfo.BufferDesc.RefreshRate.Denominator = 1;
-    swapchainInfo.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-    swapchainInfo.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-    swapchainInfo.BufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
+    swapchainInfo.BufferDesc.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
+    swapchainInfo.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    swapchainInfo.BufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_STRETCHED;
     swapchainInfo.SampleDesc.Count = 1;
     swapchainInfo.SampleDesc.Quality = 0;
     swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapchainInfo.BufferCount = 2;
     swapchainInfo.OutputWindow = nativeWindow;
     swapchainInfo.Windowed = true;
-    swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapchainInfo.Flags = {};
     
     if (FAILED(_dxgiFactory->CreateSwapChain(_device, &swapchainInfo, &_swapChain)))
@@ -209,8 +214,8 @@ bool HelloD3D11Application::Initialize()
     }
     constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexFormat, vertex), D3D11_INPUT_PER_VERTEX_DATA, 0},
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexFormat, color), D3D11_INPUT_PER_VERTEX_DATA, 0},
+        { "POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColor, position), D3D11_INPUT_PER_VERTEX_DATA, 0},
+        { "COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPositionColor, color), D3D11_INPUT_PER_VERTEX_DATA, 0},
     };
     if (FAILED(_device->CreateInputLayout(
         vertexInputLayoutInfo,
@@ -222,17 +227,16 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to create default vertex input layout\n";
     }
     // This section to create the vertex and index buffer of the triangle
-    const VertexFormat vertices[] =
+    const VertexPositionColor vertices[] =
     {
-        //         Vertex                  Color
-        { {  0.0f,  0.5f, 0.0f }, { 0.25f, 0.39f, 0.19f } },
-        { {  0.5f, -0.5f, 0.0f }, { 0.44f, 0.75f, 0.35f } },
-        { { -0.5f, -0.5f, 0.0f }, { 0.38f, 0.55f, 0.20f } },
+        { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
+        { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f } },
+        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f } },
     };
     D3D11_BUFFER_DESC bufferInfo = {};
-    bufferInfo.ByteWidth = sizeof vertices;
-    bufferInfo.Usage = D3D11_USAGE_IMMUTABLE;
-    bufferInfo.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bufferInfo.ByteWidth = sizeof(vertices);
+    bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
+    bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
     D3D11_SUBRESOURCE_DATA resourceData = {};
     resourceData.pSysMem = vertices;
     if (FAILED(_device->CreateBuffer(
@@ -247,8 +251,8 @@ bool HelloD3D11Application::Initialize()
     {
         0, 1, 2
     };
-    bufferInfo.ByteWidth = sizeof indices;
-    bufferInfo.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    bufferInfo.ByteWidth = sizeof(indices);
+    bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
     resourceData.pSysMem = indices;
     if (FAILED(_device->CreateBuffer(
         &bufferInfo,
@@ -276,18 +280,18 @@ void HelloD3D11Application::Render()
     viewport.MaxDepth = 1.0f;
 
     const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    const UINT vertexStride = sizeof(VertexFormat);
+    const UINT vertexStride = sizeof(VertexPositionColor);
     const UINT vertexOffset = 0;
 
-    _deviceContext->OMSetRenderTargets(1, &_renderTarget, nullptr);
-    _deviceContext->RSSetViewports(1, &viewport);
-    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    _deviceContext->IASetInputLayout(_vertexLayout);
-    _deviceContext->IASetIndexBuffer(_triangleIndices, DXGI_FORMAT_R32_UINT, 0);
-    _deviceContext->IASetVertexBuffers(0, 1, &_triangleVerts, &vertexStride, &vertexOffset);
-    _deviceContext->VSSetShader(_vertexShader, nullptr, 0);
-    _deviceContext->PSSetShader(_pixelShader, nullptr, 0);
     _deviceContext->ClearRenderTargetView(_renderTarget, clearColor);
+    _deviceContext->IASetInputLayout(_vertexLayout);
+    _deviceContext->IASetIndexBuffer(_triangleIndices, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
+    _deviceContext->IASetVertexBuffers(0, 1, &_triangleVerts, &vertexStride, &vertexOffset);
+    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    _deviceContext->VSSetShader(_vertexShader, nullptr, 0);
+    _deviceContext->RSSetViewports(1, &viewport);
+    _deviceContext->PSSetShader(_pixelShader, nullptr, 0);
+    _deviceContext->OMSetRenderTargets(1, &_renderTarget, nullptr);
     _deviceContext->DrawIndexed(3, 0, 0);
     _swapChain->Present(0, 0);
 }
