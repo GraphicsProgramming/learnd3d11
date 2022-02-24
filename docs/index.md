@@ -88,9 +88,12 @@ display interactive options
 
 Assume we cloned the empty main, already setup with `GLFW`
 
-## HelloWindow
+## The Window
 
-OK let's start with the whole example for a HelloWindow first
+Let's start with the whole example code for creating a simple window first. We use the GLFW library
+to create our window and as you can probably see, it's really not that much code. The following code
+opens a new blank window titled `"LearnD3D11 - Hello Window"` and will leave it open until you hit
+close.
 
 ```cpp
 #include <GLFW/glfw3.h>
@@ -142,67 +145,73 @@ int main(int argc, char* argv[])
 }
 ```
 
-Now let me explain what all these things mean.
+Now let's go over everything in that example in more detail.
 
 ```cpp
 #include <GLFW/glfw3.h>
 ```
 
-C++ needs to know where all the definitions and declarations are coming from.
+C++ needs to know where all the definitions and declarations are coming from. We therefore have
+to include the GLFW header so that everything we need is present in our source file.
 
 ```cpp
-    if (!glfwInit())
-    {
-        std::cout << "GLFW: Unable to initialize\n";
-        return -1;
-    }
+if (!glfwInit())
+{
+    std::cout << "GLFW: Unable to initialize\n";
+    return -1;
+}
 ```
 
-Pretty obvious, right? [glfwInit](https://www.glfw.org/docs/3.3/group__init.html#ga317aac130a235ab08c6db0834907d85e) tries to initialize `GLFW`. If it fails to do so,
-let the user know and end the program, since there is no point in going further.
+Pretty obvious, right? [glfwInit](https://www.glfw.org/docs/3.3/group__init.html#ga317aac130a235ab08c6db0834907d85e)
+tries to initialize `GLFW`. If it fails to do so, let the user know and end the program, since
+there is no point in going further.
 
 ```cpp
-    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-    const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
-    const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
+GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
+const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 ```
 
-This piece of code grabs the main monitor via [glfwGetPrimaryMonitor](https://www.glfw.org/docs/3.3/group__monitor.html#gac3adb24947eb709e1874028272e5dfc5) and
-its current resolution with [glfwGetVideoMode](https://www.glfw.org/docs/3.3/group__monitor.html#gaba376fa7e76634b4788bddc505d6c9d5),
-so that we can derive a window width and height from it - and it will look
-similar no matter what resolution you use. Size-wise it will be 90% fullscreen.
+This piece of code grabs the main monitor via [glfwGetPrimaryMonitor](https://www.glfw.org/docs/3.3/group__monitor.html#gac3adb24947eb709e1874028272e5dfc5)
+and its current resolution with [glfwGetVideoMode](https://www.glfw.org/docs/3.3/group__monitor.html#gaba376fa7e76634b4788bddc505d6c9d5),
+so that we can derive a window width and height from it - and it will look similar no matter what
+resolution you use. Size-wise it will cover 90% of your main monitor.
 
 ```cpp
-    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
+glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
 ```
 
-This will tell `GLFW` to not scale the window in any way, should you have setup a specific
-scaling other than 100% on your desktop. That will keep the windowsize at what we set it,
-without thinking about odd fractionals to manually scale the windowsize for any arbitrary scaling on your OS.
+This will tell `GLFW` to not scale the window in any way, should you have setup a specific scaling
+other than 100% on your desktop. That will keep the windowsize at what we set it, without thinking
+about odd fractionals to manually scale the windowsize for any arbitrary scaling on your OS.
 
 ```cpp
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 ```
 
-`GLFW` was initially meant to support development of OpenGL based applications,
-hence the gl in its name, but over the years it also supports other APIs not just OpenGL.
-Now since `GLFW` automatically creates a context for OpenGL we can tell it not to do
-it via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
+`GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its
+name, but over the years it also started to support other APIs and not just OpenGL. Now since `GLFW`
+automatically creates a context for OpenGL and we want to use DirectX, we will have to tell it to not
+to do so via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
+
+There are many other options one can define through glfwWindowHint which can be found [here](https://www.glfw.org/docs/3.3/group__window.html).
+Many of these options might be useful in your application, depending on what you want and how you
+want to design your window.
 
 ```cpp
-    const GLFWwindow* window = glfwCreateWindow(
-        width,
-        height,
-        "LearnD3D11 - Hello Window",
-        nullptr,
-        nullptr);
-    if (window == nullptr)
-    {
-        std::cout << "GLFW: Unable to create window\n";
-        glfwTerminate();
-        return -1;
-    }
+const GLFWwindow* window = glfwCreateWindow(
+    width,
+    height,
+    "LearnD3D11 - Hello Window",
+    nullptr,
+    nullptr);
+if (window == nullptr)
+{
+    std::cout << "GLFW: Unable to create window\n";
+    glfwTerminate();
+    return -1;
+}
 ```
 
 This piece actually creates the window, if everything goes well. We pass in desired window
@@ -210,21 +219,21 @@ dimensions and a title, and call [glfwCreateWindow](https://www.glfw.org/docs/3.
 Make sure to check the return value, window creation can fail.
 
 ```cpp
-    const int32_t windowLeft = videoMode->width / 2 - width / 2;
-    const int32_t windowTop = videoMode->height / 2 - height / 2;
-    glfwSetWindowPos(window, windowLeft, windowTop);
+const int32_t windowLeft = videoMode->width / 2 - width / 2;
+const int32_t windowTop = videoMode->height / 2 - height / 2;
+glfwSetWindowPos(window, windowLeft, windowTop);
 ```
 
 I like centered windows, but `GLFW` will not place the window in a centered fashion,
 because of that we try to do it ourselves here with the help of a bit of math and [glfwSetWindowPos](https://www.glfw.org/docs/3.3/group__window.html#ga1abb6d690e8c88e0c8cd1751356dbca8). It sets the window position in screen coordinates, specified by the top left corner of the window.
 
 ```cpp
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-        // future update code
-        // future render code
-    }
+while (!glfwWindowShouldClose(window))
+{
+    glfwPollEvents();
+    // future update code
+    // future render code
+}
 ```
 
 That is more or less the heart of your application, the mainloop.
@@ -235,9 +244,9 @@ to not to do that anymore because you closed the window for example ([glfwWindow
 [glfwPollEvents](https://www.glfw.org/docs/3.3/group__window.html#ga37bd57223967b4211d60ca1a0bf3c832) will make sure that `GLFW` knows about all required events coming from the operating system.
 
 ```cpp
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return 0;
+glfwDestroyWindow(window);
+glfwTerminate();
+return 0;
 ```
 
 Now we clean up the resources we have created, such as the window itself and
@@ -456,10 +465,10 @@ which are - for instance - put on display using the `Render` method.
 You probably have noticed that
 
 ```cpp
-    virtual void Cleanup();
-    virtual bool Initialize();
-    virtual void Render() = 0;
-    virtual void Update() = 0;
+virtual void Cleanup();
+virtual bool Initialize();
+virtual void Render() = 0;
+virtual void Update() = 0;
 ```
 
 all the protected method in `Application` are virtual, that's because we are deriving from `Application`
