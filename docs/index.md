@@ -279,10 +279,9 @@ public:
 
 protected:
     virtual void Cleanup();
-    void Close();
     virtual bool Initialize();
-    virtual void Render();
-    virtual void Update();
+    virtual void Render() = 0;
+    virtual void Update() = 0;
 
 private:
     GLFWwindow* _window = nullptr;
@@ -366,12 +365,37 @@ bool Application::Initialize()
 
     return true;
 }
+```
 
-void Application::Render()
+## HelloWindowApplication.hpp
+
+```cpp
+#include "Application.hpp"
+
+class HelloWindowApplication final : public Application
+{
+public:
+    HelloWindowApplication(const std::string_view title);
+
+protected:
+    void Render() override;
+    void Update() override;
+}
+```
+
+## HelloWindowApplication.cpp
+
+```cpp
+HelloWindowApplication::HelloWindowApplication(const std::string_view title)
+    : Application(title)
 {
 }
 
-void Application::Update()
+void HelloWindow::Update()
+{
+}
+
+void HelloWindow::Render()
 {
 }
 ```
@@ -381,12 +405,12 @@ void Application::Update()
 ```cpp
 int main(int argc, char* argv[])
 {
-    Application application;
+    HelloWindowApplication application;
     application.Run();
 }
 ```
 
-Let's start with `Main.cpp`. That's all its doing, creating the application and running it.
+Let's start with `Main.cpp`. That's all its doing, creating the hellowindow application and running it.
 In the future this can be accompanied by loading a configuration, initializing a logger,
 initiating a connection to a possible server server, or other stuff.
 
@@ -434,13 +458,13 @@ You probably have noticed that
 ```cpp
     virtual void Cleanup();
     virtual bool Initialize();
-    virtual void Render();
-    virtual void Update();
+    virtual void Render() = 0;
+    virtual void Update() = 0;
 ```
 
-all the protected method in `Application` are virtual, that's because we will be deriving from `Application`
-in the future and only focus on those four methods if required. We now dont have to deal with the mainloop
-anymore for the time being.
+all the protected method in `Application` are virtual, that's because we are deriving from `Application`
+in form of `HelloWindowApplication` and only focus on those four methods if required.
+We now dont have to deal with the mainloop anymore for the time being.
 
 If you run this example, you will still get the same window, same behaviour, only the code has been
 spit up into a more logical piece of work, which will make our life easier as we move on adding more, stuff.
