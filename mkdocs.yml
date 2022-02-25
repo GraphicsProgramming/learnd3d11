@@ -69,6 +69,8 @@ markdown_extensions:
       mode: view
   - pymdownx.betterem:
       smart_enable: all
+  - pymdownx.arithmatex:
+      generic: true
 nav:
 - Getting Started:
     - 1-introduction/1-1-getting-started/1-1-0-overview.md
@@ -97,3 +99,8 @@ nav:
     - 8-code/repository.md
 - License: license.md
 - About: about.md
+  
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
