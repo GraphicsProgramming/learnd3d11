@@ -8,8 +8,6 @@ LRESULT CALLBACK WindowCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-
-
 int main(int argc, char* argv[])
 {
     const int32_t monitorWidth = GetSystemMetrics(SM_CXSCREEN);

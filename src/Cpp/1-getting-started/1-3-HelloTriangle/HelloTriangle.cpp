@@ -1,4 +1,4 @@
-#include "HelloD3D11.hpp"
+#include "HelloTriangle.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -25,32 +25,31 @@ struct VertexPositionColor
     Color color;
 };
 
-HelloD3D11Application::HelloD3D11Application(const std::string_view title)
+HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-HelloD3D11Application::~HelloD3D11Application()
+HelloTriangleApplication::~HelloTriangleApplication()
 {
     _deviceContext->Flush();
-    _pixelShader->Release();
-    _vertexShader->Release();
-    _vertexLayout->Release();
-    _triangleIndices->Release();
-    _triangleVerts->Release();
-    _renderTarget->Release();
-    _swapChain->Release();
-    _dxgiFactory->Release();
+    _pixelShader.Reset();
+    _vertexShader.Reset();
+    _vertexLayout.Reset();
+    _triangleVerts.Reset();
+    _renderTarget.Reset();
+    _swapChain.Reset();
+    _dxgiFactory.Reset();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
-    _debug->Release();
+    _debug.Reset();
 #endif
-    _deviceContext->Release();
-    _device->Release();
+    _deviceContext.Reset();
+    _device.Reset();
     Application::Cleanup();
 }
 
-bool HelloD3D11Application::Initialize()
+bool HelloTriangleApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
@@ -59,7 +58,9 @@ bool HelloD3D11Application::Initialize()
     }
     const HWND nativeWindow = glfwGetWin32Window(GetWindow());
     // This section initializes DirectX's devices and SwapChain
-    if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&_dxgiFactory))))
+    if (FAILED(CreateDXGIFactory1(
+        __uuidof(IDXGIFactory1),
+        &_dxgiFactory)))
     {
         std::cout << "DXGI: Unable to create DXGIFactory\n";
         return false;
@@ -86,18 +87,22 @@ bool HelloD3D11Application::Initialize()
         return false;
     }
 #if !defined(NDEBUG)
-    if (FAILED(_device->QueryInterface(&_debug)))
+    if (FAILED(_device.As(&_debug)))
     {
         std::cout << "D3D11: Failed to get Device Debug Context\n";
         return false;
     }
-    if (FAILED(_debug->QueryInterface(&_debugInfoQueue)))
+    if (FAILED(_debug.As(&_debugInfoQueue)))
     {
         std::cout << "D3D11: Failed to get Debug Info Queue\n";
         return false;
     }
-    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-    _debugInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_ERROR, true);
+    _debugInfoQueue->SetBreakOnSeverity(
+        D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_CORRUPTION,
+        true);
+    _debugInfoQueue->SetBreakOnSeverity(
+        D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_ERROR,
+        true);
 
     D3D11_MESSAGE_ID hide[] =
     {
@@ -109,7 +114,7 @@ bool HelloD3D11Application::Initialize()
     filter.DenyList.NumIDs = _countof(hide);
     filter.DenyList.pIDList = hide;
     _debugInfoQueue->AddStorageFilterEntries(&filter);
-    _debugInfoQueue->Release();
+    _debugInfoQueue.Reset();
 #endif
 
     DXGI_SWAP_CHAIN_DESC swapchainInfo = {};
@@ -128,35 +133,42 @@ bool HelloD3D11Application::Initialize()
     swapchainInfo.Windowed = true;
     swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapchainInfo.Flags = {};
-    
-    if (FAILED(_dxgiFactory->CreateSwapChain(_device, &swapchainInfo, &_swapChain)))
+
+    if (FAILED(_dxgiFactory->CreateSwapChain(
+        _device.Get(),
+        &swapchainInfo,
+        &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
         return false;
     }
 
-    ID3D11Texture2D* backBuffer = nullptr;
-    if (FAILED(_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer))))
+    ComPtr<ID3D11Texture2D> backBuffer = nullptr;
+    if (FAILED(_swapChain->GetBuffer(
+        0,
+        __uuidof(ID3D11Texture2D),
+        &backBuffer)))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
-    if (FAILED(_device->CreateRenderTargetView(backBuffer, nullptr, &_renderTarget)))
+    if (FAILED(_device->CreateRenderTargetView(
+        backBuffer.Get(),
+        nullptr,
+        &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
-        backBuffer->Release();
         return false;
     }
-    backBuffer->Release();
     // This section reads and compiles both the vertex and pixel shaders
     UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if !defined(NDEBUG)
     compileFlags |= D3DCOMPILE_DEBUG;
 #endif
-    ID3D10Blob* vertexShaderBlob;
-    ID3D10Blob* pixelShaderBlob;
-    ID3D10Blob* errorBlob;
+    ComPtr<ID3D10Blob> vertexShaderBlob = nullptr;
+    ComPtr<ID3D10Blob> pixelShaderBlob = nullptr;
+    ComPtr<ID3D10Blob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
         L"Assets/Shaders/Main.vs.hlsl",
         nullptr,
@@ -193,7 +205,7 @@ bool HelloD3D11Application::Initialize()
         }
         return false;
     }
-    
+
     if (FAILED(_device->CreateVertexShader(
         vertexShaderBlob->GetBufferPointer(),
         vertexShaderBlob->GetBufferSize(),
@@ -247,29 +259,47 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
-    const uint32_t indices[] =
-    {
-        0, 1, 2
-    };
-    bufferInfo.ByteWidth = sizeof(indices);
-    bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
-    resourceData.pSysMem = indices;
-    if (FAILED(_device->CreateBuffer(
-        &bufferInfo,
-        &resourceData,
-        &_triangleIndices)))
-    {
-        std::cout << "D3D11: Failed to create index buffer\n";
-        return false;
-    }
     return true;
 }
 
-void HelloD3D11Application::Update()
+void HelloTriangleApplication::OnResize(int32_t width, int32_t height)
+{
+    Application::OnResize(width, height);
+    _deviceContext->Flush();
+    _renderTarget.Reset();
+    if (FAILED(_swapChain->ResizeBuffers(
+        0,
+        width,
+        height,
+        DXGI_FORMAT_B8G8R8A8_UNORM,
+        0)))
+    {
+        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        return;
+    }
+    ComPtr<ID3D11Texture2D> backBuffer = nullptr;
+    if (FAILED(_swapChain->GetBuffer(
+        0,
+        __uuidof(ID3D11Texture2D),
+        &backBuffer)))
+    {
+        std::cout << "D3D11: Failed to acquire back buffer from the SwapChain\n";
+        return;
+    }
+    if (FAILED(_device->CreateRenderTargetView(
+        backBuffer.Get(),
+        nullptr,
+        &_renderTarget)))
+    {
+        std::cout << "D3D11: Failed to create Render Target from the back buffer\n";
+    }
+}
+
+void HelloTriangleApplication::Update()
 {
 }
 
-void HelloD3D11Application::Render()
+void HelloTriangleApplication::Render()
 {
     D3D11_VIEWPORT viewport = {};
     viewport.TopLeftX = 0;
@@ -283,16 +313,32 @@ void HelloD3D11Application::Render()
     const UINT vertexStride = sizeof(VertexPositionColor);
     const UINT vertexOffset = 0;
 
-    _deviceContext->ClearRenderTargetView(_renderTarget, clearColor);
-    _deviceContext->IASetInputLayout(_vertexLayout);
-    _deviceContext->IASetIndexBuffer(_triangleIndices, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-    _deviceContext->IASetVertexBuffers(0, 1, &_triangleVerts, &vertexStride, &vertexOffset);
+    _deviceContext->ClearRenderTargetView(
+        _renderTarget.Get(),
+        clearColor);
+    _deviceContext->IASetInputLayout(_vertexLayout.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVerts.GetAddressOf(),
+        &vertexStride,
+        &vertexOffset);
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    _deviceContext->VSSetShader(_vertexShader, nullptr, 0);
-    _deviceContext->RSSetViewports(1, &viewport);
-    _deviceContext->PSSetShader(_pixelShader, nullptr, 0);
-    _deviceContext->OMSetRenderTargets(1, &_renderTarget, nullptr);
-    _deviceContext->DrawIndexed(3, 0, 0);
+    _deviceContext->VSSetShader(
+        _vertexShader.Get(),
+        nullptr,
+        0);
+    _deviceContext->RSSetViewports(
+        1,
+        &viewport);
+    _deviceContext->PSSetShader(
+        _pixelShader.Get(),
+        nullptr,
+        0);
+    _deviceContext->OMSetRenderTargets(
+        1,
+        _renderTarget.GetAddressOf(),
+        nullptr);
+    _deviceContext->Draw(3, 0);
     _swapChain->Present(0, 0);
 }
-

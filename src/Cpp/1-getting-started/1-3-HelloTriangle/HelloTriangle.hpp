@@ -8,13 +8,13 @@
 
 #include <string_view>
 
-class HelloCOMApplication final : public Application
+class HelloTriangleApplication final : public Application
 {
     template <typename T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
-    HelloCOMApplication(const std::string_view title);
-    ~HelloCOMApplication() override;
+    HelloTriangleApplication(const std::string_view title);
+    ~HelloTriangleApplication() override;
     bool Initialize() override;
 protected:
     void OnResize(
@@ -33,7 +33,6 @@ private:
     ComPtr<IDXGISwapChain>         _swapChain       = nullptr;
     ComPtr<ID3D11RenderTargetView> _renderTarget    = nullptr;
     ComPtr<ID3D11Buffer>           _triangleVerts   = nullptr;
-    ComPtr<ID3D11Buffer>           _triangleIndices = nullptr;
     ComPtr<ID3D11InputLayout>      _vertexLayout    = nullptr;
     ComPtr<ID3D11VertexShader>     _vertexShader    = nullptr;
     ComPtr<ID3D11PixelShader>      _pixelShader     = nullptr;
