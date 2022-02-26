@@ -10,6 +10,7 @@ then all you need is the following things installed
 ```bash
 pip install mkdocs
 pip install mkdocs-material
+pip install mkdocs-literal-nav
 ```
 
 Then you fork the repo, or when you have direct contribution access clone the repo as usual
