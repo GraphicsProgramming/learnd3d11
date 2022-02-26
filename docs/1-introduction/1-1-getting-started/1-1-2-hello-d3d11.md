@@ -16,6 +16,6 @@ title: Hello D3D11
 
 !!! error "explain in an overview fashion with pics what directx pipeline is"
 
-    how it roughly works and what it means and can do"
+    how it roughly works and what it means and can do
 
 ![basically this](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
