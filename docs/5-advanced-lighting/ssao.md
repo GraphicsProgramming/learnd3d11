@@ -1,1 +1,0 @@
-# Screen Space Ambient Occlusion
