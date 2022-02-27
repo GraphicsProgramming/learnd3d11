@@ -45,7 +45,9 @@ bool Application::Initialize()
     return true;
 }
 
-void Application::OnResize(int32_t width, int32_t height)
+void Application::OnResize(
+    const int32_t width,
+    const int32_t height)
 {
     _width = width;
     _height = height;
@@ -73,7 +75,10 @@ void Application::Run()
     }
 }
 
-void Application::HandleResize(GLFWwindow* window, int32_t width, int32_t height)
+void Application::HandleResize(
+    GLFWwindow* window,
+    const int32_t width,
+    const int32_t height)
 {
     Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
     application.OnResize(width, height);

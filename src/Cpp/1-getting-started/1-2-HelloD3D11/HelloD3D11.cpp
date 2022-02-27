@@ -33,11 +33,11 @@ HelloD3D11Application::HelloD3D11Application(const std::string_view title)
 HelloD3D11Application::~HelloD3D11Application()
 {
     _deviceContext->Flush();
-    _renderTarget.Reset();
+    DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
 #if !defined(NDEBUG)
-    _debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+    _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_SUMMARY);
     _debug.Reset();
 #endif
     _deviceContext.Reset();
@@ -52,7 +52,7 @@ bool HelloD3D11Application::Initialize()
     {
         return false;
     }
-    const HWND nativeWindow = glfwGetWin32Window(GetWindow());
+    _nativeWindow = glfwGetWin32Window(GetWindow());
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(
         __uuidof(IDXGIFactory1),
@@ -61,7 +61,7 @@ bool HelloD3D11Application::Initialize()
         std::cout << "DXGI: Unable to create DXGIFactory\n";
         return false;
     }
-    _dxgiFactory->MakeWindowAssociation(nativeWindow, 0);
+    _dxgiFactory->MakeWindowAssociation(_nativeWindow, 0);
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
     UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if !defined(NDEBUG)
@@ -125,11 +125,11 @@ bool HelloD3D11Application::Initialize()
     swapchainInfo.SampleDesc.Quality = 0;
     swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapchainInfo.BufferCount = 2;
-    swapchainInfo.OutputWindow = nativeWindow;
+    swapchainInfo.OutputWindow = _nativeWindow;
     swapchainInfo.Windowed = true;
     swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapchainInfo.Flags = {};
-    
+
     if (FAILED(_dxgiFactory->CreateSwapChain(
         _device.Get(),
         &swapchainInfo,
@@ -139,6 +139,16 @@ bool HelloD3D11Application::Initialize()
         return false;
     }
 
+    if (!CreateSwapchainResources())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool HelloD3D11Application::CreateSwapchainResources()
+{
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
         0,
@@ -157,40 +167,36 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
     }
+
     return true;
 }
 
-void HelloD3D11Application::OnResize(int32_t width, int32_t height)
+void HelloD3D11Application::DestroySwapchainResources()
+{
+    _renderTarget.Reset();
+}
+
+void HelloD3D11Application::OnResize(
+    const int32_t width,
+    const int32_t height)
 {
     Application::OnResize(width, height);
     _deviceContext->Flush();
-    _renderTarget.Reset();
+
+    DestroySwapchainResources();
+
     if (FAILED(_swapChain->ResizeBuffers(
         0,
         width,
         height,
-        DXGI_FORMAT_B8G8R8A8_UNORM,
+        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
         0)))
     {
         std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
         return;
     }
-    ComPtr<ID3D11Texture2D> backBuffer = nullptr;
-    if (FAILED(_swapChain->GetBuffer(
-        0,
-        __uuidof(ID3D11Texture2D),
-        &backBuffer)))
-    {
-        std::cout << "D3D11: Failed to acquire back buffer from the SwapChain\n";
-        return;
-    }
-    if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
-    {
-        std::cout << "D3D11: Failed to create Render Target from the back buffer\n";
-    }
+
+    CreateSwapchainResources();
 }
 
 void HelloD3D11Application::Update()
@@ -207,9 +213,7 @@ void HelloD3D11Application::Render()
     viewport.MinDepth = 0.0f;
     viewport.MaxDepth = 1.0f;
 
-    const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    const UINT vertexStride = sizeof(VertexPositionColor);
-    const UINT vertexOffset = 0;
+    constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     _deviceContext->ClearRenderTargetView(
         _renderTarget.Get(),
@@ -221,6 +225,6 @@ void HelloD3D11Application::Render()
         1,
         _renderTarget.GetAddressOf(),
         nullptr);
-    _swapChain->Present(0, 0);
+    _swapChain->Present(1, 0);
 }
 

@@ -18,18 +18,22 @@ public:
     bool Initialize() override;
 protected:
     void OnResize(
-        int32_t width,
-        int32_t height) override;
+        const int32_t width,
+        const int32_t height) override;
     void Update() override;
     void Render() override;
 private:
-    ComPtr<ID3D11Device>           _device          = nullptr;
+    bool CreateSwapchainResources();
+    void DestroySwapchainResources();
+
+    HWND _nativeWindow = nullptr;
+    ComPtr<ID3D11Device> _device = nullptr;
 #if !defined(NDEBUG)
-    ComPtr<ID3D11Debug>            _debug           = nullptr;
-    ComPtr<ID3D11InfoQueue>        _debugInfoQueue  = nullptr;
+    ComPtr<ID3D11Debug> _debug = nullptr;
+    ComPtr<ID3D11InfoQueue> _debugInfoQueue = nullptr;
 #endif
-    ComPtr<ID3D11DeviceContext>    _deviceContext   = nullptr;
-    ComPtr<IDXGIFactory1>          _dxgiFactory     = nullptr;
-    ComPtr<IDXGISwapChain>         _swapChain       = nullptr;
-    ComPtr<ID3D11RenderTargetView> _renderTarget    = nullptr;
+    ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
+    ComPtr<IDXGIFactory1> _dxgiFactory = nullptr;
+    ComPtr<IDXGISwapChain> _swapChain = nullptr;
+    ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
 };

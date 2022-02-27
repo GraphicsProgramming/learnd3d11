@@ -19,7 +19,7 @@ bool Application::Initialize()
         return false;
     }
 
-    GLFWmonitor* primaryMonitor  = glfwGetPrimaryMonitor();
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     _width  = static_cast<int32_t>(videoMode->width * 0.9f);
     _height = static_cast<int32_t>(videoMode->height * 0.9f);
@@ -32,20 +32,25 @@ bool Application::Initialize()
         _title.data(),
         nullptr,
         nullptr);
+
     if (_window == nullptr)
     {
         Cleanup();
         return false;
     }
+
     const int32_t windowLeft = videoMode->width / 2 - _width / 2;
-    const int32_t windowTop  = videoMode->height / 2 - _height / 2;
+    const int32_t windowTop = videoMode->height / 2 - _height / 2;
     glfwSetWindowPos(_window, windowLeft, windowTop);
+
     glfwSetWindowUserPointer(_window, this);
     glfwSetFramebufferSizeCallback(_window, HandleResize);
     return true;
 }
 
-void Application::OnResize(int32_t width, int32_t height)
+void Application::OnResize(
+    const int32_t width,
+    const int32_t height)
 {
     _width = width;
     _height = height;
@@ -56,7 +61,6 @@ void Application::Cleanup()
     glfwDestroyWindow(_window);
     glfwTerminate();
 }
-
 
 void Application::Run()
 {
@@ -73,7 +77,10 @@ void Application::Run()
     }
 }
 
-void Application::HandleResize(GLFWwindow* window, int32_t width, int32_t height)
+void Application::HandleResize(
+    GLFWwindow* window,
+    const int32_t width,
+    const int32_t height)
 {
     Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
     application.OnResize(width, height);
