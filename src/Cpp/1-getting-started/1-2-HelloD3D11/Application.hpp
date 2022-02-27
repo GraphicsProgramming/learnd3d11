@@ -4,6 +4,7 @@
 #include <cstdint>
 
 struct GLFWwindow;
+
 class Application
 {
 public:
@@ -14,11 +15,11 @@ public:
 protected:
     static void HandleResize(
         GLFWwindow* window,
-        int32_t width,
-        int32_t height);
+        const int32_t width,
+        const int32_t height);
     virtual void OnResize(
-        int32_t width,
-        int32_t height);
+        const int32_t width,
+        const int32_t height);
 
     virtual bool Initialize();
     virtual void Cleanup();

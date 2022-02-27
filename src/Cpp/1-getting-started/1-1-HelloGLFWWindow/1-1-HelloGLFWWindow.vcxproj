@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{de211e5c-4a95-4a67-9aa7-0a6ddba68d55}</ProjectGuid>
-    <RootNamespace>HelloWindow</RootNamespace>
+    <ProjectGuid>{d117bf69-ad4e-426d-8835-2e2e849e46d1}</ProjectGuid>
+    <RootNamespace>My11HelloGLFWWindow</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -90,19 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="HelloWindow.cpp" />
-    <ClCompile Include="Input\Input.cpp" />
-    <ClCompile Include="Input\Keyboard.cpp" />
-    <ClCompile Include="Input\Mouse.cpp" />
     <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Application.hpp" />
-    <ClInclude Include="HelloWindow.hpp" />
-    <ClInclude Include="Input\Input.hpp" />
-    <ClInclude Include="Input\Keyboard.hpp" />
-    <ClInclude Include="Input\Mouse.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

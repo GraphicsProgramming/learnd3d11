@@ -32,7 +32,10 @@ int main(int argc, char* argv[])
 
     const int32_t windowLeft = videoMode->width / 2 - width / 2;
     const int32_t windowTop = videoMode->height / 2 - height / 2;
-    glfwSetWindowPos(window, windowLeft, windowTop);
+    glfwSetWindowPos(
+        window,
+        windowLeft,
+        windowTop);
 
     while (!glfwWindowShouldClose(window))
     {

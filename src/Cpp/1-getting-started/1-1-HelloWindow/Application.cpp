@@ -50,14 +50,19 @@ bool Application::Initialize()
         return false;
     }
 
-    const auto primaryMonitor = glfwGetPrimaryMonitor();
-    const auto videoMode = glfwGetVideoMode(primaryMonitor);
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     _width = static_cast<int32_t>(videoMode->width * 0.9f);
     _height = static_cast<int32_t>(videoMode->height * 0.9f);
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    _window = glfwCreateWindow(_width, _height, _title.data(), nullptr, nullptr);
+    _window = glfwCreateWindow(
+        _width,
+        _height,
+        _title.data(),
+        nullptr,
+        nullptr);
     if (_window == nullptr)
     {
         Cleanup();
@@ -67,7 +72,10 @@ bool Application::Initialize()
 
     const int32_t windowLeft = videoMode->width / 2 - _width / 2;
     const int32_t windowTop = videoMode->height / 2 - _height / 2;
-    glfwSetWindowPos(_window, windowLeft, windowTop);
+    glfwSetWindowPos(
+        _window,
+        windowLeft,
+        windowTop);
 
     return true;
 }

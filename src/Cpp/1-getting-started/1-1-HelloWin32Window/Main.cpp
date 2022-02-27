@@ -3,12 +3,14 @@
 
 #include <iostream>
 
-LRESULT CALLBACK WindowCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WindowCallback(
+    HWND hWnd,
+    UINT uMsg,
+    WPARAM wParam,
+    LPARAM lParam)
 {
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
-
-
 
 int main(int argc, char* argv[])
 {
