@@ -16,15 +16,6 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-using Position = DirectX::XMFLOAT3;
-using Color = DirectX::XMFLOAT3;
-
-struct VertexPositionColor
-{
-    Position position;
-    Color color;
-};
-
 HelloD3D11Application::HelloD3D11Application(const std::string_view title)
     : Application(title)
 {
