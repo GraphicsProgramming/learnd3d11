@@ -6,7 +6,6 @@
 
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
-#include <DirectXColors.h>
 
 #include <iostream>
 
@@ -27,10 +26,6 @@ HelloD3D11Application::~HelloD3D11Application()
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-#if !defined(NDEBUG)
-    _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_SUMMARY);
-    _debug.Reset();
-#endif
     _deviceContext.Reset();
     _device.Reset();
     Application::Cleanup();
@@ -43,7 +38,7 @@ bool HelloD3D11Application::Initialize()
     {
         return false;
     }
-    _nativeWindow = glfwGetWin32Window(GetWindow());
+
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(
         __uuidof(IDXGIFactory1),
@@ -52,12 +47,9 @@ bool HelloD3D11Application::Initialize()
         std::cout << "DXGI: Unable to create DXGIFactory\n";
         return false;
     }
-    _dxgiFactory->MakeWindowAssociation(_nativeWindow, 0);
+
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
     UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-#if !defined(NDEBUG)
-    deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
-#endif
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -73,36 +65,6 @@ bool HelloD3D11Application::Initialize()
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
-#if !defined(NDEBUG)
-    if (FAILED(_device.As(&_debug)))
-    {
-        std::cout << "D3D11: Failed to get Device Debug Context\n";
-        return false;
-    }
-    if (FAILED(_debug.As(&_debugInfoQueue)))
-    {
-        std::cout << "D3D11: Failed to get Debug Info Queue\n";
-        return false;
-    }
-    _debugInfoQueue->SetBreakOnSeverity(
-        D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_CORRUPTION,
-        true);
-    _debugInfoQueue->SetBreakOnSeverity(
-        D3D11_MESSAGE_SEVERITY::D3D11_MESSAGE_SEVERITY_ERROR,
-        true);
-
-    D3D11_MESSAGE_ID hide[] =
-    {
-        D3D11_MESSAGE_ID::D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
-        // Add more message IDs here as needed
-    };
-
-    D3D11_INFO_QUEUE_FILTER filter = {};
-    filter.DenyList.NumIDs = _countof(hide);
-    filter.DenyList.pIDList = hide;
-    _debugInfoQueue->AddStorageFilterEntries(&filter);
-    _debugInfoQueue.Reset();
-#endif
 
     DXGI_SWAP_CHAIN_DESC swapchainInfo = {};
     swapchainInfo.BufferDesc.Width = GetWindowWidth();
@@ -116,7 +78,7 @@ bool HelloD3D11Application::Initialize()
     swapchainInfo.SampleDesc.Quality = 0;
     swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapchainInfo.BufferCount = 2;
-    swapchainInfo.OutputWindow = _nativeWindow;
+    swapchainInfo.OutputWindow = glfwGetWin32Window(GetWindow());
     swapchainInfo.Windowed = true;
     swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapchainInfo.Flags = {};

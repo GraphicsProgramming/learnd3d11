@@ -15,23 +15,20 @@ class HelloD3D11Application final : public Application
 public:
     HelloD3D11Application(const std::string_view title);
     ~HelloD3D11Application() override;
-    bool Initialize() override;
+
 protected:
+    bool Initialize() override;
     void OnResize(
         const int32_t width,
         const int32_t height) override;
     void Update() override;
     void Render() override;
+
 private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-    HWND _nativeWindow = nullptr;
     ComPtr<ID3D11Device> _device = nullptr;
-#if !defined(NDEBUG)
-    ComPtr<ID3D11Debug> _debug = nullptr;
-    ComPtr<ID3D11InfoQueue> _debugInfoQueue = nullptr;
-#endif
     ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     ComPtr<IDXGIFactory1> _dxgiFactory = nullptr;
     ComPtr<IDXGISwapChain> _swapChain = nullptr;

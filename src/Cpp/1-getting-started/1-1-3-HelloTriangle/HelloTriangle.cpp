@@ -52,7 +52,7 @@ bool HelloTriangleApplication::Initialize()
     {
         return false;
     }
-    _nativeWindow = glfwGetWin32Window(GetWindow());
+
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(
         __uuidof(IDXGIFactory1),
@@ -61,7 +61,7 @@ bool HelloTriangleApplication::Initialize()
         std::cout << "DXGI: Unable to create DXGIFactory\n";
         return false;
     }
-    _dxgiFactory->MakeWindowAssociation(_nativeWindow, 0);
+
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
     UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
     if (FAILED(D3D11CreateDevice(
@@ -92,7 +92,7 @@ bool HelloTriangleApplication::Initialize()
     swapchainInfo.SampleDesc.Quality = 0;
     swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapchainInfo.BufferCount = 2;
-    swapchainInfo.OutputWindow = _nativeWindow;
+    swapchainInfo.OutputWindow = glfwGetWin32Window(GetWindow());
     swapchainInfo.Windowed = true;
     swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapchainInfo.Flags = {};
