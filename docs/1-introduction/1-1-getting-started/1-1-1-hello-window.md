@@ -1,18 +1,8 @@
 # Hello Window
 
-!!! error "Provide Link to HelloEmpty project"
+!!! note
 
-    Project contains all the libs necessary (GLFW,assimp,$IMAGE_LIB)
-    Main.cpp only contains
-
-    ```cpp
-    int main(int argc, char* argv[])
-    {
-        return 0;
-    }
-    ```
-
-    But can be compiled and runs
+    If you want to try to follow this series without downloading the full source, you can try [this](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-0-Empty) empty project, it has been setup already with all the include directories and libraries you will need throughout the whole series!
 
 [Link to the full source code](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-1-HelloWindow)
 
