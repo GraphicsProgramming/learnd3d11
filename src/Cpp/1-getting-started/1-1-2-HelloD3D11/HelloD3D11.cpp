@@ -180,4 +180,3 @@ void HelloD3D11Application::Render()
         nullptr);
     _swapChain->Present(1, 0);
 }
-
