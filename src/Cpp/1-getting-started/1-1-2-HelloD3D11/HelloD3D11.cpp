@@ -66,26 +66,26 @@ bool HelloD3D11Application::Initialize()
         return false;
     }
 
-    DXGI_SWAP_CHAIN_DESC swapchainInfo = {};
-    swapchainInfo.BufferDesc.Width = GetWindowWidth();
-    swapchainInfo.BufferDesc.Height = GetWindowHeight();
-    swapchainInfo.BufferDesc.RefreshRate.Numerator = 0;
-    swapchainInfo.BufferDesc.RefreshRate.Denominator = 1;
-    swapchainInfo.BufferDesc.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
-    swapchainInfo.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-    swapchainInfo.BufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_STRETCHED;
-    swapchainInfo.SampleDesc.Count = 1;
-    swapchainInfo.SampleDesc.Quality = 0;
-    swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapchainInfo.BufferCount = 2;
-    swapchainInfo.OutputWindow = glfwGetWin32Window(GetWindow());
-    swapchainInfo.Windowed = true;
-    swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swapchainInfo.Flags = {};
+    DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
+    swapChainDescriptor.Width = GetWindowWidth();
+    swapChainDescriptor.Height = GetWindowHeight();
+    swapChainDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
+    swapChainDescriptor.SampleDesc.Count = 1;
+    swapChainDescriptor.SampleDesc.Quality = 0;
+    swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDescriptor.BufferCount = 2;
+    swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDescriptor.Flags = {};
 
-    if (FAILED(_dxgiFactory->CreateSwapChain(
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
+    swapChainFullscreenDescriptor.Windowed = true;
+
+    if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
         _device.Get(),
-        &swapchainInfo,
+        glfwGetWin32Window(GetWindow()),
+        &swapChainDescriptor,
+        &swapChainFullscreenDescriptor,
+        nullptr,
         &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
