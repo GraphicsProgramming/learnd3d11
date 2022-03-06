@@ -159,7 +159,7 @@ Lets go in to `Initialize`
 
 ```cpp
 if (!Application::Initialize())
-{
+{ 
     return false;
 }
 
@@ -284,9 +284,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
 }
 ```
 
-When we render things we render to a buffer, or texture to be exact, which you can picture as a buffer which holds color information. Swapchain is a container to manage those buffers we want to present on screen.
-
-Since we want to render into one of them, we need to grab the texture from the swapchain's main buffer (index 0), from that texture we also want to create a RenderTargetView (or RTV for short), which specifies the subresource of the texture that we will be drawing to. We wont keep the actual texture around, we just need the render target view, which we will refer to as render target.
+When we render things, the GPU simply writes color values to a texture, which you can picture as a buffer which holds color information Swapchain is a container to manage those buffers we want to present on screen. To do that we have to create a special kind of texture called a "Render Target View" or an RTV. First off we have to grab a texture from the swapchain's main buffer (index 0), from that texture, we now have create an RTV from that, which specifies the subresource of the texture that we will be drawing to. We wont keep the actual texture around, we just need the render target view, which we will refer to as render target.
 
 ```cpp
 void HelloD3D11Application::DestroySwapchainResources()
@@ -359,7 +357,7 @@ We just set it up so that we tell `D3D11` that we want to render into the render
 
 We also have to specify an area in form of a rectangle, in this case, its equivalent to the window size.
 
-Last but not least, we Present the content of the swapchain to the window, using [`Present`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present).
+Last but not least, we Present the content of the swapchain to the window, using [`Present`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present). The first argument defines which vblanks to synchronize with presentation, 0 means: no synchronization (unlimited FPS), 1 means: sync every vblank (regular v-sync), 2 means: sync every other vblank and so on.
 
 `Application` also defines an abstract method `Update` which we have to define here as well, so we will add:
 
