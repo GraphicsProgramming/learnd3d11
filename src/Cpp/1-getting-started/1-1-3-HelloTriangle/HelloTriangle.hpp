@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dxgi.h>
+#include <dxgi1_3.h>
 #include <d3d11.h>
 #include <wrl.h>
 
@@ -34,8 +34,8 @@ private:
     ComPtr<ID3D11InfoQueue> _debugInfoQueue = nullptr;
 #endif
     ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
-    ComPtr<IDXGIFactory1> _dxgiFactory = nullptr;
-    ComPtr<IDXGISwapChain> _swapChain = nullptr;
+    ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
+    ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
     ComPtr<ID3D11Buffer> _triangleVertices = nullptr;
     ComPtr<ID3D11InputLayout> _vertexLayout = nullptr;
