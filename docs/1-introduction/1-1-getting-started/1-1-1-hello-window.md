@@ -291,7 +291,7 @@ bool Application::Initialize()
         return false;
     }
 
-    const GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
     _width = static_cast<int32_t>(videoMode->width * 0.9f);
     _height = static_cast<int32_t>(videoMode->height * 0.9f);
