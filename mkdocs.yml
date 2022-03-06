@@ -31,6 +31,7 @@ theme:
     - navigation.sections
 plugins:
   - search
+  - mermaid2
   - literate-nav:
       nav_file: nav.md
 extra:

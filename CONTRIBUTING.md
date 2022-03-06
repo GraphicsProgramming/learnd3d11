@@ -11,6 +11,7 @@ then all you need is the following things installed
 pip install mkdocs
 pip install mkdocs-material
 pip install mkdocs-literal-nav
+pip install mkdocs-mermaid2-plugin
 ```
 
 Then you fork the repo, or when you have direct contribution access clone the repo as usual
