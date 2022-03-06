@@ -10,7 +10,7 @@ then all you need is the following things installed
 ```bash
 pip install mkdocs
 pip install mkdocs-material
-pip install mkdocs-literal-nav
+pip install mkdocs-literate-nav
 pip install mkdocs-mermaid2-plugin
 ```
 

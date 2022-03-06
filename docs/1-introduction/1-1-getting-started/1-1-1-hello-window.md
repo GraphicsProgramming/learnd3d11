@@ -14,9 +14,7 @@
 
     But can be compiled and runs
 
-!!! error "Provide Link to HelloWindow project"
-
-    Project contains all the code to get up and running with a working window via glfw
+[Link to the full source code](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-1-HelloWindow)
 
 Let's start with the whole example code for creating a simple window first. We use the GLFW library
 to create our window and as you can probably see, it's really not that much code. The following code
@@ -43,7 +41,7 @@ int main(int argc, char* argv[])
 
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	const GLFWwindow* window = glfwCreateWindow(
+	GLFWwindow* window = glfwCreateWindow(
 		width,
 		height,
 		"LearnD3D11 - Hello Window",
@@ -128,7 +126,7 @@ Many of these options might be useful in your application, depending on what you
 want to design your window.
 
 ```cpp
-const GLFWwindow* window = glfwCreateWindow(
+GLFWwindow* window = glfwCreateWindow(
     width,
     height,
     "LearnD3D11 - Hello Window",
@@ -188,12 +186,24 @@ cleans up `GLFW`.
 
 When you start the program, you should see something like this.
 
-!!! error "Add image to show HelloWindow in action"
+![](../../images/1-1-1-hello-window-1.png)
 
-!!! error "Explain why we chose `GLFW`"
+!!! note "Why GLFW?"
+    
+    We have decided to include GLFW to manage our window (and later input) 
+    because it is a very simple library, ready to use and above all, because of 
+    consistency, plenty of other resources use GLFW, so it should be easier to 
+    transfer the knowledge you will gain here elsewhere.
 
-    Easy and ready to use, widely used amongst graphics programmers, there are alternatives
-    such as SDL2 (possibly link to HelloSDL2) or if you wanted native platform code (link to HelloWin32)
+    There are other libraries, which handle windowing and input (amongst other things) out there as well, here are a few to choose from:
+
+    - [SDL2](https://www.libsdl.org)
+    - [SFML](https://www.sfml-dev.org)
+
+    You could also write all that using the native functions and constructs the OS provides, on windows it would be WinAPI, and although it is old and not necessary to do all the heavylifting yourself, a lot of Microsoft's own guides rely on the WinAPI so we [have an example](Link to Win32) on that. We will not be covering any other Win32 topics, unless it is explicitly required 
+
+    You are probably going to continue writing your own engine after this tutorial and might decide to support more platforms, other than just windows, then this is already covered by `GLFW`.
+   
 
 ## First abstraction
 
@@ -410,10 +420,10 @@ virtual void Render() = 0;
 virtual void Update() = 0;
 ```
 
-If you run this example, you will still get the same window, same behaviour, only the code has been
+If you run this example, you will still get the same window as shown below, same behaviour, only the code has been
 spit up into a more logical piece of work, which will make our life easier as we move on adding more
 and more.
 
-!!! error "Add screenshot of running window here"
+![](../../images/1-1-1-hello-window-1.png)
 
-!!! error "Add Link to next chapter here"
+[Next chapter](../1-1-2-hello-d3d11/)
