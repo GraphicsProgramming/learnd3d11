@@ -109,8 +109,13 @@ void HelloD3D11Application::Render()
 #include <DirectXMath.h>
 ```
 
-We need to include the following headers.
+We need to include the following headers, here's what each of these headers includes:
 
+- `d3d11.h`: The core of D3D11, it contains all the ID3D11XXX types and most of the enums we will be using with D3D11
+- `dxgi.h`: The core of DXGI, it contains all the IDXGIXXX types and additional enums that are required for DXGI structures
+- `d3dcompiler.h`: Contains all the functions necessary to compiler our HLSL shaders into bytecode that will be fed into the GPU
+- `DirectXMath.h`: DirectX's own math library, it contains all the types and math functions we will be using throughout the series
+- `wrl.h`: Is used for `Microsoft::WRL::ComPtr<T>`, to manage COM resources automatically.
 ```cpp
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -119,12 +124,14 @@ We need to include the following headers.
 #pragma comment(lib, "dxguid.lib")
 ```
 
-We need to link with these libraries, put them in `HelloD3D11.cpp` right below the includes.
+Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma` in `HelloD3D11.cpp` right below the includes.
 
 ```cpp
 template <typename T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 ```
+
+Since the namespace name for ComPtr<T> is quite long, we are making a type alias like this.
 
 ```cpp
 ComPtr<IDXGIFactory1> _dxgiFactory = nullptr;
@@ -144,7 +151,7 @@ You might have noticed that we are not using raw pointers for those pieces, but 
 
 `IDXGISwapChain` The aforementioned surface, which stores rendered data which it can present to an output (or screen).
 
-`ID3D11RenderTargetView` ...
+`ID3D11RenderTargetView` Is a fancy pointer to a texture, this tells D3D11 that the texture this points to, is drawable within the subresource of the referenced texture
 
 `DXGI` stands for DirectX Graphics Infrastructure, in case you are wondering.
 
@@ -194,8 +201,7 @@ if (FAILED(D3D11CreateDevice(
 This block is the the entry point into D3D11, where we ask for a device and its device context to be created. The input parameters are:
 
 We want a LEVEL_11_0, hardware accelerated device, which has support for a specific color format.
-
-!!! error "Explain feature levels?"
+Feature levels are a concept that has been introduced with D3D11, it is a way to specify which set of features we would like to use. Each GPU may support different feature levels (for example a very old GPU might only support LEVEL_9_1, while a more modern one may support every feature level up to, and including LEVEL_11_0), this is a way to avoid rewriting our application in D3D9 just because our GPU doesn't support D3D11.
 
 If [`D3D11CreateDevice`](https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdevice) succeeds we will get a `ID3D11Device` and a `ID3D11DeviceContext` back.
 
@@ -233,10 +239,7 @@ The majority of values should make some sense without explanation, like width an
 
 Its usage is also meant to be a render target output, something we render to, and can present. The format here is in BGRA order, like the device creation flag we specified earlier, if you remember.
 
-`BufferCount` is 2, because we want double buffering. That just means, Present one buffer, while the other one is being rendered to, when its ready
-present that one and render to the other one again in the meantime. That process is supposed to reduce flicker or `tearing`
-
-!!! error "Explain tearing/double/triple buffer better?"
+`BufferCount` is 2, because we want double buffering. Double buffering is an age-old technique to avoid presenting an image that is being used by the GPU, instead we work on the "back buffer", while the GPU is happy presenting the "front buffer", then, as soon as we are done with the back buffer, we swap front and back, and begin working on the former front buffer present that one and render to the other one again in the meantime. That process is supposed to reduce flicker or tearing
 
 !!! error "Explain Refresh Rate?"
 
