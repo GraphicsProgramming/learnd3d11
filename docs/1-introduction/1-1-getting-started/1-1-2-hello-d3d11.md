@@ -283,7 +283,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
 
 When we render things we render to a buffer, or texture to be exact, which you can picture as a buffer which holds color information. Swapchain is a container to manage those buffers we want to present on screen.
 
-Since we want to render into one of them, we need to grab the texture from the swapchain, and also have a so called render target view created for that particular texture, since we have to designate those as the target to render to. We wont keep the actual texture around, we just need the render target view, which we will refer to as render target.
+Since we want to render into one of them, we need to grab the texture from the swapchain's main buffer (index 0), from that texture we also want to create a RenderTargetView (or RTV for short), which specifies the subresource of the texture that we will be drawing to. We wont keep the actual texture around, we just need the render target view, which we will refer to as render target.
 
 ```cpp
 void HelloD3D11Application::DestroySwapchainResources()
@@ -375,5 +375,31 @@ But keep it empty for now.
 !!! error "explain in an overview fashion with pics what directx pipeline is"
 
     how it roughly works and what it means and can do
+
+```mermaid
+graph TD
+  IA[Input Assembler Stage] --> VS[Vertex Shader Stage];
+  VS -.-> HS[Hull Shader Stage];
+  HS[Hull Shader Stage] -.-> TS[Tesselation Shader Stage];
+  TS -.-> DS[Domain Shader Stage];
+  DS -.-> GS[Geometry Shader Stage];
+  GS --> RS[Rasterizer Stage];
+  GS --> SO[Stream Output];
+  RS --> PS[Pixel Shader Stage];
+  PS --> OM[Output Merger Stage];
+
+  MR[Buffer, Texture, Constant Buffer] --> IA;
+  MR-->VS;
+  MR-->HS;
+  MR-->DS;
+  MR-->GS;
+
+  MR-->PS;
+  PS-->MR;
+  MR-->OM;
+  OM-->MR;
+
+  SO-->MR;
+```
 
 ![basically this](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
