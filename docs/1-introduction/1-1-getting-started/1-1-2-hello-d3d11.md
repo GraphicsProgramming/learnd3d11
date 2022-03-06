@@ -176,7 +176,7 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-[`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us. a `IDXGIFactory2` to e precise. There are various implementations of it, depending on what version you aim for, you get additional functionality.
+[`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us. a `IDXGIFactory2` to be precise. There are various implementations of it, depending on what version you aim for, you get additional functionality.
 
 DXGI 1.0 up to 1.6 More information can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/_direct3ddxgi/) We will stick with `IDXGIFactory2` for now.
 
@@ -208,25 +208,25 @@ Feature levels are a concept that has been introduced with D3D11, it is a way to
 If [`D3D11CreateDevice`](https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdevice) succeeds we will get a `ID3D11Device` and a `ID3D11DeviceContext` back.
 
 ```cpp
-DXGI_SWAP_CHAIN_DESC1 swapchainInfo = {};
-swapchainInfo.Width = GetWindowWidth();
-swapchainInfo.Height = GetWindowHeight();
-swapchainInfo.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
-swapchainInfo.Stereo = false;
-swapchainInfo.SampleDesc.Count = 1;
-swapchainInfo.SampleDesc.Quality = 0;
-swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-swapchainInfo.BufferCount = 2;
-swapchainInfo.Scaling = DXGI_SCALING::DXGI_SCALING_STRETCH;
-swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
-swapchainInfo.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
-swapchainInfo.Flags = 0;
+DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
+swapChainDescriptor.Width = GetWindowWidth();
+swapChainDescriptor.Height = GetWindowHeight();
+swapChainDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
+swapChainDescriptor.SampleDesc.Count = 1;
+swapChainDescriptor.SampleDesc.Quality = 0;
+swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+swapChainDescriptor.BufferCount = 2;
+swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+swapChainDescriptor.Flags = {};
+
+DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
+swapChainFullscreenDescriptor.Windowed = true;
 
 if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
     _device.Get(),
     glfwGetWin32Window(GetWindow()),
-    &swapchainInfo,
-    nullptr,
+    &swapChainDescriptor,
+    &swapChainFullscreenDescriptor,
     nullptr,
     &_swapChain)))
 {

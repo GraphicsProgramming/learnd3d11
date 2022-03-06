@@ -54,9 +54,8 @@ bool HelloTriangleApplication::Initialize()
     }
 
     // This section initializes DirectX's devices and SwapChain
-    if (FAILED(CreateDXGIFactory2(
-        0,
-        __uuidof(IDXGIFactory2),
+    if (FAILED(CreateDXGIFactory1(
+        __uuidof(IDXGIFactory1),
         &_dxgiFactory)))
     {
         std::cout << "DXGI: Unable to create DXGIFactory\n";
@@ -64,7 +63,7 @@ bool HelloTriangleApplication::Initialize()
     }
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-    constexpr UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -81,25 +80,25 @@ bool HelloTriangleApplication::Initialize()
         return false;
     }
 
-    DXGI_SWAP_CHAIN_DESC1 swapchainInfo = {};
-    swapchainInfo.Width = GetWindowWidth();
-    swapchainInfo.Height = GetWindowHeight();
-    swapchainInfo.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
-    swapchainInfo.Stereo = false;
-    swapchainInfo.SampleDesc.Count = 1;
-    swapchainInfo.SampleDesc.Quality = 0;
-    swapchainInfo.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapchainInfo.BufferCount = 2;
-    swapchainInfo.Scaling = DXGI_SCALING::DXGI_SCALING_STRETCH;
-    swapchainInfo.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swapchainInfo.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
-    swapchainInfo.Flags = 0;
+    DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
+    swapChainDescriptor.Width = GetWindowWidth();
+    swapChainDescriptor.Height = GetWindowHeight();
+    swapChainDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM;
+    swapChainDescriptor.SampleDesc.Count = 1;
+    swapChainDescriptor.SampleDesc.Quality = 0;
+    swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDescriptor.BufferCount = 2;
+    swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDescriptor.Flags = {};
+
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
+    swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
         _device.Get(),
         glfwGetWin32Window(GetWindow()),
-        &swapchainInfo,
-        nullptr,
+        &swapChainDescriptor,
+        &swapChainFullscreenDescriptor,
         nullptr,
         &_swapChain)))
     {
