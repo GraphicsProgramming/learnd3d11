@@ -33,10 +33,10 @@ bool CompileShader(
     const std::string_view entryPoint,
     const std::string_view profile,
     ComPtr<ID3D10Blob>& shaderBlob) const;
-[[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
-    const std::wstring_view fileName,
-    ComPtr<ID3D10Blob>& vertexShaderBlob) const;
-[[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
+    [[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
+        const std::wstring_view fileName,
+        ComPtr<ID3D10Blob>& vertexShaderBlob) const;
+    [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
 
     ComPtr<ID3D11Device> _device = nullptr;
     ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
