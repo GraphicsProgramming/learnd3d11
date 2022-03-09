@@ -160,7 +160,7 @@ Lets go in to `Initialize`
 
 ```cpp
 if (!Application::Initialize())
-{ 
+{
     return false;
 }
 
@@ -361,7 +361,7 @@ We just set it up so that we tell `D3D11` that we want to render into the render
 
 We also have to specify an area in form of a rectangle, in this case, its equivalent to the window size.
 
-Last but not least, we Present the content of the swapchain to the window, using [`Present`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present). The first argument defines which vblanks to synchronize with presentation, 0 means: no synchronization (unlimited FPS), 1 means: sync every v-blank (regular v-sync), 2 means: sync every other v-blank and so on, up to 4. The second are optional flags, we don't need them so 0 is passed. 
+Last but not least, we Present the content of the swapchain to the window, using [`Present`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present). The first argument defines which vblanks to synchronize with presentation, 0 means: no synchronization (unlimited FPS), 1 means: sync every v-blank (regular v-sync), 2 means: sync every other v-blank and so on, up to 4. The second are optional flags, we don't need them so 0 is passed.
 
 `Application` also defines an abstract method `Update` which we have to define here as well, so we will add:
 
@@ -374,37 +374,3 @@ void HelloD3D11Application::Update()
 But keep it empty for now.
 
 ## Abstraction into Application & D3D11Context
-
-## Graphics Pipeline
-
-!!! error "explain in an overview fashion with pics what directx pipeline is"
-
-    how it roughly works and what it means and can do
-
-```mermaid
-graph TD
-  IA[Input Assembler Stage] --> VS[Vertex Shader Stage];
-  VS -.-> HS[Hull Shader Stage];
-  HS[Hull Shader Stage] -.-> TS[Tesselation Shader Stage];
-  TS -.-> DS[Domain Shader Stage];
-  DS -.-> GS[Geometry Shader Stage];
-  GS --> RS[Rasterizer Stage];
-  GS --> SO[Stream Output];
-  RS --> PS[Pixel Shader Stage];
-  PS --> OM[Output Merger Stage];
-
-  MR[Buffer, Texture, Constant Buffer] --> IA;
-  MR-->VS;
-  MR-->HS;
-  MR-->DS;
-  MR-->GS;
-
-  MR-->PS;
-  PS-->MR;
-  MR-->OM;
-  OM-->MR;
-
-  SO-->MR;
-```
-
-![basically this](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)

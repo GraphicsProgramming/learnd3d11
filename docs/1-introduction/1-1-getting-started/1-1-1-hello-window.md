@@ -18,46 +18,46 @@ close.
 
 int main(int argc, char* argv[])
 {
-	if (!glfwInit())
-	{
-		std::cout << "GLFW: Unable to initialize\n";
-		return -1;
-	}
+    if (!glfwInit())
+    {
+        std::cout << "GLFW: Unable to initialize\n";
+        return -1;
+    }
 
-	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-	const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
-	const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+    const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
+    const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 
-	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	GLFWwindow* window = glfwCreateWindow(
-		width,
-		height,
-		"LearnD3D11 - Hello Window",
-		nullptr,
-		nullptr);
-	if (window == nullptr)
-	{
-		std::cout << "GLFW: Unable to create window\n";
-		glfwTerminate();
-		return -1;
-	}
+    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(
+        width,
+        height,
+        "LearnD3D11 - Hello Window",
+        nullptr,
+        nullptr);
+    if (window == nullptr)
+    {
+        std::cout << "GLFW: Unable to create window\n";
+        glfwTerminate();
+        return -1;
+    }
 
-	const int32_t windowLeft = videoMode->width / 2 - width / 2;
-	const int32_t windowTop = videoMode->height / 2 - height / 2;
-	glfwSetWindowPos(window, windowLeft, windowTop);
+    const int32_t windowLeft = videoMode->width / 2 - width / 2;
+    const int32_t windowTop = videoMode->height / 2 - height / 2;
+    glfwSetWindowPos(window, windowLeft, windowTop);
 
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwPollEvents();
-		// future update code
-		// future render code
-	}
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        // future update code
+        // future render code
+    }
 
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	return 0;
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
 }
 ```
 
@@ -179,10 +179,10 @@ When you start the program, you should see something like this.
 ![](../../images/1-1-1-hello-window-1.png)
 
 !!! note "Why GLFW?"
-    
-    We have decided to include GLFW to manage our window (and later input) 
-    because it is a very simple library, ready to use and above all, because of 
-    consistency, plenty of other resources use GLFW, so it should be easier to 
+
+    We have decided to include GLFW to manage our window (and later input)
+    because it is a very simple library, ready to use and above all, because of
+    consistency, plenty of other resources use GLFW, so it should be easier to
     transfer the knowledge you will gain here elsewhere.
 
     There are other libraries, which handle windowing and input (amongst other things) out there as well, here are a few to choose from:
@@ -190,10 +190,9 @@ When you start the program, you should see something like this.
     - [SDL2](https://www.libsdl.org)
     - [SFML](https://www.sfml-dev.org)
 
-    You could also write all that using the native functions and constructs the OS provides, on windows it would be WinAPI, and although it is old and not necessary to do all the heavylifting yourself, a lot of Microsoft's own guides rely on the WinAPI so we [have an example](Link to Win32) on that. We will not be covering any other Win32 topics, unless it is explicitly required 
+    You could also write all that using the native functions and constructs the OS provides, on windows it would be WinAPI, and although it is old and not necessary to do all the heavylifting yourself, a lot of Microsoft's own guides rely on the WinAPI so we [have an example](Link to Win32) on that. We will not be covering any other Win32 topics, unless it is explicitly required
 
     You are probably going to continue writing your own engine after this tutorial and might decide to support more platforms, other than just windows, then this is already covered by `GLFW`.
-   
 
 ## First abstraction
 
