@@ -107,67 +107,24 @@ bool HelloTriangleApplication::Initialize()
     }
 
     CreateSwapchainResources();
+
     // This section reads and compiles both the vertex and pixel shaders
-    UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+    constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 
     ComPtr<ID3D10Blob> vertexShaderBlob = nullptr;
-    ComPtr<ID3D10Blob> pixelShaderBlob = nullptr;
-    ComPtr<ID3D10Blob> errorBlob = nullptr;
-    if (FAILED(D3DCompileFromFile(
-        L"Assets/Shaders/Main.vs.hlsl",
-        nullptr,
-        D3D_COMPILE_STANDARD_FILE_INCLUDE,
-        "main",
-        "vs_5_0",
-        compileFlags,
-        0,
-        &vertexShaderBlob,
-        &errorBlob)))
+    _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
+    if (_vertexShader == nullptr)
     {
-        std::cout << "D3D11: Failed to read vertex shader from file\n";
-        if (errorBlob)
-        {
-            std::cout << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
-        }
-        return false;
-    }
-    if (FAILED(D3DCompileFromFile(
-        L"Assets/Shaders/Main.ps.hlsl",
-        nullptr,
-        D3D_COMPILE_STANDARD_FILE_INCLUDE,
-        "main",
-        "ps_5_0",
-        compileFlags,
-        0,
-        &pixelShaderBlob,
-        &errorBlob)))
-    {
-        std::cout << "D3D11: Failed to read pixel shader from file\n";
-        if (errorBlob)
-        {
-            std::cout << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
-        }
         return false;
     }
 
-    if (FAILED(_device->CreateVertexShader(
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        nullptr,
-        &_vertexShader)))
+    _pixelShader = CreatePixelShader(L"Assets/Shaders/Main.ps.hlsl");
+    if (_pixelShader == nullptr)
     {
-        std::cout << "D3D11: Failed to compile vertex shader\n";
         return false;
     }
-    if (FAILED(_device->CreatePixelShader(
-        pixelShaderBlob->GetBufferPointer(),
-        pixelShaderBlob->GetBufferSize(),
-        nullptr,
-        &_pixelShader)))
-    {
-        std::cout << "D3D11: Failed to compile pixel shader\n";
-        return false;
-    }
+
+    // ReSharper disable once CppTooWideScopeInitStatement
     constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
     {
         {
@@ -196,9 +153,10 @@ bool HelloTriangleApplication::Initialize()
         &_vertexLayout)))
     {
         std::cout << "D3D11: Failed to create default vertex input layout\n";
+        return false;
     }
-    // This section to create the vertex and index buffer of the triangle
-    const VertexPositionColor vertices[] =
+
+    constexpr VertexPositionColor vertices[] =
     {
         { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
         { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f } },
@@ -218,8 +176,89 @@ bool HelloTriangleApplication::Initialize()
         std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
+
     return true;
 }
+
+bool HelloTriangleApplication::CompileShader(
+    const std::wstring_view fileName,
+    const std::string_view entryPoint,
+    const std::string_view profile,
+    ComPtr<ID3D10Blob>& shaderBlob) const
+{
+    constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+
+    ComPtr<ID3D10Blob> tempShaderBlob = nullptr;
+    ComPtr<ID3D10Blob> errorBlob = nullptr;
+    if (FAILED(D3DCompileFromFile(
+        fileName.data(),
+        nullptr,
+        D3D_COMPILE_STANDARD_FILE_INCLUDE,
+        entryPoint.data(),
+        profile.data(),
+        compileFlags,
+        0,
+        &tempShaderBlob,
+        &errorBlob)))
+    {
+        std::cout << "D3D11: Failed to read shader from file\n";
+        if (errorBlob != nullptr)
+        {
+            std::cout << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
+        }
+
+        return false;
+    }
+
+    shaderBlob = std::move(tempShaderBlob);
+    return true;
+}
+
+HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::CreateVertexShader(
+    const std::wstring_view fileName,
+    ComPtr<ID3D10Blob>& vertexShaderBlob) const
+{
+    if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
+    {
+        return nullptr;
+    }
+
+    ComPtr<ID3D11VertexShader> vertexShader;
+    if (FAILED(_device->CreateVertexShader(
+        vertexShaderBlob->GetBufferPointer(),
+        vertexShaderBlob->GetBufferSize(),
+        nullptr,
+        &vertexShader)))
+    {
+        std::cout << "D3D11: Failed to compile vertex shader\n";
+        return nullptr;
+    }
+
+    return vertexShader;
+}
+
+HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::CreatePixelShader(const std::wstring_view fileName) const
+{
+    ComPtr<ID3D10Blob> pixelShaderBlob = nullptr;
+    if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))
+    {
+        return nullptr;
+    }
+
+    ComPtr<ID3D11PixelShader> pixelShader;
+    if (FAILED(_device->CreatePixelShader(
+        pixelShaderBlob->GetBufferPointer(),
+        pixelShaderBlob->GetBufferSize(),
+        nullptr,
+        &pixelShader)))
+    {
+        std::cout << "D3D11: Failed to compile pixel shader\n";
+        return nullptr;
+    }
+
+    return pixelShader;
+}
+
 
 bool HelloTriangleApplication::CreateSwapchainResources()
 {

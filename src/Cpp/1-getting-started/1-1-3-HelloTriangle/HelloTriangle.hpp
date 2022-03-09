@@ -28,11 +28,17 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
+bool CompileShader(
+    const std::wstring_view fileName,
+    const std::string_view entryPoint,
+    const std::string_view profile,
+    ComPtr<ID3D10Blob>& shaderBlob) const;
+[[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
+    const std::wstring_view fileName,
+    ComPtr<ID3D10Blob>& vertexShaderBlob) const;
+[[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
+
     ComPtr<ID3D11Device> _device = nullptr;
-#if !defined(NDEBUG)
-    ComPtr<ID3D11Debug> _debug = nullptr;
-    ComPtr<ID3D11InfoQueue> _debugInfoQueue = nullptr;
-#endif
     ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     ComPtr<IDXGISwapChain1> _swapChain = nullptr;
