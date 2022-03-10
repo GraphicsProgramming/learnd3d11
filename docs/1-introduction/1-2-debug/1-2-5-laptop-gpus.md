@@ -11,8 +11,8 @@ Simply find a spot in your program and add the following code
 ```cpp
 extern "C"
 {
-  __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-​  __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+   __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+​   __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 ```
 
