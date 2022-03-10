@@ -100,3 +100,5 @@ D3D11 WARNING: ID3D11DeviceContext::Draw: Vertex Buffer at the input vertex slot
 the Draw*() call expects to traverse. This is OK, as reading off the end of the Buffer is defined to return 0.
 However the developer probably did not intend to make use of this behavior.  [ EXECUTION WARNING #356: DEVICE_DRAW_VERTEX_BUFFER_TOO_SMALL]
 ```
+
+One thing which should go without saying, the debug layer will slow down your application a bit.
