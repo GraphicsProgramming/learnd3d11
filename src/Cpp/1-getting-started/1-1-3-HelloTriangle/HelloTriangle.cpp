@@ -108,9 +108,6 @@ bool HelloTriangleApplication::Initialize()
 
     CreateSwapchainResources();
 
-    // This section reads and compiles both the vertex and pixel shaders
-    constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-
     ComPtr<ID3D10Blob> vertexShaderBlob = nullptr;
     _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
     if (_vertexShader == nullptr)
