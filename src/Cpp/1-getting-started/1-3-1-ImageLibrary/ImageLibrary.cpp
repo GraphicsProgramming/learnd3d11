@@ -408,8 +408,9 @@ void ImageLibraryApplication::Render()
     viewport.MaxDepth = 1.0f;
 
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr UINT vertexStride = sizeof(VertexPositionColorUv);
-    constexpr UINT vertexOffset = 0;
+    constexpr float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    constexpr uint32_t vertexStride = sizeof(VertexPositionColorUv);
+    constexpr uint32_t vertexOffset = 0;
 
     _deviceContext->ClearRenderTargetView(
         _renderTarget.Get(),
@@ -429,6 +430,7 @@ void ImageLibraryApplication::Render()
     _deviceContext->RSSetViewports(
         1,
         &viewport);
+
     _deviceContext->PSSetShader(
         _pixelShader.Get(),
         nullptr,
