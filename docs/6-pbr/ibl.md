@@ -1,1 +1,0 @@
-# Image Based Lighting
