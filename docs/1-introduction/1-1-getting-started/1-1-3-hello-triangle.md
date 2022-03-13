@@ -1,6 +1,6 @@
 # Hello Triangle
 
-In the last chapter we initialized core components of D3D11 and DXGI such as the Device and the SwapChain, but simply clearing the Window with some color is pretty boring.
+In the last chapter we initialized core components of `D3D11` and DXGI such as the Device and the SwapChain, but simply clearing the Window with some color is pretty boring.
 This time we'll be drawing our first triangle with a nice froge-like color.
 
 ## The Pipeline
@@ -9,29 +9,33 @@ The fundamental part of all graphic APIs is the "Graphics Pipeline", whether we'
 ![](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
 
 As you can see, each stage in the pipeline takes in the previous stage's output as the input, the rectangle blocks are pipeline stages that are not programmable but are configurable, while the rounded rectangle blocks are stages that are fully programmable.
-To draw most of the things throughout this series we'll mostly need the **Vertex Shader** and the **Pixel Shader**, which are fully programmable and usually shortened to VS and PS. To program our shaders we will use the HLSL programming language, the syntax is very close to C so it should be somewhat familiar.
+To draw most of the things throughout this series we'll mostly need these stages: Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
+
+The Vertex and Pixel shaders are fully programmable and we'll write a very basic program for them.
+
+The other two stages are not programmable but they are fairly easy to understand and configure, the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive of our choice, which is of course, triangles in our case, and sending this processed output to the Vertex Shader. The **Output Merger** instead is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
 
 ### Vertex Shader
-The **Vertex Shader** is the stage where our vertices are processed however we want and eventually they are transformed to the coordinate system of our screen.
+The **Vertex Shader** is the stage where our vertices are processed however we want, although we don't do much processing here, and in the end they're transformed to [screen-space coordinates](link to the coordinate system chapter?)
 
 The vertices are usually read from a **Vertex Buffer** which are laid out in a particular way. The vertex shader will be run however many times we tell it to run, which is specified in the first parameter of `ID3D11DeviceContext::Draw()` (more on this later), for instance if we call `Draw(3, 0)`, the vertex shader will run 3 times.
 
 Since we only want to draw a triangle, we don't need to do much processing, we can just provide the input vertices as the output.
 
-The vertex buffer may be omitted, for example if we want to draw a full screen triangle, instead of creating a vertex buffer, for simplicity we can just hardcode the vertices in the vertex shader without having to bind a vertex buffer.
+The vertex buffer can be omitted, for example if we want to draw a full screen triangle, instead of creating a vertex buffer, for simplicity we can just hardcode the vertices in the vertex shader without having to bind a vertex buffer.
 
 Let's look at our basic vertex shader for this section:
 #### Main.vs.hlsl
 ```hlsl
 struct VSInput
 {
-    float3 position: POSITION;
+    float3 position: SV_Position;
     float3 color: COLOR0;
 };
 
 struct VSOutput
 {
-    float4 position: SV_POSITION;
+    float4 position: SV_Position;
     float3 color: COLOR0;
 };
 
@@ -45,13 +49,13 @@ VSOutput Main(VSInput input)
 ```
 First off, we define 2 types, `VSInput` and `VSOutput` which represent obviously the vertex shader's input and output.
 
-The input is 2, `float3` (vector of 3 float components).
-
-the first is the "position" field, which are coordinates ranging from -1.0 to 1.0, this range is called **NDC** or **Normalized Device Coordinates**, if the values are outside this range they are clipped, and we won't see them on screen.
+The input is 2, `float3` (vector of 3 float components), the first is the "position" field, which are coordinates ranging from [-1.0, 1.0], if the values are outside this range they are clipped, and we won't see them on screen.
 
 The second is the "color" field, which we also pass as the output of this stage onto the pixel shader.
 
-Notice how all our fields have a colon and some identifier attached to them, these are "semantics", they are basically a decorator of a certain field that tells us and D3D11 how we want to use this particular field. Semantics that are preceded by `SV` are called "system-value semantics", `SV_POSITION` for example means that the field `position` will be used by D3D11 as the actual output of the vertex shader.
+Notice how all our fields have a colon and some identifier attached to them, these are "semantics". 
+Semantics that are preceded by `SV` are called "system-value semantics" and their meaning and usage is defined by D3D11. `SV_Position` for example means that the field `position` will be used by D3D11 as the actual output of the vertex shader. 
+Everything else are "user defined semantics" and their naming is up to the shader author. These are used to pass userdata between shader stages.
 
 Then we have our `VSOutput`, which has our vertices in the first field `position` and our color in the second field `color`.
 
@@ -69,13 +73,13 @@ Let's look at our Pixel Shader now:
 ```hlsl
 struct PSInput
 {
-    float4 position: SV_POSITION;
+    float4 position: SV_Position;
     float3 color: COLOR0;
 };
 
 struct PSOutput
 {
-    float4 color: SV_TARGET0;
+    float4 color: SV_Target0;
 };
 
 PSOutput Main(PSInput input)
@@ -87,11 +91,13 @@ PSOutput Main(PSInput input)
 ```
 Here as well we have an input `PSInput`, and an output `PSOutput`.
 
-Since our input here is the VS's output, `PSInput` must match **exactly** the `VSOutput` in vertex shader, if the layout differ even a little, for example by moving `float3 color` above `float4 position`, the D3D11's debug layer will scream at us, and the shaders will fail to compile.
+Since there aren't any other shaders in between the VS and the PS, the VS's output is the PS's input, the naming might be a bit confusing but that's the gist of it, PSInput should match the VSOutput in vertex shader, this isn't entirely required but not doing so is only advisable if you really know what you are doing.
 
-Next we have our output, D3D11 gives us the possibility to write to multiple render targets, but we are not doing that, so we'll just be writing a `float4` as our output, which is an RGBA color.
+Next we have our output, `D3D11` gives us the possibility to write to multiple render targets, but we are not doing that, so we'll just be writing a `float4` as our output, which is an RGBA color.
 
-Notice how we have another semantic string attached to the `color` field, this semantic string specifies which render target we want to be writing to, the `0` after `SV_TARGET` is the index of our render target, in our case, we have only one so we write `SV_TARGET0` or `SV_TARGET`.
+Notice how we have another semantic string attached to the `color` field, this semantic string specifies which render target we want to be writing to, the `0` after `SV_Target` is the index of our render target, in our case, we have only one so we write `SV_Target0` or `SV_Target`.
+
+`D3D11` lets us write up to 8 render targets simultaneously from the same pixel shader, those come in handy when implementing more advanced shading techniques, for example a popular technique that uses 4 or more 
 
 And lastly, our `Main` function, following the same pattern as in the VS, we have one parameter, the input, and one return value, the output, again we create an instance of `PSOutput`, initialize everything to 0, and write the color we got from the input, to our output.
 ## Compiling shaders
@@ -124,7 +130,7 @@ In order we have:
 
 And one output parameter:
 
-- `shaderBlob`: the blob were our compiled code will be stored. A blob is just a fancy buffer which D3D11 can use for specific purposes.
+- `shaderBlob`: the blob were our compiled code will be stored. A blob is just a fancy buffer which `D3D11` can use for specific purposes.
 
 Then:
 `CreateVertexShader`: This function helps us create specifically a `ID3D11VertexShader`, it only requires the shader path and a `ID3D10Blob`. We need to pass a blob ourselves because we'll need the VS's blob later.
@@ -373,7 +379,7 @@ constexpr VertexPositionColor vertices[] =
 };
 ```
 
-There we go, remember the `NDC` coordinates we talked about earlier? We are storing these coordinates that form a triangle here, we're also storing a color for each vertex, since they will be interpolated by our pixel shader.
+There we go, remember, the position coordinates we have to give to the vertex shader must be in range [-1.0, 1.0], otherwise we won't be able to see that vertex. We are storing these coordinates that form a triangle here, we're also storing a color for each vertex, since they will be interpolated by our pixel shader.
 
 If you want you can try to visualize the triangle, take a piece of paper, draw a **Cartesian Plane**, draw 3 points and connect the dots with these coordinates.
 
@@ -396,7 +402,7 @@ if (FAILED(_device->CreateBuffer(
 }
 ```
 
-We begin by filling a `bufferInfo` descriptor for our buffer, we specify how many bytes we want, since this buffer will never change, for the `Usage` we specify: `D3D11_USAGE_IMMUTABLE`, this lets D3D11 put this data a close as possible to the GPU, finally we specify how we want to use this buffer, we want this to be a vertex buffer, so for the `BindFlags` we give: `D3D11_BIND_VERTEX_BUFFER`.
+We begin by filling a `bufferInfo` descriptor for our buffer, we specify how many bytes we want, since this buffer will never change, for the `Usage` we specify: `D3D11_USAGE_IMMUTABLE`, this lets `D3D11` put this data a close as possible to the GPU, finally we specify how we want to use this buffer, we want this to be a vertex buffer, so for the `BindFlags` we give: `D3D11_BIND_VERTEX_BUFFER`.
 
 And finally we create a `resourceData`, and populate the only field we care about: `pSysMem`, which is a pointer to our vertices which are currently in system RAM.
 
