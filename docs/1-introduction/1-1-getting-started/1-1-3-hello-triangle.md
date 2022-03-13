@@ -29,7 +29,7 @@ Let's look at our basic vertex shader for this section:
 ```hlsl
 struct VSInput
 {
-    float3 position: SV_Position;
+    float3 position: POSITION;
     float3 color: COLOR0;
 };
 
@@ -55,7 +55,7 @@ The second is the "color" field, which we also pass as the output of this stage 
 
 Notice how all our fields have a colon and some identifier attached to them, these are "semantics". 
 Semantics that are preceded by `SV` are called "system-value semantics" and their meaning and usage is defined by D3D11. `SV_Position` for example means that the field `position` will be used by D3D11 as the actual output of the vertex shader. 
-Everything else are "user defined semantics" and their naming is up to the shader author. These are used to pass userdata between shader stages.
+Everything else are "user defined semantics" and their naming is up to us. These are used to pass data between shader stages.
 
 Then we have our `VSOutput`, which has our vertices in the first field `position` and our color in the second field `color`.
 
