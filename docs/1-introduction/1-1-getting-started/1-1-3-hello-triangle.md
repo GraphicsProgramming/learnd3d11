@@ -482,6 +482,6 @@ _deviceContext->OMSetRenderTargets(
     nullptr);
 ```
 
-As you can see, we go through the pipeline in an orderly fashion, and although we don't use all the stages, we can see the top-to-bottom execution of the stages, `IA -> VS -> RS -> PS -> OM`.
+As you can see, we go through the pipeline in an orderly fashion, and although we don't use all the stages, we can see the top-to-bottom execution of the stages, IA (Input Assembler) -> VS (Vertex Shader) -> RS (Rasterizer Stage) -> PS (Pixel Shader) -> OM (Output Merger).
 
 You should now be able to run this and see your first triangle!
