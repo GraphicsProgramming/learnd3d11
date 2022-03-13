@@ -312,7 +312,7 @@ bool Application::Initialize()
 }
 ```
 
-## HelloWindowApplication.hpp
+### HelloWindowApplication.hpp
 
 ```cpp
 #include "Application.hpp"
@@ -328,7 +328,7 @@ protected:
 }
 ```
 
-## HelloWindowApplication.cpp
+### HelloWindowApplication.cpp
 
 ```cpp
 HelloWindowApplication::HelloWindowApplication(const std::string_view title)
