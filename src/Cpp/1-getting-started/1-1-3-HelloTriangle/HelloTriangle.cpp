@@ -130,8 +130,7 @@ bool HelloTriangleApplication::Initialize()
             DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
             0,
             offsetof(VertexPositionColor, position),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
-            0
+            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0
         },
         {
             "COLOR",
