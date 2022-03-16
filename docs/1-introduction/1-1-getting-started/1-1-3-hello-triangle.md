@@ -4,7 +4,9 @@ In the last chapter we initialized core components of `D3D11` and DXGI such as t
 This time we'll be drawing our first triangle with a nice froge-like color.
 
 ## The Pipeline
-The fundamental part of all graphic APIs is the "Graphics Pipeline", whether we're drawing a single triangle, a textured frog or the whole Elden Ring map, everything goes through the pipeline; it is a series of functions that are either hardwired in hardware, configurable or fully programmable, and all it does is transform all that we draw from 3D space to the 2D space that is our monitor. All the steps in the graphics pipeline go from top to bottom and are shown below.
+The fundamental part of all graphic APIs is the "Graphics Pipeline". Everything from a single triangle, textured frog or the whole Elden Ring map goes through this pipeline. It is a series of functions that either exist in hardware, can be configured or are fully programmable. It transforms everything we draw in 3D space to the 2D space that is our monitor. 
+
+All the steps in the graphics pipeline go from top to bottom and are shown below.
 
 ![](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
 
