@@ -6,6 +6,7 @@
 
 #include "Application.hpp"
 #include "Definitions.hpp"
+#include "ShaderFactory.hpp"
 #include "TextureFactory.hpp"
 
 #include <string_view>
@@ -29,16 +30,6 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-bool CompileShader(
-    const std::wstring_view fileName,
-    const std::string_view entryPoint,
-    const std::string_view profile,
-    WRL::ComPtr<ID3DBlob>& shaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
-        const std::wstring_view fileName,
-        WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
-
     WRL::ComPtr<ID3D11Device> _device = nullptr;
     WRL::ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
@@ -53,5 +44,6 @@ bool CompileShader(
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
 
+    std::unique_ptr<ShaderFactory> _shaderFactory = nullptr;
     std::unique_ptr<TextureFactory> _textureFactory = nullptr;
 };
