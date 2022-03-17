@@ -123,8 +123,16 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)\Assets\Textures\</Command>
     <Image Include="Assets\Textures\T_Good_Froge.dds" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
-    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
+    <None Include="Assets\Shaders\Main.ps.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Assets\Shaders\Main.vs.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

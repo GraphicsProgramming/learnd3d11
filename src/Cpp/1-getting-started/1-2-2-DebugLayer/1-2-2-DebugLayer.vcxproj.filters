@@ -34,7 +34,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
-    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
+    <None Include="Assets\Shaders\Main.vs.hlsl" />
+    <None Include="Assets\Shaders\Main.ps.hlsl" />
   </ItemGroup>
 </Project>

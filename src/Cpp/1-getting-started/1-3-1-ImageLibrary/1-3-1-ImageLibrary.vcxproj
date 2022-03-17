@@ -99,11 +99,19 @@
     <ClInclude Include="ImageLibrary.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
-    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
+    <Image Include="Assets\Textures\T_Froge.dds" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Textures\T_Froge.dds" />
+    <None Include="Assets\Shaders\Main.ps.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </None>
+    <None Include="Assets\Shaders\Main.vs.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
