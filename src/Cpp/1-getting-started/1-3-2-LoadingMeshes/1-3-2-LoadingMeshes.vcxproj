@@ -70,6 +70,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimp-vc140-mtd.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y $(ProjectDir)..\lib\assimp\lib\$(Configuration)\assimp-vc140-mtd.dll $(OutDir)
+mkdir $(OutDir)Assets\Models\
+mkdir $(OutDir)Assets\Shaders\
+mkdir $(OutDir)Assets\Textures\
+xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
+xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)\Assets\Shaders\
+xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)\Assets\Textures\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -88,6 +97,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimp-vc140-mt.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y $(ProjectDir)..\lib\assimp\lib\$(Configuration)\assimp-vc140-mtd.dll $(OutDir)
+mkdir $(OutDir)Assets\Models\
+mkdir $(OutDir)Assets\Shaders\
+mkdir $(OutDir)Assets\Textures\
+xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
+xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)\Assets\Shaders\
+xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)\Assets\Textures\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
