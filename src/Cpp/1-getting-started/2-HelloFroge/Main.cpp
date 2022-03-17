@@ -65,7 +65,7 @@ D3D11_VIEWPORT g_ViewPort = {};
 
 ComPtr<ID3D11InputLayout> g_InputLayout = nullptr;
 ComPtr<ID3D11VertexShader> g_VertexShader = nullptr;
-ComPtr<ID3D10Blob> g_VertexShaderBlob = nullptr;
+ComPtr<ID3DBlob> g_VertexShaderBlob = nullptr;
 ComPtr<ID3D11PixelShader> g_PixelShader = nullptr;
 
 IWICImagingFactory* g_ImagingFactory = nullptr;
@@ -318,7 +318,7 @@ bool LoadFile(const std::string_view filePath, std::vector<std::uint8_t>& fileCo
     return true;
 }
 
-ID3D11VertexShader* LoadVertexShader(const std::wstring_view filePath, ID3D10Blob** vertexShaderBlob)
+ID3D11VertexShader* LoadVertexShader(const std::wstring_view filePath, ID3DBlob** vertexShaderBlob)
 {
     if (FAILED(D3DReadFileToBlob(filePath.data(), vertexShaderBlob)))
     {
@@ -342,7 +342,7 @@ ID3D11VertexShader* LoadVertexShader(const std::wstring_view filePath, ID3D10Blo
 
 ID3D11PixelShader* LoadPixelShader(const std::wstring_view filePath)
 {
-    ID3D10Blob* pixelShaderBlob;
+    ID3DBlob* pixelShaderBlob;
     if (FAILED(D3DReadFileToBlob(filePath.data(), &pixelShaderBlob)))
     {
         std::cout << "D3D11: Unable to create vertex shader from file " << std::wstring(filePath.data()).c_str() << "\n";

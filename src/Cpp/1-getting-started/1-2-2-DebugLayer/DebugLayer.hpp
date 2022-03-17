@@ -28,14 +28,14 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-bool CompileShader(
-    const std::wstring_view fileName,
-    const std::string_view entryPoint,
-    const std::string_view profile,
-    ComPtr<ID3D10Blob>& shaderBlob) const;
+    bool CompileShader(
+        const std::wstring_view fileName,
+        const std::string_view entryPoint,
+        const std::string_view profile,
+        ComPtr<ID3DBlob>& shaderBlob) const;
     [[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
         const std::wstring_view fileName,
-        ComPtr<ID3D10Blob>& vertexShaderBlob) const;
+        ComPtr<ID3DBlob>& vertexShaderBlob) const;
     [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
 
     ComPtr<ID3D11Device> _device = nullptr;

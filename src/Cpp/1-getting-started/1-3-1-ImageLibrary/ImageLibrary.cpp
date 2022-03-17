@@ -136,7 +136,7 @@ bool ImageLibraryApplication::Initialize()
 
     CreateSwapchainResources();
 
-    ComPtr<ID3D10Blob> vertexShaderBlob = nullptr;
+    ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
     _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
     if (_vertexShader == nullptr)
     {
@@ -262,15 +262,15 @@ bool ImageLibraryApplication::CompileShader(
     const std::wstring_view fileName,
     const std::string_view entryPoint,
     const std::string_view profile,
-    ComPtr<ID3D10Blob>& shaderBlob) const
+    ComPtr<ID3DBlob>& shaderBlob) const
 {
     UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if !defined(NDEBUG)
     compileFlags |= D3DCOMPILE_DEBUG;
 #endif
 
-    ComPtr<ID3D10Blob> tempShaderBlob = nullptr;
-    ComPtr<ID3D10Blob> errorBlob = nullptr;
+    ComPtr<ID3DBlob> tempShaderBlob = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
         fileName.data(),
         nullptr,
@@ -297,7 +297,7 @@ bool ImageLibraryApplication::CompileShader(
 
 ImageLibraryApplication::ComPtr<ID3D11VertexShader> ImageLibraryApplication::CreateVertexShader(
     const std::wstring_view fileName,
-    ComPtr<ID3D10Blob>& vertexShaderBlob) const
+    ComPtr<ID3DBlob>& vertexShaderBlob) const
 {
     if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
     {
@@ -320,7 +320,7 @@ ImageLibraryApplication::ComPtr<ID3D11VertexShader> ImageLibraryApplication::Cre
 
 ImageLibraryApplication::ComPtr<ID3D11PixelShader> ImageLibraryApplication::CreatePixelShader(const std::wstring_view fileName) const
 {
-    ComPtr<ID3D10Blob> pixelShaderBlob = nullptr;
+    ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
     if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))
     {
         return nullptr;
