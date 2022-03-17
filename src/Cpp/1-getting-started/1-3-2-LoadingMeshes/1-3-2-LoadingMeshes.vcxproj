@@ -119,6 +119,13 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)\Assets\Textures\</Command>
     <ClInclude Include="LoadingMeshes.hpp" />
     <ClInclude Include="TextureFactory.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Textures\T_Good_Froge.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
+    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

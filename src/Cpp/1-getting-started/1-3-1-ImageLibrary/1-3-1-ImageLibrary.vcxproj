@@ -98,6 +98,13 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="ImageLibrary.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
+    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Textures\T_Froge.dds" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

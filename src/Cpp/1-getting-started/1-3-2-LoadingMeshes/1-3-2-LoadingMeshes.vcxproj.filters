@@ -42,4 +42,11 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Textures\T_Good_Froge.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Shaders\Main.vs.hlsl" />
+    <FxCompile Include="Assets\Shaders\Main.ps.hlsl" />
+  </ItemGroup>
 </Project>
