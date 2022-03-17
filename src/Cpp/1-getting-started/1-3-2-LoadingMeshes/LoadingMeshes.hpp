@@ -8,6 +8,7 @@
 
 #include "Application.hpp"
 #include "Definitions.hpp"
+#include "ShaderFactory.hpp"
 #include "TextureFactory.hpp"
 
 #include <string_view>
@@ -31,15 +32,6 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-    bool CompileShader(
-        const std::wstring_view fileName,
-        const std::string_view entryPoint,
-        const std::string_view profile,
-        WRL::ComPtr<ID3DBlob>& shaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
-        const std::wstring_view fileName,
-        WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
     bool LoadModel(const std::wstring_view filePath);
 
     enum ConstantBufferType
@@ -65,6 +57,7 @@ private:
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
 
+    std::unique_ptr<ShaderFactory> _shaderFactory = nullptr;
     std::unique_ptr<TextureFactory> _textureFactory = nullptr;
 
     WRL::ComPtr<ID3D11Buffer> _constantBuffers[NumConstantBufferTypes];
