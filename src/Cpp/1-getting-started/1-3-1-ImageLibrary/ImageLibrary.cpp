@@ -136,7 +136,7 @@ bool ImageLibraryApplication::Initialize()
 
     CreateSwapchainResources();
 
-    ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
+    WRL::ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
     _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
     if (_vertexShader == nullptr)
     {
@@ -219,7 +219,7 @@ bool ImageLibraryApplication::Initialize()
         return false;
     }
 
-    ComPtr<ID3D11Resource> texture = nullptr;
+    WRL::ComPtr<ID3D11Resource> texture = nullptr;
     if (FAILED(DirectX::CreateTexture(
         _device.Get(),
         scratchImage.GetImages(),
@@ -262,15 +262,15 @@ bool ImageLibraryApplication::CompileShader(
     const std::wstring_view fileName,
     const std::string_view entryPoint,
     const std::string_view profile,
-    ComPtr<ID3DBlob>& shaderBlob) const
+    WRL::ComPtr<ID3DBlob>& shaderBlob) const
 {
     UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if !defined(NDEBUG)
     compileFlags |= D3DCOMPILE_DEBUG;
 #endif
 
-    ComPtr<ID3DBlob> tempShaderBlob = nullptr;
-    ComPtr<ID3DBlob> errorBlob = nullptr;
+    WRL::ComPtr<ID3DBlob> tempShaderBlob = nullptr;
+    WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
         fileName.data(),
         nullptr,
@@ -295,16 +295,16 @@ bool ImageLibraryApplication::CompileShader(
     return true;
 }
 
-ImageLibraryApplication::ComPtr<ID3D11VertexShader> ImageLibraryApplication::CreateVertexShader(
+WRL::ComPtr<ID3D11VertexShader> ImageLibraryApplication::CreateVertexShader(
     const std::wstring_view fileName,
-    ComPtr<ID3DBlob>& vertexShaderBlob) const
+    WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const
 {
     if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
     {
         return nullptr;
     }
 
-    ComPtr<ID3D11VertexShader> vertexShader;
+    WRL::ComPtr<ID3D11VertexShader> vertexShader;
     if (FAILED(_device->CreateVertexShader(
         vertexShaderBlob->GetBufferPointer(),
         vertexShaderBlob->GetBufferSize(),
@@ -318,15 +318,15 @@ ImageLibraryApplication::ComPtr<ID3D11VertexShader> ImageLibraryApplication::Cre
     return vertexShader;
 }
 
-ImageLibraryApplication::ComPtr<ID3D11PixelShader> ImageLibraryApplication::CreatePixelShader(const std::wstring_view fileName) const
+WRL::ComPtr<ID3D11PixelShader> ImageLibraryApplication::CreatePixelShader(const std::wstring_view fileName) const
 {
-    ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
+    WRL::ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
     if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))
     {
         return nullptr;
     }
 
-    ComPtr<ID3D11PixelShader> pixelShader;
+    WRL::ComPtr<ID3D11PixelShader> pixelShader;
     if (FAILED(_device->CreatePixelShader(
         pixelShaderBlob->GetBufferPointer(),
         pixelShaderBlob->GetBufferSize(),
@@ -343,7 +343,7 @@ ImageLibraryApplication::ComPtr<ID3D11PixelShader> ImageLibraryApplication::Crea
 
 bool ImageLibraryApplication::CreateSwapchainResources()
 {
-    ComPtr<ID3D11Texture2D> backBuffer = nullptr;
+    WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
         0,
         __uuidof(ID3D11Texture2D),

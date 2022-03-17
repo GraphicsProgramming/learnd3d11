@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
+    <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="ImageLibrary.hpp" />
   </ItemGroup>
   <ItemGroup>

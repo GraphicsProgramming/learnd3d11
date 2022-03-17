@@ -97,6 +97,7 @@
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="DebugLayer.hpp" />
+    <ClInclude Include="Definitions.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">
