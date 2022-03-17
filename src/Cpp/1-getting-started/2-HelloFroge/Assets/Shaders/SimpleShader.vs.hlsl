@@ -7,7 +7,7 @@ struct VertexInput
 
 struct PixelInput
 {
-    float4 Position : SV_POSITION;
+    float4 Position : SV_Position;
     float4 Color : COLOR;
     float2 Uv : TEXCOORD;
 };

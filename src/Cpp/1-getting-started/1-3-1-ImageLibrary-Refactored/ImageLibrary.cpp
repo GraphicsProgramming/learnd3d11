@@ -169,7 +169,7 @@ bool ImageLibraryApplication::Initialize()
             0
         },
         {
-            "UV",
+            "TEXCOORD",
             0,
             DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT,
             0,
