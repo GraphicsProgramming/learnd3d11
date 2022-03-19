@@ -1,4 +1,5 @@
 #include "HelloTriangle.hpp"
+#include "Pipeline.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -16,15 +17,6 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-using Position = DirectX::XMFLOAT3;
-using Color = DirectX::XMFLOAT3;
-
-struct VertexPositionColor
-{
-    Position position;
-    Color color;
-};
-
 HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
     : Application(title)
 {
@@ -33,14 +25,12 @@ HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
 HelloTriangleApplication::~HelloTriangleApplication()
 {
     _deviceContext->Flush();
-    _pixelShader.Reset();
-    _vertexShader.Reset();
-    _vertexLayout.Reset();
+    _pipeline.reset();
     _triangleVertices.Reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.Reset();
+    _deviceContext.reset();
     _device.Reset();
     Application::Cleanup();
 }
@@ -62,6 +52,7 @@ bool HelloTriangleApplication::Initialize()
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
     constexpr UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -72,11 +63,13 @@ bool HelloTriangleApplication::Initialize()
         D3D11_SDK_VERSION,
         &_device,
         nullptr,
-        &_deviceContext)))
+        &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
+
+    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -106,52 +99,12 @@ bool HelloTriangleApplication::Initialize()
 
     CreateSwapchainResources();
 
-    _shaderFactory = std::make_unique<ShaderFactory>(_device);
-
-    WRL::ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
-    _vertexShader = _shaderFactory->CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
-    if (_vertexShader == nullptr)
-    {
-        return false;
-    }
-
-    _pixelShader = _shaderFactory->CreatePixelShader(L"Assets/Shaders/Main.ps.hlsl");
-    if (_pixelShader == nullptr)
-    {
-        return false;
-    }
-
-    // ReSharper disable once CppTooWideScopeInitStatement
-    constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
-    {
-        {
-            "POSITION",
-            0,
-            DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
-            0,
-            offsetof(VertexPositionColor, position),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0
-        },
-        {
-            "COLOR",
-            0,
-            DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
-            0,
-            offsetof(VertexPositionColor, color),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
-            0
-        },
-    };
-    if (FAILED(_device->CreateInputLayout(
-        vertexInputLayoutInfo,
-        _countof(vertexInputLayoutInfo),
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        &_vertexLayout)))
-    {
-        std::cout << "D3D11: Failed to create default vertex input layout\n";
-        return false;
-    }
+    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    PipelineSettings pipelineSettings = {};
+    pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    pipelineSettings.VertexType = VertexType::PositionColor;
+    _pipelineFactory->CreatePipeline(pipelineSettings, _pipeline);
 
     constexpr VertexPositionColor vertices[] =
     {
@@ -243,35 +196,12 @@ void HelloTriangleApplication::Render()
     viewport.MaxDepth = 1.0f;
 
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr UINT vertexStride = sizeof(VertexPositionColor);
     constexpr UINT vertexOffset = 0;
 
-    _deviceContext->ClearRenderTargetView(
-        _renderTarget.Get(),
-        clearColor);
-    _deviceContext->IASetInputLayout(_vertexLayout.Get());
-    _deviceContext->IASetVertexBuffers(
-        0,
-        1,
-        _triangleVertices.GetAddressOf(),
-        &vertexStride,
-        &vertexOffset);
-    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    _deviceContext->VSSetShader(
-        _vertexShader.Get(),
-        nullptr,
-        0);
-    _deviceContext->RSSetViewports(
-        1,
-        &viewport);
-    _deviceContext->PSSetShader(
-        _pixelShader.Get(),
-        nullptr,
-        0);
-    _deviceContext->OMSetRenderTargets(
-        1,
-        _renderTarget.GetAddressOf(),
-        nullptr);
-    _deviceContext->Draw(3, 0);
+    _deviceContext->Clear(_renderTarget.Get(), clearColor);
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
+    _deviceContext->SetViewport(viewport);
+    _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }
