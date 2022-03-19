@@ -216,7 +216,7 @@ bool LoadingMeshesApplication::Initialize()
         return false;
     }
 
-    if (!LoadModel(L"Assets/Models/SM_Good_Froge.fbx"))
+    if (!LoadModel("Assets/Models/SM_Good_Froge.fbx"))
     {
         return false;
     }
@@ -378,13 +378,12 @@ void LoadingMeshesApplication::Render()
     _swapChain->Present(1, 0);
 }
 
-bool LoadingMeshesApplication::LoadModel(const std::wstring_view filePath)
+bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
 {
     constexpr uint32_t importFlags = aiProcess_Triangulate | aiProcess_FlipUVs;
-    const std::string fileName{ filePath.begin(), filePath.end() };
 
     Assimp::Importer sceneImporter;
-    const aiScene* scene = sceneImporter.ReadFile(fileName.c_str(), importFlags);
+    const aiScene* scene = sceneImporter.ReadFile(filePath, importFlags);
 
     if (scene == nullptr)
     {

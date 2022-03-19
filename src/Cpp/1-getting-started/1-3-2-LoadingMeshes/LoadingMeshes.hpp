@@ -11,7 +11,7 @@
 #include "ShaderFactory.hpp"
 #include "TextureFactory.hpp"
 
-#include <string_view>
+#include <string>
 #include <memory>
 
 class LoadingMeshesApplication final : public Application
@@ -32,7 +32,7 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-    bool LoadModel(const std::wstring_view filePath);
+    bool LoadModel(const std::string& filePath);
 
     enum ConstantBufferType
     {
