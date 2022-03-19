@@ -6,7 +6,8 @@
 
 #include "Application.hpp"
 #include "Definitions.hpp"
-#include "ShaderFactory.hpp"
+#include "DeviceContext.hpp"
+#include "PipelineFactory.hpp"
 
 #include <string_view>
 #include <memory>
@@ -30,14 +31,12 @@ private:
     void DestroySwapchainResources();
 
     WRL::ComPtr<ID3D11Device> _device = nullptr;
-    WRL::ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
+    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     WRL::ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
     WRL::ComPtr<ID3D11Buffer> _triangleVertices = nullptr;
-    WRL::ComPtr<ID3D11InputLayout> _vertexLayout = nullptr;
-    WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
-    WRL::ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
+    std::unique_ptr<Pipeline> _pipeline;
 
-    std::unique_ptr<ShaderFactory> _shaderFactory;
+    std::unique_ptr<PipelineFactory> _pipelineFactory;
 };
