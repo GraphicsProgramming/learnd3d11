@@ -117,6 +117,7 @@ We need to include the following headers, here's what each of these headers incl
 - `d3dcompiler.h`: Contains all the functions necessary to compiler our HLSL shaders into bytecode that will be fed into the GPU
 - `DirectXMath.h`: DirectX's own math library, it contains all the types and math functions we will be using throughout the series
 - `wrl.h`: Is used for `Microsoft::WRL::ComPtr<T>`, to manage COM resources automatically.
+
 ```cpp
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -166,8 +167,7 @@ if (!Application::Initialize())
 
 if (FAILED(CreateDXGIFactory2(
     0,
-    __uuidof(IDXGIFactory2),
-    &_dxgiFactory)))
+    IID_PPV_ARGS(&_dxgiFactory))))
 {
     std::cout << "DXGI: Unable to create DXGIFactory\n";
     return false;
@@ -176,7 +176,8 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-[`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us. a `IDXGIFactory2` to be precise. There are various implementations of it, depending on what version you aim for, you get additional functionality.
+[`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us, a `IDXGIFactory2` to be precise.
+There are various implementations of it, depending on what version you aim for, you get additional functionality.
 
 DXGI 1.0 up to 1.6 More information can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/_direct3ddxgi/) We will stick with `IDXGIFactory2` for now.
 
@@ -268,8 +269,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
         0,
-        __uuidof(ID3D11Texture2D),
-        &backBuffer)))
+        IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
