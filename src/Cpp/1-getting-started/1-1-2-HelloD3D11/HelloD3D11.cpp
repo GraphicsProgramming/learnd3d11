@@ -40,9 +40,7 @@ bool HelloD3D11Application::Initialize()
     }
 
     // This section initializes DirectX's devices and SwapChain
-    if (FAILED(CreateDXGIFactory1(
-        __uuidof(IDXGIFactory1),
-        &_dxgiFactory)))
+    if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
         std::cout << "DXGI: Unable to create DXGIFactory\n";
         return false;
@@ -105,8 +103,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
         0,
-        __uuidof(ID3D11Texture2D),
-        &backBuffer)))
+        IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;

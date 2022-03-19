@@ -155,7 +155,7 @@ bool Initialize()
     glfwSetWindowSizeCallback(g_Window, OnWindowResize);
     CenterWindow(g_Window);
 
-    if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(g_Factory.GetAddressOf()))))
+    if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&g_Factory))))
     {
         std::cout << "DXGI: Unable to create factory\n";
         return false;
@@ -244,7 +244,9 @@ bool Initialize()
     }
 
     ID3D11Texture2D* backBuffer = nullptr;;
-    if (FAILED(g_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer))))
+    if (FAILED(g_SwapChain->GetBuffer(
+        0,
+        IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "DXGI: Unable to retrieve backbuffer from swapchain\n";
         return false;
