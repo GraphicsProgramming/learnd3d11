@@ -62,7 +62,7 @@ bool PipelineFactory::CreatePipeline(
 }
 
 bool PipelineFactory::CompileShader(
-    const std::wstring& fileName,
+    const std::wstring& filePath,
     const std::string& entryPoint,
     const std::string& profile,
     WRL::ComPtr<ID3DBlob>& shaderBlob) const
@@ -72,7 +72,7 @@ bool PipelineFactory::CompileShader(
     WRL::ComPtr<ID3DBlob> tempShaderBlob = nullptr;
     WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
-        fileName.data(),
+        filePath.data(),
         nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         entryPoint.data(),
@@ -96,10 +96,10 @@ bool PipelineFactory::CompileShader(
 }
 
 WRL::ComPtr<ID3D11VertexShader> PipelineFactory::CreateVertexShader(
-    const std::wstring& fileName,
+    const std::wstring& filePath,
     WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const
 {
-    if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
+    if (!CompileShader(filePath, "Main", "vs_5_0", vertexShaderBlob))
     {
         return nullptr;
     }
@@ -118,10 +118,10 @@ WRL::ComPtr<ID3D11VertexShader> PipelineFactory::CreateVertexShader(
     return vertexShader;
 }
 
-WRL::ComPtr<ID3D11PixelShader> PipelineFactory::CreatePixelShader(const std::wstring& fileName) const
+WRL::ComPtr<ID3D11PixelShader> PipelineFactory::CreatePixelShader(const std::wstring& filePath) const
 {
     WRL::ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
-    if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))
+    if (!CompileShader(filePath, "Main", "ps_5_0", pixelShaderBlob))
     {
         return nullptr;
     }

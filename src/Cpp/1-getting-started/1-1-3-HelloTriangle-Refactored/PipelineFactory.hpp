@@ -31,9 +31,9 @@ public:
 
 private:
     [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
-        const std::wstring& fileName,
+        const std::wstring& filePath,
         WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(const std::wstring& fileName) const;
+    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(const std::wstring& filePath) const;
 
     bool CreateInputLayout(
         const VertexType layoutInfo,
@@ -41,7 +41,7 @@ private:
         WRL::ComPtr<ID3D11InputLayout>& inputLayout);
 
     bool CompileShader(
-        const std::wstring& fileName,
+        const std::wstring& filePath,
         const std::string& entryPoint,
         const std::string& profile,
         WRL::ComPtr<ID3DBlob>& shaderBlob) const;
