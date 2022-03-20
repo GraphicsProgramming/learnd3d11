@@ -1,4 +1,8 @@
 #include "LoadingMeshes.hpp"
+#include "DeviceContext.hpp"
+#include "PipelineFactory.hpp"
+#include "TextureFactory.hpp"
+#include "Pipeline.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -28,17 +32,6 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
 
-using Position = DirectX::XMFLOAT3;
-using Color = DirectX::XMFLOAT3;
-using Uv = DirectX::XMFLOAT2;
-
-struct VertexPositionColorUv
-{
-    Position position;
-    Color color;
-    Uv uv;
-};
-
 LoadingMeshesApplication::LoadingMeshesApplication(const std::string_view title)
     : Application(title)
 {
@@ -51,15 +44,14 @@ LoadingMeshesApplication::~LoadingMeshesApplication()
     _constantBuffers[ConstantBufferType::PerFrame].Reset();
     _constantBuffers[ConstantBufferType::PerObject].Reset();
     _textureSrv.Reset();
-    _pixelShader.Reset();
-    _vertexShader.Reset();
-    _vertexLayout.Reset();
+    _pipeline.reset();
     _modelVertices.Reset();
     _modelIndices.Reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.Reset();
+    _deviceContext.reset
+    ();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     _debug.Reset();
@@ -88,6 +80,7 @@ bool LoadingMeshesApplication::Initialize()
 #if !defined(NDEBUG)
     deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
 #endif
+    WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -98,7 +91,7 @@ bool LoadingMeshesApplication::Initialize()
         D3D11_SDK_VERSION,
         &_device,
         nullptr,
-        &_deviceContext)))
+        &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
@@ -109,12 +102,13 @@ bool LoadingMeshesApplication::Initialize()
         std::cout << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
-
     _textureFactory = std::make_unique<TextureFactory>(_device);
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
-    SetDebugName(_deviceContext.Get(), "CTX_Main");
+    SetDebugName(deviceContext.Get(), "CTX_Main");
+
+    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -144,66 +138,19 @@ bool LoadingMeshesApplication::Initialize()
 
     CreateSwapchainResources();
 
-    _shaderFactory = std::make_unique<ShaderFactory>(_device);
-
-    WRL::ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
-    _vertexShader = _shaderFactory->CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
-    if (_vertexShader == nullptr)
-    {
-        return false;
-    }
-
-    _pixelShader = _shaderFactory->CreatePixelShader(L"Assets/Shaders/Main.ps.hlsl");
-    if (_pixelShader == nullptr)
-    {
-        return false;
-    }
-
-    // ReSharper disable once CppTooWideScopeInitStatement
-    constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
-    {
-        {
-            "POSITION",
-            0,
-            DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
-            0,
-            offsetof(VertexPositionColorUv, position),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0
-        },
-        {
-            "COLOR",
-            0,
-            DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
-            0,
-            offsetof(VertexPositionColorUv, color),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
-            0
-        },
-        {
-            "TEXCOORD",
-            0,
-            DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT,
-            0,
-            offsetof(VertexPositionColorUv, uv),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
-            0
-        }
-    };
-    if (FAILED(_device->CreateInputLayout(
-        vertexInputLayoutInfo,
-        _countof(vertexInputLayoutInfo),
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        &_vertexLayout)))
-    {
-        std::cout << "D3D11: Failed to create default vertex input layout\n";
-        return false;
-    }
+    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    PipelineSettings pipelineSettings = {};
+    pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    pipelineSettings.VertexType = VertexType::PositionColorUv;
+    _pipelineFactory->CreatePipeline(pipelineSettings, _pipeline);
 
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
     {
         return false;
     }
+
+    _pipeline->BindTexture(0, _textureSrv.Get());
 
     D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
     linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
@@ -215,6 +162,8 @@ bool LoadingMeshesApplication::Initialize()
         std::cout << "D3D11: Unable to create linear sampler state\n";
         return false;
     }
+
+    _pipeline->BindSampler(0, _linearSamplerState.Get());
 
     if (!LoadModel("Assets/Models/SM_Good_Froge.fbx"))
     {
@@ -230,23 +179,26 @@ bool LoadingMeshesApplication::Initialize()
         std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
         return false;
     }
+    _pipeline->BindVertexStageConstantBuffer(0, _constantBuffers[ConstantBufferType::PerApplication].Get());
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerFrame\n";
         return false;
     }
+    _pipeline->BindVertexStageConstantBuffer(1, _constantBuffers[ConstantBufferType::PerFrame].Get());
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerObject\n";
         return false;
     }
+    _pipeline->BindVertexStageConstantBuffer(2, _constantBuffers[ConstantBufferType::PerObject].Get());
 
     _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
         DirectX::XMConvertToRadians(45.0f),
         GetWindowWidth() / static_cast<float>(GetWindowHeight()),
         0.1f,
         512.0f);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), 0, nullptr, &_projectionMatrix, 0, 0);
+    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
 
     return true;
 }
@@ -306,7 +258,7 @@ void LoadingMeshesApplication::OnResize(
         GetWindowWidth() / static_cast<float>(GetWindowHeight()),
         0.1f,
         512);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), 0, nullptr, &_projectionMatrix, 0, 0);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerApplication].Get(), &_projectionMatrix);
 }
 
 void LoadingMeshesApplication::Update()
@@ -315,14 +267,14 @@ void LoadingMeshesApplication::Update()
     const auto focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
     const auto upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
     _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), 0, nullptr, &_viewMatrix, 0, 0);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerFrame].Get(), &_viewMatrix);
 
     static float angle = 0.0f;
     angle += 90.0f * (10.0 / 60000.0f);
     const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 
     _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
-    _deviceContext->UpdateSubresource(_constantBuffers[PerObject].Get(), 0, nullptr, &_worldMatrix, 0, 0);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerObject].Get(), &_worldMatrix);
 }
 
 void LoadingMeshesApplication::Render()
@@ -337,44 +289,15 @@ void LoadingMeshesApplication::Render()
 
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-    constexpr uint32_t vertexStride = sizeof(VertexPositionColorUv);
-    constexpr uint32_t vertexOffset = 0;
-
-    _deviceContext->ClearRenderTargetView(
+    _deviceContext->Clear(
         _renderTarget.Get(),
         clearColor);
 
-    _deviceContext->IASetInputLayout(_vertexLayout.Get());
-    _deviceContext->IASetVertexBuffers(
-        0,
-        1,
-        _modelVertices.GetAddressOf(),
-        &vertexStride,
-        &vertexOffset);
-    _deviceContext->IASetIndexBuffer(_modelIndices.Get(), DXGI_FORMAT_R32_UINT, 0);
-    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    _deviceContext->VSSetShader(
-        _vertexShader.Get(),
-        nullptr,
-        0);
-    _deviceContext->VSSetConstantBuffers(0, 3, _constantBuffers->GetAddressOf());
-
-    _deviceContext->RSSetViewports(
-        1,
-        &viewport);
-
-    _deviceContext->PSSetShader(
-        _pixelShader.Get(),
-        nullptr,
-        0);
-    _deviceContext->PSSetShaderResources(0, 1, _textureSrv.GetAddressOf());
-    _deviceContext->PSSetSamplers(0, 1, _linearSamplerState.GetAddressOf());
-    _deviceContext->OMSetRenderTargets(
-        1,
-        _renderTarget.GetAddressOf(),
-        nullptr);
-
-    _deviceContext->DrawIndexed(_modelIndexCount, 0, 0);
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_modelVertices.Get(), 0);
+    _deviceContext->SetIndexBuffer(_modelIndices.Get(), 0);
+    _deviceContext->SetViewport(viewport);
+    _deviceContext->DrawIndexed();
     _swapChain->Present(1, 0);
 }
 
