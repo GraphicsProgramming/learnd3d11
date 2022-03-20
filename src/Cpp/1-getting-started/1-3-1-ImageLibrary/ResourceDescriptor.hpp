@@ -3,13 +3,15 @@
 #include <unordered_map>
 #include <cstdint>
 
-enum class ResourceType : uint32_t {
+enum class ResourceType : uint32_t
+{
     Texture,
     Sampler,
     Buffer
 };
 
-struct ResourceDescriptor {
+struct ResourceDescriptor
+{
     ResourceType type;
     uint32_t slotIndex;
 };

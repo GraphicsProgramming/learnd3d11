@@ -12,17 +12,17 @@ struct VSOutput
     float2 Uv: TEXCOORD0;
 };
 
-cbuffer PerApplication
+cbuffer PerApplication : register(b0)
 {
     matrix ProjectionMatrix;
 }
 
-cbuffer PerFrame
+cbuffer PerFrame : register(b1)
 {
     matrix ViewMatrix;
 }
 
-cbuffer PerObject
+cbuffer PerObject : register(b2)
 {
     matrix WorldMatrix;
 }

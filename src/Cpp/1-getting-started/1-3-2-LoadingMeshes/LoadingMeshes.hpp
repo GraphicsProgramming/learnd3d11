@@ -8,12 +8,14 @@
 
 #include "Application.hpp"
 #include "Definitions.hpp"
-#include "ShaderFactory.hpp"
-#include "TextureFactory.hpp"
 
 #include <string>
 #include <memory>
 
+class Pipeline;
+class PipelineFactory;
+class TextureFactory;
+class DeviceContext;
 class LoadingMeshesApplication final : public Application
 {
 public:
@@ -43,21 +45,19 @@ private:
     };
 
     WRL::ComPtr<ID3D11Device> _device = nullptr;
-    WRL::ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     WRL::ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
     WRL::ComPtr<ID3D11Buffer> _modelVertices = nullptr;
     WRL::ComPtr<ID3D11Buffer> _modelIndices = nullptr;
-    WRL::ComPtr<ID3D11InputLayout> _vertexLayout = nullptr;
-    WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
-    WRL::ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
     WRL::ComPtr<ID3D11Debug> _debug = nullptr;
 
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
 
-    std::unique_ptr<ShaderFactory> _shaderFactory = nullptr;
+    std::unique_ptr<Pipeline> _pipeline = nullptr;
+    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
+    std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
     std::unique_ptr<TextureFactory> _textureFactory = nullptr;
 
     WRL::ComPtr<ID3D11Buffer> _constantBuffers[NumConstantBufferTypes];
