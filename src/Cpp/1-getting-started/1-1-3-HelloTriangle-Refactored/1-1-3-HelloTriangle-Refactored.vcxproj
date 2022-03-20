@@ -100,7 +100,6 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
-    <ClInclude Include="Forwards.hpp" />
     <ClInclude Include="HelloTriangle.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />

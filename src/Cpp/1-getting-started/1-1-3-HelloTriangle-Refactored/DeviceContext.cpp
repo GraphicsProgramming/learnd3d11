@@ -1,9 +1,7 @@
 #include "DeviceContext.hpp"
-
-#include <d3d11.h>
-#include <utility>
-
 #include "Pipeline.hpp"
+
+#include <utility>
 
 DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 {

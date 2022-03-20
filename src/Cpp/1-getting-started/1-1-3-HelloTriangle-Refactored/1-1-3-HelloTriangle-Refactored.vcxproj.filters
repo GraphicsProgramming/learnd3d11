@@ -50,9 +50,6 @@
     <ClInclude Include="DeviceContext.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Forwards.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VertexType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

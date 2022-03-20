@@ -1,17 +1,15 @@
 #pragma once
 
-#include <d3d11.h>
-#include <dxgi1_2.h>
+#include "Definitions.hpp"
+#include "VertexType.hpp"
+#include "Pipeline.hpp"
+
+#include <d3d11_2.h>
 #include <DirectXMath.h>
 
 #include <unordered_map>
 #include <string_view>
 #include <memory>
-
-#include "Definitions.hpp"
-#include "VertexType.hpp"
-
-class Pipeline;
 
 struct PipelineSettings
 {

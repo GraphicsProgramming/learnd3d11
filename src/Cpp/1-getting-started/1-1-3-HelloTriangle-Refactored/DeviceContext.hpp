@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "Forwards.hpp"
+
+#include <d3d11_2.h>
 
 #include <cstdint>
+
+class Pipeline;
 
 class DeviceContext
 {

@@ -1,10 +1,14 @@
 #include "HelloTriangle.hpp"
+#include "DeviceContext.hpp"
 #include "Pipeline.hpp"
+#include "PipelineFactory.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
+#include <dxgi1_2.h>
+#include <d3d11_2.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
@@ -116,8 +120,10 @@ bool HelloTriangleApplication::Initialize()
     bufferInfo.ByteWidth = sizeof(vertices);
     bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
     bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
     D3D11_SUBRESOURCE_DATA resourceData = {};
     resourceData.pSysMem = vertices;
+
     if (FAILED(_device->CreateBuffer(
         &bufferInfo,
         &resourceData,
