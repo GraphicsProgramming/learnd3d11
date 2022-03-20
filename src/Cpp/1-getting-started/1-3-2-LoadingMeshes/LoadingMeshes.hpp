@@ -1,21 +1,19 @@
 #pragma once
 
-#include <dxgi1_3.h>
-#include <d3dcommon.h>
-#include <d3d11.h>
-
-#include <DirectXMath.h>
-
 #include "Application.hpp"
 #include "Definitions.hpp"
+
+#include <d3d11_2.h>
+#include <DirectXMath.h>
 
 #include <string>
 #include <memory>
 
 class Pipeline;
 class PipelineFactory;
-class TextureFactory;
 class DeviceContext;
+class TextureFactory;
+
 class LoadingMeshesApplication final : public Application
 {
 public:
@@ -44,6 +42,11 @@ private:
         NumConstantBufferTypes
     };
 
+    std::unique_ptr<Pipeline> _pipeline = nullptr;
+    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
+    std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
+    std::unique_ptr<TextureFactory> _textureFactory = nullptr;
+
     WRL::ComPtr<ID3D11Device> _device = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
@@ -54,11 +57,6 @@ private:
 
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
-
-    std::unique_ptr<Pipeline> _pipeline = nullptr;
-    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
-    std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
-    std::unique_ptr<TextureFactory> _textureFactory = nullptr;
 
     WRL::ComPtr<ID3D11Buffer> _constantBuffers[NumConstantBufferTypes];
     DirectX::XMMATRIX _projectionMatrix;

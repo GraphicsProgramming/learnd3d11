@@ -184,18 +184,21 @@ bool LoadingMeshesApplication::Initialize()
         std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
         return false;
     }
-    _pipeline->BindVertexStageConstantBuffer(0, _constantBuffers[ConstantBufferType::PerApplication].Get());
+
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerFrame\n";
         return false;
     }
-    _pipeline->BindVertexStageConstantBuffer(1, _constantBuffers[ConstantBufferType::PerFrame].Get());
+
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerObject\n";
         return false;
     }
+
+    _pipeline->BindVertexStageConstantBuffer(0, _constantBuffers[ConstantBufferType::PerApplication].Get());
+    _pipeline->BindVertexStageConstantBuffer(1, _constantBuffers[ConstantBufferType::PerFrame].Get());
     _pipeline->BindVertexStageConstantBuffer(2, _constantBuffers[ConstantBufferType::PerObject].Get());
 
     _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
@@ -297,7 +300,6 @@ void LoadingMeshesApplication::Render()
     _deviceContext->Clear(
         _renderTarget.Get(),
         clearColor);
-
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_modelVertices.Get(), 0);
     _deviceContext->SetIndexBuffer(_modelIndices.Get(), 0);
