@@ -30,10 +30,10 @@
     <ClCompile Include="DeviceContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PipelineFactory.cpp">
+    <ClCompile Include="Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline.cpp">
+    <ClCompile Include="PipelineFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
