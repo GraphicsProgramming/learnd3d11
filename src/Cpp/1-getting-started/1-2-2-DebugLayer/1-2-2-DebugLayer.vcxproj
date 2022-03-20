@@ -92,14 +92,18 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DebugLayer.cpp" />
+    <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ShaderFactory.cpp" />
+    <ClCompile Include="PipelineFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="DebugLayer.hpp" />
     <ClInclude Include="Definitions.hpp" />
-    <ClInclude Include="ShaderFactory.hpp" />
+    <ClInclude Include="DeviceContext.hpp" />
+    <ClInclude Include="Pipeline.hpp" />
+    <ClInclude Include="PipelineFactory.hpp" />
+    <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">
