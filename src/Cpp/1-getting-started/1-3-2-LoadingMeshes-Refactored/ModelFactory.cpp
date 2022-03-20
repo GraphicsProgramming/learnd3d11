@@ -1,5 +1,5 @@
 #include "ModelFactory.hpp"
-#include "VertexPositionColorUv.hpp"
+#include "VertexType.hpp"
 
 #undef min
 #undef max
