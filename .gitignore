@@ -364,3 +364,7 @@ obj\
 # Ignore DirectXTex
 !lib/DirectXTex/lib/Debug
 !lib/DirectXTex/lib/Release
+
+# Ignore Assimp
+!lib/assimp/lib/Debug
+!lib/assimp/lib/Release
