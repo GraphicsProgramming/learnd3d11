@@ -15,8 +15,8 @@ class Pipeline;
 
 struct PipelineSettings
 {
-    std::wstring_view VertexFilePath;
-    std::wstring_view PixelFilePath;
+    std::wstring VertexFilePath;
+    std::wstring PixelFilePath;
     VertexType VertexType;
 };
 
@@ -31,9 +31,9 @@ public:
 
 private:
     [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
-        const std::wstring_view fileName,
+        const std::wstring& fileName,
         WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const;
-    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
+    [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(const std::wstring& fileName) const;
 
     bool CreateInputLayout(
         const VertexType layoutInfo,
@@ -41,9 +41,9 @@ private:
         WRL::ComPtr<ID3D11InputLayout>& inputLayout);
 
     bool CompileShader(
-        const std::wstring_view fileName,
-        const std::string_view entryPoint,
-        const std::string_view profile,
+        const std::wstring& fileName,
+        const std::string& entryPoint,
+        const std::string& profile,
         WRL::ComPtr<ID3DBlob>& shaderBlob) const;
 
     WRL::ComPtr<ID3D11Device> _device = nullptr;
