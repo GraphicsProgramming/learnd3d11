@@ -45,6 +45,7 @@ LoadingMeshesApplication::~LoadingMeshesApplication()
     _constantBuffers[ConstantBufferType::PerObject].Reset();
     _textureSrv.Reset();
     _pipeline.reset();
+    _pipelineFactory.reset();
     _modelVertices.Reset();
     _modelIndices.Reset();
     DestroySwapchainResources();
@@ -143,7 +144,11 @@ bool LoadingMeshesApplication::Initialize()
     pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
     pipelineSettings.VertexType = VertexType::PositionColorUv;
-    _pipelineFactory->CreatePipeline(pipelineSettings, _pipeline);
+    if (!_pipelineFactory->CreatePipeline(pipelineSettings, _pipeline))
+    {
+        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        return false;
+    }
 
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
     {

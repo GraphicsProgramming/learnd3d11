@@ -37,6 +37,8 @@ ImageLibraryApplication::~ImageLibraryApplication()
     _deviceContext->Flush();
     _textureSrv.Reset();
     _triangleVertices.Reset();
+    _pipeline.reset();
+    _pipelineFactory.reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
@@ -131,7 +133,11 @@ bool ImageLibraryApplication::Initialize()
     pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
     pipelineSettings.VertexType = VertexType::PositionColorUv;
-    _pipelineFactory->CreatePipeline(pipelineSettings, _pipeline);
+    if (!_pipelineFactory->CreatePipeline(pipelineSettings, _pipeline))
+    {
+        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        return false;
+    }
 
     constexpr VertexPositionColorUv vertices[] =
     {
