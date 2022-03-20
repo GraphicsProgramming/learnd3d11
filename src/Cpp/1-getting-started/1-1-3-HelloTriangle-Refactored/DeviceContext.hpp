@@ -20,6 +20,7 @@ public:
     void SetViewport(D3D11_VIEWPORT viewport);
     void Draw();
     void Flush();
+
 private:
     uint32_t _drawVertices;
     const Pipeline* _activePipeline;

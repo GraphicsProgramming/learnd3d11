@@ -10,7 +10,9 @@ DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
     _deviceContext = std::move(deviceContext);
 }
 
-void DeviceContext::Clear(ID3D11RenderTargetView* renderTarget, const float clearColor[4])
+void DeviceContext::Clear(
+    ID3D11RenderTargetView* renderTarget,
+    const float clearColor[4])
 {
     _deviceContext->ClearRenderTargetView(renderTarget, clearColor);
     _deviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
@@ -25,7 +27,9 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
     _deviceContext->PSSetShader(pipeline->_pixelShader.Get(), nullptr, 0);
 }
 
-void DeviceContext::SetVertexBuffer(ID3D11Buffer* triangleVertices, uint32_t vertexOffset)
+void DeviceContext::SetVertexBuffer(
+    ID3D11Buffer* triangleVertices,
+    uint32_t vertexOffset)
 {
     D3D11_BUFFER_DESC description = {};
     triangleVertices->GetDesc(&description);
@@ -47,5 +51,3 @@ void DeviceContext::Flush()
 {
     _deviceContext->Flush();
 }
-
-

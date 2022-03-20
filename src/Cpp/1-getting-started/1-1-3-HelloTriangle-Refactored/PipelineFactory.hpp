@@ -9,22 +9,9 @@
 #include <memory>
 
 #include "Definitions.hpp"
+#include "VertexType.hpp"
 
 class Pipeline;
-
-enum class VertexType
-{
-    PositionColor
-};
-
-using Position = DirectX::XMFLOAT3;
-using Color = DirectX::XMFLOAT3;
-
-struct VertexPositionColor
-{
-    Position position;
-    Color color;
-};
 
 struct PipelineSettings
 {
@@ -41,6 +28,7 @@ public:
     bool CreatePipeline(
         const PipelineSettings& settings,
         std::unique_ptr<Pipeline>& pipeline);
+
 private:
     [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
         const std::wstring_view fileName,

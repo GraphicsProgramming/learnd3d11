@@ -104,6 +104,7 @@
     <ClInclude Include="HelloTriangle.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />
+    <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">
