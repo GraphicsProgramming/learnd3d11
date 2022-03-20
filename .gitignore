@@ -360,3 +360,7 @@ obj\
 
 # Ignore MkDocks backup files
 *.bak
+
+# Ignore DirectXTex
+!lib/DirectXTex/lib/Debug
+!lib/DirectXTex/lib/Release

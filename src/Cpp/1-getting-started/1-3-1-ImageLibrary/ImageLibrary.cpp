@@ -130,7 +130,7 @@ bool ImageLibraryApplication::Initialize()
     PipelineSettings pipelineSettings = {};
     pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineSettings.VertexType = VertexType::PositionColor;
+    pipelineSettings.VertexType = VertexType::PositionColorUv;
     _pipelineFactory->CreatePipeline(pipelineSettings, _pipeline);
 
     constexpr VertexPositionColorUv vertices[] =
@@ -189,6 +189,8 @@ bool ImageLibraryApplication::Initialize()
         return false;
     }
 
+    _pipeline->BindTexture(0, _textureSrv.Get());
+
     D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
     linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
     linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
@@ -200,6 +202,8 @@ bool ImageLibraryApplication::Initialize()
         return false;
     }
 
+    _pipeline->BindSampler(0, _linearSamplerState.Get());
+    
     return true;
 }
 
@@ -277,10 +281,6 @@ void ImageLibraryApplication::Render()
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
     _deviceContext->SetViewport(viewport);
-
-    _deviceContext->PSSetShaderResources(0, 1, _textureSrv.GetAddressOf());
-    _deviceContext->PSSetSamplers(0, 1, _linearSamplerState.GetAddressOf());
-
     _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }

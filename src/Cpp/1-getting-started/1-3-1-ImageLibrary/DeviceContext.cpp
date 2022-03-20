@@ -23,6 +23,20 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
     _deviceContext->IASetPrimitiveTopology(pipeline->_primitiveTopology);
     _deviceContext->VSSetShader(pipeline->_vertexShader.Get(), nullptr, 0);
     _deviceContext->PSSetShader(pipeline->_pixelShader.Get(), nullptr, 0);
+
+    for (auto [descriptor, resource] : pipeline->_resources)
+    {
+        switch (descriptor.type)
+        {
+            case ResourceType::Sampler:
+                _deviceContext->PSSetSamplers(descriptor.slotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
+                break;
+
+            case ResourceType::Texture:
+                _deviceContext->PSSetShaderResources(descriptor.slotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
+                break;
+        }
+    }
 }
 
 void DeviceContext::SetVertexBuffer(
