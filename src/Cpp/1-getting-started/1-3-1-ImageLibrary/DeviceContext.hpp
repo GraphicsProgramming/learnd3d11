@@ -5,6 +5,7 @@
 #include <d3d11_2.h>
 
 #include <cstdint>
+#include <map>
 
 class Pipeline;
 
@@ -21,6 +22,7 @@ public:
         ID3D11Buffer* triangleVertices,
         uint32_t vertexOffset);
     void SetViewport(D3D11_VIEWPORT viewport);
+    
     void Draw();
     void Flush();
 
