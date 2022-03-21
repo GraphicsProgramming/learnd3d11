@@ -339,7 +339,7 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
     std::vector<VertexPositionColorUv> vertices;
     for (int32_t i = 0; i < (mesh->mNumVertices); i++)
     {
-        const Position& position = Position{ mesh->mVertices[i].x / 1.0f, mesh->mVertices[i].y / 1.0f, mesh->mVertices[i].z / 1.0f };
+        const Position& position = Position{ mesh->mVertices[i].x / 100.0f, mesh->mVertices[i].y / 100.0f, mesh->mVertices[i].z / 100.0f };
         const Color& color = mesh->HasVertexColors(0)
             ? Color{ mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b}
             : defaultColor;
