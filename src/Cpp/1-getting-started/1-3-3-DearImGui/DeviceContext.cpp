@@ -1,11 +1,20 @@
 #include "DeviceContext.hpp"
 #include "Pipeline.hpp"
 
+#include <imgui/backend/imgui_impl_dx11.h>
 #include <utility>
 
-DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
+DeviceContext::DeviceContext(
+    WRL::ComPtr<ID3D11Device>& device,
+    WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 {
     _deviceContext = std::move(deviceContext);
+    ImGui_ImplDX11_Init(device.Get(), _deviceContext.Get());
+}
+
+DeviceContext::~DeviceContext()
+{
+    ImGui_ImplDX11_Shutdown();
 }
 
 void DeviceContext::Clear(

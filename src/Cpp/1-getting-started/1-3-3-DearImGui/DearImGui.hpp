@@ -15,6 +15,8 @@ class DeviceContext;
 class TextureFactory;
 class ModelFactory;
 
+struct ImGuiContext;
+
 class DearImGuiApplication final : public Application
 {
 public:
@@ -33,6 +35,9 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
+    void InitializeImGui();
+    void RenderUi();
+
     enum ConstantBufferType
     {
         PerApplication,
@@ -46,6 +51,8 @@ private:
     std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
     std::unique_ptr<TextureFactory> _textureFactory = nullptr;
     std::unique_ptr<ModelFactory> _modelFactory = nullptr;
+
+    ImGuiContext* _imGuiContext = nullptr;
 
     WRL::ComPtr<ID3D11Device> _device = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
@@ -65,4 +72,5 @@ private:
 
     uint32_t _modelVertexCount = 0;
     uint32_t _modelIndexCount = 0;
+    bool _toggledRotation = false;
 };

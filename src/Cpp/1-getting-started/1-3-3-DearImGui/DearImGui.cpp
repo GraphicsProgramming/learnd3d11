@@ -56,6 +56,10 @@ DearImGuiApplication::~DearImGuiApplication()
     _debug.Reset();
 #endif
     _device.Reset();
+
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext(_imGuiContext);
+
     Application::Cleanup();
 }
 
@@ -103,12 +107,7 @@ bool DearImGuiApplication::Initialize()
         return false;
     }
 
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
-
-    ImGui_ImplGlfw_InitForOther(GetWindow(), true);
-    ImGui_ImplDX11_Init(_device.Get(), deviceContext.Get());
+    InitializeImGui();
 
     _textureFactory = std::make_unique<TextureFactory>(_device);
 
@@ -116,7 +115,7 @@ bool DearImGuiApplication::Initialize()
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
     SetDebugName(deviceContext.Get(), "CTX_Main");
 
-    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
+    _deviceContext = std::make_unique<DeviceContext>(_device, std::move(deviceContext));
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -294,7 +293,15 @@ void DearImGuiApplication::Update()
     _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), &_viewMatrix);
 
     static float angle = 0.0f;
-    angle += 90.0f * (10.0 / 60000.0f);
+    if (_toggledRotation)
+    {
+        angle += 90.0f * (10.0 / 60000.0f);
+    }
+    else
+    {
+        angle -= 90.0f * (10.0 / 60000.0f);
+    }
+
     const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 
     _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
@@ -323,15 +330,30 @@ void DearImGuiApplication::Render()
 
     _deviceContext->DrawIndexed();
 
+    RenderUi();
+    _swapChain->Present(1, 0);
+}
+
+void DearImGuiApplication::RenderUi()
+{
     ImGui_ImplDX11_NewFrame();
     ImGui::NewFrame();
 
-    if (ImGui::Begin("Hello ImGui"))
+    if (ImGui::Begin("Hello Froge"))
     {
+        ImGui::Checkbox("Toggle Rotation", &_toggledRotation);
         ImGui::End();
     }
 
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-    _swapChain->Present(1, 0);
+}
+
+void DearImGuiApplication::InitializeImGui()
+{
+    _imGuiContext = ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+
+    ImGui_ImplGlfw_InitForOther(GetWindow(), true);
 }

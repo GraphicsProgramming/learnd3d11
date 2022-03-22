@@ -12,7 +12,10 @@ class Pipeline;
 class DeviceContext
 {
 public:
-    DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext);
+    DeviceContext(
+        WRL::ComPtr<ID3D11Device>& device,
+        WRL::ComPtr<ID3D11DeviceContext>&& deviceContext);
+    ~DeviceContext();
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
