@@ -277,11 +277,6 @@ void Application::Cleanup()
     glfwTerminate();
 }
 
-void Application::Close()
-{
-    glfwSetWindowShouldClose(_window, GLFW_TRUE);
-}
-
 bool Application::Initialize()
 {
     if (!glfwInit())
