@@ -129,6 +129,12 @@ bool NamingThingsApplication::Initialize()
     CreateSwapchainResources();
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+
+    return true;
+}
+
+bool NamingThingsApplication::Load()
+{
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
@@ -166,6 +172,7 @@ bool NamingThingsApplication::Initialize()
 
     return true;
 }
+
 
 bool NamingThingsApplication::CreateSwapchainResources()
 {
@@ -224,21 +231,12 @@ void NamingThingsApplication::Update()
 
 void NamingThingsApplication::Render()
 {
-    D3D11_VIEWPORT viewport = {};
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr UINT vertexOffset = 0;
+    constexpr uint32_t vertexOffset = 0;
 
     _deviceContext->Clear(_renderTarget.Get(), clearColor);
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
-    _deviceContext->SetViewport(viewport);
     _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }

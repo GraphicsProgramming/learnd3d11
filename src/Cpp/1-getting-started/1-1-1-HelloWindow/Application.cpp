@@ -19,6 +19,11 @@ void Application::Run()
         return;
     }
 
+    if (!Load())
+    {
+        return;
+    }
+
     while (!glfwWindowShouldClose(_window))
     {
         glfwPollEvents();

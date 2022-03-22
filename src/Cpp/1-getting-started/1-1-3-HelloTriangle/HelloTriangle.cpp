@@ -107,6 +107,11 @@ bool HelloTriangleApplication::Initialize()
 
     CreateSwapchainResources();
 
+    return true;
+}
+
+bool HelloTriangleApplication::Load()
+{
     ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
     _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
     if (_vertexShader == nullptr)
@@ -175,6 +180,7 @@ bool HelloTriangleApplication::Initialize()
 
     return true;
 }
+
 
 bool HelloTriangleApplication::CompileShader(
     const std::wstring_view fileName,

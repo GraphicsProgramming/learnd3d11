@@ -319,6 +319,7 @@ public:
     HelloWindowApplication(const std::string_view title);
 
 protected:
+    bool Load() override;
     void Render() override;
     void Update() override;
 }
@@ -333,6 +334,12 @@ HelloWindowApplication::HelloWindowApplication(const std::string_view title)
     : Application(title)
 {
 }
+
+bool HelloWindowApplication::Load()
+{
+    return true;
+}
+
 
 void HelloWindowApplication::Update()
 {
@@ -380,6 +387,11 @@ void Application::Run()
         return;
     }
 
+    if (!Load())
+    {
+        return;
+    }
+
     while (!glfwWindowShouldClose(_window))
     {
         glfwPollEvents();
@@ -390,7 +402,11 @@ void Application::Run()
 ```
 
 You can clearly see what it is doing. `Initialize`, as the name suggests, will initialize everything
-which is required for the app to run, which currently is the window in our case.
+which is required for the app to run, which currently is the window in our case. In future chapters it
+will also including initializing `D3D11` and its resources or imgui for some UI.
+
+`Load`s purpose is to load all the assets required to run the application, in further chapters it will
+encompass textures, shaders, models and other things.
 
 The next block is the aforementioned mainloop or gameloop, which still does what it was doing before,
 checking with the OS if events need to be processed and now we also call a `Update` and `Render` method.
@@ -405,6 +421,7 @@ methods if required. We now dont have to deal with the mainloop anymore for the 
 ```cpp
 virtual void Cleanup();
 virtual bool Initialize();
+virtual bool Load() = 0;
 virtual void Render() = 0;
 virtual void Update() = 0;
 ```

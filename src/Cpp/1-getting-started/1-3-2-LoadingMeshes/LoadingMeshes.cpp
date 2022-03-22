@@ -104,7 +104,6 @@ bool LoadingMeshesApplication::Initialize()
         std::cout << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
-    _textureFactory = std::make_unique<TextureFactory>(_device);
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
@@ -142,6 +141,14 @@ bool LoadingMeshesApplication::Initialize()
     CreateSwapchainResources();
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    _textureFactory = std::make_unique<TextureFactory>(_device);
+
+    return true;
+}
+
+bool LoadingMeshesApplication::Load()
+{
+
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";

@@ -16,6 +16,7 @@ public:
 protected:
     virtual void Cleanup();
     virtual bool Initialize();
+    virtual bool Load() = 0;
     virtual void Render() = 0;
     virtual void Update() = 0;
 

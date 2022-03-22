@@ -1,14 +1,13 @@
 # Hello D3D11
 
-We setup a base application in the former chapter. I wont be showing `Main.cpp` and `Application.cpp` anymore.
+We setup a base application in the former chapter. We wont be showing `Main.cpp` and `Application.cpp` anymore.
 
 Let's break down the relevant bits and pieces by showing you how the new class, which derives from `Application` will look like.
 
 ## HelloD3D11.hpp
 
 ```cpp
-#include <dxgi1_3.h>
-#include <d3d11.h>
+#include <d3d11_2.h>
 #include <wrl.h>
 
 #include "Application.hpp"
@@ -25,6 +24,7 @@ public:
 
 protected:
     bool Initialize() override;
+    bool Load() override;
     void OnResize(
         const int32_t width,
         const int32_t height) override;
@@ -76,6 +76,11 @@ HelloD3D11Application::~HelloD3D11Application()
 
 bool HelloD3D11Application::Initialize()
 {
+}
+
+bool HelloD3D11Application::Load()
+{
+    return true;
 }
 
 bool HelloD3D11Application::CreateSwapchainResources()
@@ -376,6 +381,15 @@ void HelloD3D11Application::Update()
 ```
 
 But keep it empty for now.
+
+Same applies for `Application`'s `Load` method.
+
+```cpp
+bool HelloD3D11Application::Load()
+{
+    return true;
+}
+```
 
 Finally we need to modify `Appplication.hpp` and `Application.cpp`. Since we want to handle resizing as well.
 

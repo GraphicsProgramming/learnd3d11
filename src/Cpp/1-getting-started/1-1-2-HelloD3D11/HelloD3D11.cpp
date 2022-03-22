@@ -99,6 +99,12 @@ bool HelloD3D11Application::Initialize()
     return true;
 }
 
+bool HelloD3D11Application::Load()
+{
+    return true;
+}
+
+
 bool HelloD3D11Application::CreateSwapchainResources()
 {
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;

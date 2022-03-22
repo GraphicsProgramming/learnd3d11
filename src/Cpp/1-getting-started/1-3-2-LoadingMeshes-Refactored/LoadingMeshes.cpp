@@ -99,8 +99,6 @@ bool LoadingMeshesApplication::Initialize()
         return false;
     }
 
-    _textureFactory = std::make_unique<TextureFactory>(_device);
-
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
     SetDebugName(deviceContext.Get(), "CTX_Main");
@@ -134,9 +132,18 @@ bool LoadingMeshesApplication::Initialize()
         return false;
     }
 
+    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    _textureFactory = std::make_unique<TextureFactory>(_device);
+    _modelFactory = std::make_unique<ModelFactory>(_device);
+
     CreateSwapchainResources();
 
-    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    return true;
+}
+
+bool LoadingMeshesApplication::Load()
+{
+
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
@@ -168,8 +175,6 @@ bool LoadingMeshesApplication::Initialize()
     }
 
     _pipeline->BindSampler(0, _linearSamplerState.Get());
-
-    _modelFactory = std::make_unique<ModelFactory>(_device);
 
     if (!_modelFactory->LoadModel(
         "Assets/Models/SM_Good_Froge.fbx",
@@ -214,6 +219,7 @@ bool LoadingMeshesApplication::Initialize()
 
     return true;
 }
+
 
 bool LoadingMeshesApplication::CreateSwapchainResources()
 {

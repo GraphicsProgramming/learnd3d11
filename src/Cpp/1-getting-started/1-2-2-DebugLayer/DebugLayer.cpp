@@ -118,6 +118,12 @@ bool DebugLayerApplication::Initialize()
     CreateSwapchainResources();
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+
+    return true;
+}
+
+bool DebugLayerApplication::Load()
+{
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
@@ -155,6 +161,7 @@ bool DebugLayerApplication::Initialize()
 
     return true;
 }
+
 
 bool DebugLayerApplication::CreateSwapchainResources()
 {

@@ -22,6 +22,7 @@ protected:
         const int32_t height);
 
     virtual bool Initialize();
+    virtual bool Load() = 0;
     virtual void Cleanup();
     virtual void Render() = 0;
     virtual void Update() = 0;

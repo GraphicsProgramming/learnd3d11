@@ -23,6 +23,7 @@ public:
 
 protected:
     bool Initialize() override;
+    bool Load() override;
     void OnResize(
         const int32_t width,
         const int32_t height) override;

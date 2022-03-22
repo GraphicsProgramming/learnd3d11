@@ -8,6 +8,7 @@ public:
     HelloWindowApplication(const std::string_view title);
 
 protected:
+    bool Load() override;
     void Update() override;
     void Render() override;
 };
