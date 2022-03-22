@@ -16,15 +16,13 @@ public:
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
-        const float clearColor[4]);
+        const float clearColor[4]) const;
     void SetPipeline(const Pipeline* pipeline);
     void SetVertexBuffer(
         ID3D11Buffer* triangleVertices,
         uint32_t vertexOffset);
-    void SetViewport(D3D11_VIEWPORT viewport);
-    
-    void Draw();
-    void Flush();
+    void Draw() const;
+    void Flush() const;
 
 private:
     uint32_t _drawVertices;

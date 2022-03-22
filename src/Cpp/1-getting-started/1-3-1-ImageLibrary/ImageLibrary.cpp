@@ -141,6 +141,8 @@ bool ImageLibraryApplication::Initialize()
         return false;
     }
 
+    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+
     constexpr VertexPositionColorUv vertices[] =
     {
         { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }, Uv{ 0.5f, 0.0f } },
@@ -211,7 +213,7 @@ bool ImageLibraryApplication::Initialize()
     }
 
     _pipeline->BindSampler(0, _linearSamplerState.Get());
-    
+
     return true;
 }
 
@@ -272,23 +274,12 @@ void ImageLibraryApplication::Update()
 
 void ImageLibraryApplication::Render()
 {
-    D3D11_VIEWPORT viewport = {};
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    constexpr uint32_t vertexStride = sizeof(VertexPositionColorUv);
     constexpr uint32_t vertexOffset = 0;
 
     _deviceContext->Clear(_renderTarget.Get(), clearColor);
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
-    _deviceContext->SetViewport(viewport);
     _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }

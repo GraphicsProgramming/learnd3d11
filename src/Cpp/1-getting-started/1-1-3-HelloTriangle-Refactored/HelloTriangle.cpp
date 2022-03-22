@@ -116,6 +116,8 @@ bool HelloTriangleApplication::Initialize()
         return false;
     }
 
+    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+
     constexpr VertexPositionColor vertices[] =
     {
         { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
@@ -199,21 +201,12 @@ void HelloTriangleApplication::Update()
 
 void HelloTriangleApplication::Render()
 {
-    D3D11_VIEWPORT viewport = {};
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr UINT vertexOffset = 0;
+    constexpr uint32_t vertexOffset = 0;
 
     _deviceContext->Clear(_renderTarget.Get(), clearColor);
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
-    _deviceContext->SetViewport(viewport);
     _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }

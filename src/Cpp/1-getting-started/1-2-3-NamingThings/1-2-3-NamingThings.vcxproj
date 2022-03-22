@@ -94,6 +94,7 @@
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NamingThings.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
   </ItemGroup>
   <ItemGroup>

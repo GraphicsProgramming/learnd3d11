@@ -147,6 +147,8 @@ bool LoadingMeshesApplication::Initialize()
         return false;
     }
 
+    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
     {
         return false;
@@ -289,14 +291,6 @@ void LoadingMeshesApplication::Update()
 
 void LoadingMeshesApplication::Render()
 {
-    D3D11_VIEWPORT viewport = {};
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = static_cast<float>(GetWindowWidth());
-    viewport.Height = static_cast<float>(GetWindowHeight());
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     _deviceContext->Clear(
@@ -305,7 +299,6 @@ void LoadingMeshesApplication::Render()
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_modelVertices.Get(), 0);
     _deviceContext->SetIndexBuffer(_modelIndices.Get(), 0);
-    _deviceContext->SetViewport(viewport);
 
     _deviceContext->DrawIndexed();
 

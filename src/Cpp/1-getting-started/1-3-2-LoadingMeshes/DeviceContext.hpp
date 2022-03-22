@@ -5,7 +5,6 @@
 #include <d3d11_2.h>
 
 #include <cstdint>
-#include <map>
 
 class Pipeline;
 
@@ -16,7 +15,7 @@ public:
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
-        const float clearColor[4]);
+        const float clearColor[4]) const;
     void SetPipeline(const Pipeline* pipeline);
     void SetVertexBuffer(
         ID3D11Buffer* vertexBuffer,
@@ -24,12 +23,11 @@ public:
     void SetIndexBuffer(
         ID3D11Buffer* indexBuffer,
         uint32_t indexOffset);
-    void SetViewport(D3D11_VIEWPORT viewport);
-    void UpdateSubresource(ID3D11Buffer* buffer, const void* data);
+    void UpdateSubresource(ID3D11Buffer* buffer, const void* data) const;
     
-    void Draw();
-    void DrawIndexed();
-    void Flush();
+    void Draw() const;
+    void DrawIndexed() const;
+    void Flush() const;
 
 private:
     uint32_t _drawVertices;

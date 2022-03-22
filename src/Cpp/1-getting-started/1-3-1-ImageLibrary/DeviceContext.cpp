@@ -10,7 +10,7 @@ DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 
 void DeviceContext::Clear(
     ID3D11RenderTargetView* renderTarget,
-    const float clearColor[4])
+    const float clearColor[4]) const
 {
     _deviceContext->ClearRenderTargetView(renderTarget, clearColor);
     _deviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
@@ -37,6 +37,8 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
                 break;
         }
     }
+
+    _deviceContext->RSSetViewports(1, &pipeline->_viewport);
 }
 
 void DeviceContext::SetVertexBuffer(
@@ -49,17 +51,12 @@ void DeviceContext::SetVertexBuffer(
     _drawVertices = description.ByteWidth / _activePipeline->_vertexSize;
 }
 
-void DeviceContext::SetViewport(D3D11_VIEWPORT viewport)
-{
-    _deviceContext->RSSetViewports(1, &viewport);
-}
-
-void DeviceContext::Draw()
+void DeviceContext::Draw() const
 {
     _deviceContext->Draw(_drawVertices, 0);
 }
 
-void DeviceContext::Flush()
+void DeviceContext::Flush() const
 {
     _deviceContext->Flush();
 }

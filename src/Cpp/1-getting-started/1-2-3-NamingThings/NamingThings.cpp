@@ -139,6 +139,8 @@ bool NamingThingsApplication::Initialize()
         return false;
     }
 
+    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+
     constexpr VertexPositionColor vertices[] =
     {
         { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
@@ -149,8 +151,10 @@ bool NamingThingsApplication::Initialize()
     bufferInfo.ByteWidth = sizeof(vertices);
     bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
     bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
     D3D11_SUBRESOURCE_DATA resourceData = {};
     resourceData.pSysMem = vertices;
+
     if (FAILED(_device->CreateBuffer(
         &bufferInfo,
         &resourceData,

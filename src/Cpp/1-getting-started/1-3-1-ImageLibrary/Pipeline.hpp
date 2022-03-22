@@ -16,6 +16,12 @@ public:
 
     void BindTexture(uint32_t slotIndex, ID3D11ShaderResourceView* texture);
     void BindSampler(uint32_t slotIndex, ID3D11SamplerState* sampler);
+    void SetViewport(
+        const float left,
+        const float top,
+        const float width,
+        const float height);
+
 private:
     WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
     WRL::ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
@@ -23,4 +29,5 @@ private:
     std::unordered_map<ResourceDescriptor, ID3D11DeviceChild*> _resources;
     D3D11_PRIMITIVE_TOPOLOGY _primitiveTopology = {};
     uint32_t _vertexSize = 0;
+    D3D11_VIEWPORT _viewport = {};
 };

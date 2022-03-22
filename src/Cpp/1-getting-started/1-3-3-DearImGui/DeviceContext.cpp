@@ -19,7 +19,7 @@ DeviceContext::~DeviceContext()
 
 void DeviceContext::Clear(
     ID3D11RenderTargetView* renderTarget,
-    const float clearColor[4])
+    const float clearColor[4]) const
 {
     _deviceContext->ClearRenderTargetView(renderTarget, clearColor);
     _deviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
@@ -58,6 +58,8 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
                 break;
         }
     }
+
+    _deviceContext->RSSetViewports(1, &pipeline->_viewport);
 }
 
 void DeviceContext::SetVertexBuffer(
@@ -78,27 +80,22 @@ void DeviceContext::SetIndexBuffer(ID3D11Buffer* indexBuffer, uint32_t indexOffs
     _drawIndices = description.ByteWidth / sizeof(uint32_t);
 }
 
-void DeviceContext::SetViewport(D3D11_VIEWPORT viewport)
-{
-    _deviceContext->RSSetViewports(1, &viewport);
-}
-
-void DeviceContext::UpdateSubresource(ID3D11Buffer* buffer, const void* data)
+void DeviceContext::UpdateSubresource(ID3D11Buffer* buffer, const void* data) const
 {
     _deviceContext->UpdateSubresource(buffer, 0, nullptr, data, 0, 0);
 }
 
-void DeviceContext::Draw()
+void DeviceContext::Draw() const
 {
     _deviceContext->Draw(_drawVertices, 0);
 }
 
-void DeviceContext::DrawIndexed()
+void DeviceContext::DrawIndexed() const
 {
     _deviceContext->DrawIndexed(_drawIndices, 0, 0);
 }
 
-void DeviceContext::Flush()
+void DeviceContext::Flush() const
 {
     _deviceContext->Flush();
 }
