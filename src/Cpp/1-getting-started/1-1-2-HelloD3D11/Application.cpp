@@ -100,8 +100,3 @@ int32_t Application::GetWindowHeight() const
 {
     return _height;
 }
-
-void Application::Close()
-{
-    glfwSetWindowShouldClose(_window, true);
-}
