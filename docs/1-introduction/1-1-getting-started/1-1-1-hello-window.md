@@ -350,7 +350,7 @@ void HelloWindowApplication::Render()
 
 int main(int argc, char* argv[])
 {
-    HelloWindowApplication application;
+    HelloWindowApplication application{ "LearnD3D11 - Hello Window" };
     application.Run();
 }
 ```
