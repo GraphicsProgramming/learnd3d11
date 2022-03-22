@@ -110,6 +110,7 @@ bool ImageLibraryApplication::Initialize()
     swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDescriptor.BufferCount = 2;
     swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDescriptor.Scaling = DXGI_SCALING::DXGI_SCALING_STRETCH;
     swapChainDescriptor.Flags = {};
 
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};

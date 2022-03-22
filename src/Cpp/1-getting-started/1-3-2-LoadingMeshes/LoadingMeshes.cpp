@@ -121,6 +121,7 @@ bool LoadingMeshesApplication::Initialize()
     swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDescriptor.BufferCount = 2;
     swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDescriptor.Scaling = DXGI_SCALING::DXGI_SCALING_STRETCH;
     swapChainDescriptor.Flags = {};
 
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
@@ -357,8 +358,10 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
     vertexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(VertexPositionColorUv) * vertices.size());
     vertexBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
     vertexBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
     D3D11_SUBRESOURCE_DATA vertexBufferData = {};
     vertexBufferData.pSysMem = vertices.data();
+
     if (FAILED(_device->CreateBuffer(
         &vertexBufferDescriptor,
         &vertexBufferData,
