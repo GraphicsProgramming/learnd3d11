@@ -391,9 +391,15 @@ static void HandleResize(
 virtual void OnResize(
     const int32_t width,
     const int32_t height);
+
+[[nodiscard]] GLFWwindow* GetWindow() const;
+[[nodiscard]] int32_t GetWindowWidth() const;
+[[nodiscard]] int32_t GetWindowHeight() const;
 ```
 
 `HandleResize` will be the callback from `GLFW` which handles resize events and `OnResize` will be execute when GLFW runs HandleResize, so that we can handle our custom things we want to execute when resizing the window, like changing the size of the swapchain in our example.
+
+`GetWindow()` is used to derive the actual native window handle from, which is needed when we create the swapchain. `GetWindowWidth()` and `GetWindowHeight()` do what they say :) Also required for swapchain creation.
 
 ### Application.cpp
 
@@ -415,6 +421,21 @@ void Application::HandleResize(
 {
     Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
     application.OnResize(width, height);
+}
+
+GLFWwindow* Application::GetWindow() const
+{
+    return _window;
+}
+
+int32_t Application::GetWindowWidth() const
+{
+    return _width;
+}
+
+int32_t Application::GetWindowHeight() const
+{
+    return _height;
 }
 ```
 
