@@ -377,4 +377,57 @@ void HelloD3D11Application::Update()
 
 But keep it empty for now.
 
+Finally we need to modify `Appplication.hpp` and `Application.cpp`. Since we want to handle resizing as well.
+
+### Application.hpp
+
+Find `protected:` and add the following lines
+
+```cpp
+static void HandleResize(
+    GLFWwindow* window,
+    const int32_t width,
+    const int32_t height);
+virtual void OnResize(
+    const int32_t width,
+    const int32_t height);
+```
+
+`HandleResize` will be the callback from `GLFW` which handles resize events and `OnResize` will be execute when GLFW runs HandleResize, so that we can handle our custom things we want to execute when resizing the window, like changing the size of the swapchain in our example.
+
+### Application.cpp
+
+Add the following lines
+
+```cpp
+void Application::OnResize(
+    const int32_t width,
+    const int32_t height)
+{
+    _width = width;
+    _height = height;
+}
+
+void Application::HandleResize(
+    GLFWwindow* window,
+    const int32_t width,
+    const int32_t height)
+{
+    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application.OnResize(width, height);
+}
+```
+
+Find the `Initialize` method and add the following two lines
+before `return true;`
+
+```cpp
+glfwSetWindowUserPointer(_window, this);
+glfwSetFramebufferSizeCallback(_window, HandleResize);
+```
+
+[`glfwSetWindowUserPointer`](https://www.glfw.org/docs/3.3/group__window.html#ga3d2fc6026e690ab31a13f78bc9fd3651) will set our application instance as a custom variable, so that we can retrieve it using [`glfwGetWindowUserPointer`](https://www.glfw.org/docs/3.3/group__window.html#gae77a4add0d2023ca21ff1443ced01653) in the `HandleResize` callback.
+
+[`glfwSetFramebufferSizeCallback`](https://www.glfw.org/docs/3.3/group__window.html#gab3fb7c3366577daef18c0023e2a8591f) will tell `GLFW` what to do when we resize the window, in this case execute `HandleResize` which will fetch our application instance and all `OnResize` on it, where we can handle resizing in our application code.
+
 ## Abstraction into Application & D3D11Context
