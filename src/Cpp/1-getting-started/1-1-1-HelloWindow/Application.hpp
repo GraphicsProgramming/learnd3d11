@@ -17,16 +17,9 @@ public:
 
 protected:
     virtual void Cleanup();
-    void Close();
     virtual bool Initialize();
-    [[nodiscard]] bool IsButtonPressed(const std::int32_t button) const;
-    [[nodiscard]] bool IsKeyDown(const std::int32_t key) const;
-    [[nodiscard]] bool IsKeyPressed(const std::int32_t key) const;
-    [[nodiscard]] bool IsKeyUp(const std::int32_t key) const;
     virtual void Render() = 0;
     virtual void Update() = 0;
-
-    std::unique_ptr<Input> _input = nullptr;
 
 private:
     GLFWwindow* _window = nullptr;

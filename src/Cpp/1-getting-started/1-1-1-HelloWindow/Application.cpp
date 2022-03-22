@@ -22,9 +22,6 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(_window))
     {
-        _input->Update(
-            static_cast<float>(_width) / 2.0f,
-            static_cast<float>(_height) / 2.0f);
         glfwPollEvents();
         Update();
         Render();
@@ -35,12 +32,6 @@ void Application::Run()
 void Application::Cleanup()
 {
     glfwTerminate();
-}
-
-// ReSharper disable once CppMemberFunctionMayBeConst
-void Application::Close()
-{
-    glfwSetWindowShouldClose(_window, GLFW_TRUE);
 }
 
 bool Application::Initialize()
@@ -68,7 +59,6 @@ bool Application::Initialize()
         Cleanup();
         return false;
     }
-    _input = std::make_unique<Input>(_window);
 
     const int32_t windowLeft = videoMode->width / 2 - _width / 2;
     const int32_t windowTop = videoMode->height / 2 - _height / 2;
@@ -78,24 +68,4 @@ bool Application::Initialize()
         windowTop);
 
     return true;
-}
-
-bool Application::IsKeyDown(const int32_t key) const
-{
-    return _input->GetKeyboard().IsKeyDown(key);
-}
-
-bool Application::IsKeyPressed(const int32_t key) const
-{
-    return _input->GetKeyboard().IsKeyPressed(key);
-}
-
-bool Application::IsKeyUp(const int32_t key) const
-{
-    return _input->GetKeyboard().IsKeyUp(key);
-}
-
-bool Application::IsButtonPressed(const int32_t button) const
-{
-    return _input->GetMouse().IsButtonPressed(button);
 }
