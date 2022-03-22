@@ -67,10 +67,11 @@ bool ImageLibraryApplication::Initialize()
     }
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-    UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    uint32_t deviceFlags = 0;
 #if !defined(NDEBUG)
     deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
 #endif
+
     WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
