@@ -137,11 +137,11 @@ bool LoadingMeshesApplication::Initialize()
     CreateSwapchainResources();
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
-    PipelineSettings pipelineSettings = {};
-    pipelineSettings.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
-    pipelineSettings.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineSettings.VertexType = VertexType::PositionColorUv;
-    if (!_pipelineFactory->CreatePipeline(pipelineSettings, _pipeline))
+    PipelineDescriptor pipelineDescriptor = {};
+    pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    pipelineDescriptor.VertexType = VertexType::PositionColorUv;
+    if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
         std::cout << "PipelineFactory: Unable to create pipeline\n";
         return false;

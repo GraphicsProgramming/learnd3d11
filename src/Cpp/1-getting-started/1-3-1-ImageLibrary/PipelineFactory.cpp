@@ -78,7 +78,7 @@ PipelineFactory::PipelineFactory(const WRL::ComPtr<ID3D11Device>& device)
 }
 
 bool PipelineFactory::CreatePipeline(
-    const PipelineSettings& settings,
+    const PipelineDescriptor& settings,
     std::unique_ptr<Pipeline>& pipeline)
 {
     WRL::ComPtr<ID3DBlob> vertexShaderBlob;

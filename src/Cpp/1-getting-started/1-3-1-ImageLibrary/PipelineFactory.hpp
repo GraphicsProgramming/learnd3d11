@@ -4,14 +4,11 @@
 #include "VertexType.hpp"
 #include "Pipeline.hpp"
 
-#include <d3d11_2.h>
-#include <DirectXMath.h>
-
 #include <unordered_map>
 #include <string_view>
 #include <memory>
 
-struct PipelineSettings
+struct PipelineDescriptor
 {
     std::wstring VertexFilePath;
     std::wstring PixelFilePath;
@@ -24,7 +21,7 @@ public:
     PipelineFactory(const WRL::ComPtr<ID3D11Device>& device);
 
     bool CreatePipeline(
-        const PipelineSettings& settings,
+        const PipelineDescriptor& settings,
         std::unique_ptr<Pipeline>& pipeline);
 
 private:
