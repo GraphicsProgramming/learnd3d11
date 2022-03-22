@@ -176,6 +176,10 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
+!!! error "Explain DXGI"
+
+    https://docs.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi
+
 [`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us, a `IDXGIFactory2` to be precise.
 There are various implementations of it, depending on what version you aim for, you get additional functionality.
 
