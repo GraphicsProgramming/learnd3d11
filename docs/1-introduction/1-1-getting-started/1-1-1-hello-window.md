@@ -140,8 +140,8 @@ const int32_t windowTop = videoMode->height / 2 - height / 2;
 glfwSetWindowPos(window, windowLeft, windowTop);
 ```
 
-I like centered windows, but `GLFW` will not place the window in a centered fashion,
-because of that we try to do it ourselves here with the help of a bit of math and [glfwSetWindowPos](https://www.glfw.org/docs/3.3/group__window.html#ga1abb6d690e8c88e0c8cd1751356dbca8). It sets the window position in screen coordinates, specified by the top left corner of the window.
+GLFW does not center windows automatically, like you can with other libraries like `SDL`, there for we will center the window manually.
+All we need is just a bit of math an [glfwSetWindowPos](https://www.glfw.org/docs/3.3/group__window.html#ga1abb6d690e8c88e0c8cd1751356dbca8). It sets the window position in screen coordinates, specified by the top left corner of the window.
 
 ```cpp
 while (!glfwWindowShouldClose(window))
