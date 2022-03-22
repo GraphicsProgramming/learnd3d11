@@ -1,12 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
 #include <string_view>
 
 // ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
-class Input;
 
 class Application
 {

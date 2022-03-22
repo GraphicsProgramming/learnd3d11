@@ -29,8 +29,7 @@ protected:
     [[nodiscard]] GLFWwindow* GetWindow() const;
     [[nodiscard]] int32_t GetWindowWidth() const;
     [[nodiscard]] int32_t GetWindowHeight() const;
-    void Close();
-    
+
 private:
     GLFWwindow* _window = nullptr;
     int32_t _width = 0;
