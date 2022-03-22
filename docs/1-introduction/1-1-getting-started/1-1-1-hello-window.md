@@ -212,6 +212,7 @@ I will show the whole code first, and then explain again what means what.
 #pragma once
 
 #include <string_view>
+#include <iostream>
 
 struct GLFWwindow;
 
@@ -326,16 +327,18 @@ protected:
 ### HelloWindowApplication.cpp
 
 ```cpp
+#include "HelloWindowApplication.hpp"
+
 HelloWindowApplication::HelloWindowApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-void HelloWindow::Update()
+void HelloWindowApplication::Update()
 {
 }
 
-void HelloWindow::Render()
+void HelloWindowApplication::Render()
 {
 }
 ```
@@ -343,6 +346,8 @@ void HelloWindow::Render()
 ### Main.cpp
 
 ```cpp
+#include "HelloWindowApplication.hpp"
+
 int main(int argc, char* argv[])
 {
     HelloWindowApplication application;
