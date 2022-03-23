@@ -181,6 +181,8 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
+!!! error "What is `IID_PPV_ARGS`"?
+
 !!! error "Explain DXGI"
 
     https://docs.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi
