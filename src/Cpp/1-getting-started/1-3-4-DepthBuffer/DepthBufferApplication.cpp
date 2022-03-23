@@ -507,6 +507,5 @@ bool DepthBufferApplication::CreateDepthStencilStates()
         return false;
     }
 
-
     return true;
 }
