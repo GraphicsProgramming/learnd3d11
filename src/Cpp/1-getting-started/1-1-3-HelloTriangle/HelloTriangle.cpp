@@ -167,8 +167,10 @@ bool HelloTriangleApplication::Load()
     bufferInfo.ByteWidth = sizeof(vertices);
     bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
     bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
     D3D11_SUBRESOURCE_DATA resourceData = {};
     resourceData.pSysMem = vertices;
+
     if (FAILED(_device->CreateBuffer(
         &bufferInfo,
         &resourceData,
@@ -188,7 +190,7 @@ bool HelloTriangleApplication::CompileShader(
     const std::string_view profile,
     ComPtr<ID3DBlob>& shaderBlob) const
 {
-    constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+    constexpr uint32_t compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 
     ComPtr<ID3DBlob> tempShaderBlob = nullptr;
     ComPtr<ID3DBlob> errorBlob = nullptr;

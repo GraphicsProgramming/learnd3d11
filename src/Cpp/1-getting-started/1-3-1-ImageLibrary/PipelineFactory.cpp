@@ -100,7 +100,7 @@ bool PipelineFactory::CompileShader(
     const std::string& profile,
     WRL::ComPtr<ID3DBlob>& shaderBlob) const
 {
-    constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+    constexpr uint32_t compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 
     WRL::ComPtr<ID3DBlob> tempShaderBlob = nullptr;
     WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
