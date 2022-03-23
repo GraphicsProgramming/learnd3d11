@@ -21,7 +21,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingMeshes.cpp">
+    <ClCompile Include="LoadingMeshesApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureFactory.cpp">
@@ -44,7 +44,7 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LoadingMeshes.hpp">
+    <ClInclude Include="LoadingMeshesApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureFactory.hpp">

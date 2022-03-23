@@ -21,7 +21,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NamingThings.cpp">
+    <ClCompile Include="NamingThingsApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PipelineFactory.cpp">
@@ -38,7 +38,7 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NamingThings.hpp">
+    <ClInclude Include="NamingThingsApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Definitions.hpp">

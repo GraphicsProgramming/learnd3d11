@@ -93,7 +93,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ImageLibrary.cpp" />
+    <ClCompile Include="ImageLibraryApplication.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
   </ItemGroup>
@@ -101,7 +101,7 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
-    <ClInclude Include="ImageLibrary.hpp" />
+    <ClInclude Include="ImageLibraryApplication.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />
     <ClInclude Include="ResourceDescriptor.hpp" />

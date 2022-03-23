@@ -1,4 +1,4 @@
-#include "HelloD3D11.hpp"
+#include "HelloD3D11Application.hpp"
 
 int main()
 {

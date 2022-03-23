@@ -21,7 +21,7 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HelloWindow.cpp">
+    <ClCompile Include="HelloWindowApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
@@ -38,7 +38,7 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HelloWindow.hpp">
+    <ClInclude Include="HelloWindowApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.hpp">

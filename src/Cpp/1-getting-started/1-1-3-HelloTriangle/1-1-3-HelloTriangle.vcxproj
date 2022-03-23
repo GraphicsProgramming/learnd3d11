@@ -91,12 +91,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="HelloTriangle.cpp" />
+    <ClCompile Include="HelloTriangleApplication.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
-    <ClInclude Include="HelloTriangle.hpp" />
+    <ClInclude Include="HelloTriangleApplication.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">

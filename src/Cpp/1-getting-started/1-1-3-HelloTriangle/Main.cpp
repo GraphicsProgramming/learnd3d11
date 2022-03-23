@@ -1,4 +1,4 @@
-#include "HelloTriangle.hpp"
+#include "HelloTriangleApplication.hpp"
 
 int main()
 {

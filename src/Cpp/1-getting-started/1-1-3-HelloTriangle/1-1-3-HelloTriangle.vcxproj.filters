@@ -18,7 +18,7 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HelloTriangle.cpp">
+    <ClCompile Include="HelloTriangleApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -29,7 +29,7 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HelloTriangle.hpp">
+    <ClInclude Include="HelloTriangleApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

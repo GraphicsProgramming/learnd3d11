@@ -1,13 +1,14 @@
-#include "DebugLayer.hpp"
+#include "HelloTriangleApplication.hpp"
 #include "DeviceContext.hpp"
 #include "Pipeline.hpp"
 #include "PipelineFactory.hpp"
-#include "VertexType.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
+#include <dxgi1_2.h>
+#include <d3d11_2.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
@@ -20,30 +21,26 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-DebugLayerApplication::DebugLayerApplication(const std::string_view title)
+HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-DebugLayerApplication::~DebugLayerApplication()
+HelloTriangleApplication::~HelloTriangleApplication()
 {
     _deviceContext->Flush();
-    _triangleVertices.Reset();
     _pipeline.reset();
     _pipelineFactory.reset();
+    _triangleVertices.Reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
     _deviceContext.reset();
-#if !defined(NDEBUG)
-    _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
-    _debug.Reset();
-#endif
     _device.Reset();
     Application::Cleanup();
 }
 
-bool DebugLayerApplication::Initialize()
+bool HelloTriangleApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
@@ -59,16 +56,13 @@ bool DebugLayerApplication::Initialize()
     }
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-    uint32_t deviceFlags = 0;
-#if !defined(NDEBUG)
-    deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
-#endif
+
     WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
-        deviceFlags,
+        0,
         &deviceFeatureLevel,
         1,
         D3D11_SDK_VERSION,
@@ -77,12 +71,6 @@ bool DebugLayerApplication::Initialize()
         &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
-        return false;
-    }
-
-    if (FAILED(_device.As(&_debug)))
-    {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
 
@@ -122,7 +110,7 @@ bool DebugLayerApplication::Initialize()
     return true;
 }
 
-bool DebugLayerApplication::Load()
+bool HelloTriangleApplication::Load()
 {
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
@@ -163,7 +151,7 @@ bool DebugLayerApplication::Load()
 }
 
 
-bool DebugLayerApplication::CreateSwapchainResources()
+bool HelloTriangleApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
@@ -186,12 +174,12 @@ bool DebugLayerApplication::CreateSwapchainResources()
     return true;
 }
 
-void DebugLayerApplication::DestroySwapchainResources()
+void HelloTriangleApplication::DestroySwapchainResources()
 {
     _renderTarget.Reset();
 }
 
-void DebugLayerApplication::OnResize(
+void HelloTriangleApplication::OnResize(
     const int32_t width,
     const int32_t height)
 {
@@ -214,11 +202,11 @@ void DebugLayerApplication::OnResize(
     CreateSwapchainResources();
 }
 
-void DebugLayerApplication::Update()
+void HelloTriangleApplication::Update()
 {
 }
 
-void DebugLayerApplication::Render()
+void HelloTriangleApplication::Render()
 {
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     constexpr uint32_t vertexOffset = 0;

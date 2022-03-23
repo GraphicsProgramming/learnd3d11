@@ -1,4 +1,8 @@
-#include "HelloD3D11.hpp"
+#include "DebugLayerApplication.hpp"
+#include "DeviceContext.hpp"
+#include "Pipeline.hpp"
+#include "PipelineFactory.hpp"
+#include "VertexType.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -6,6 +10,7 @@
 
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <DirectXColors.h>
 
 #include <iostream>
 
@@ -15,23 +20,30 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-HelloD3D11Application::HelloD3D11Application(const std::string_view title)
+DebugLayerApplication::DebugLayerApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-HelloD3D11Application::~HelloD3D11Application()
+DebugLayerApplication::~DebugLayerApplication()
 {
     _deviceContext->Flush();
+    _triangleVertices.Reset();
+    _pipeline.reset();
+    _pipelineFactory.reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.Reset();
+    _deviceContext.reset();
+#if !defined(NDEBUG)
+    _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
+    _debug.Reset();
+#endif
     _device.Reset();
     Application::Cleanup();
 }
 
-bool HelloD3D11Application::Initialize()
+bool DebugLayerApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
@@ -47,22 +59,34 @@ bool HelloD3D11Application::Initialize()
     }
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-
+    uint32_t deviceFlags = 0;
+#if !defined(NDEBUG)
+    deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
+#endif
+    WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
-        0,
+        deviceFlags,
         &deviceFeatureLevel,
         1,
         D3D11_SDK_VERSION,
         &_device,
         nullptr,
-        &_deviceContext)))
+        &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
+
+    if (FAILED(_device.As(&_debug)))
+    {
+        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        return false;
+    }
+
+    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -91,23 +115,57 @@ bool HelloD3D11Application::Initialize()
         return false;
     }
 
-    if (!CreateSwapchainResources())
+    CreateSwapchainResources();
+
+    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+
+    return true;
+}
+
+bool DebugLayerApplication::Load()
+{
+    PipelineDescriptor pipelineDescriptor = {};
+    pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    pipelineDescriptor.VertexType = VertexType::PositionColor;
+    if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
+        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        return false;
+    }
+
+    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+
+    constexpr VertexPositionColor vertices[] =
+    {
+        { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
+        { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f } },
+        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f } },
+    };
+    D3D11_BUFFER_DESC bufferInfo = {};
+    bufferInfo.ByteWidth = sizeof(vertices);
+    bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
+    bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA resourceData = {};
+    resourceData.pSysMem = vertices;
+
+    if (FAILED(_device->CreateBuffer(
+        &bufferInfo,
+        &resourceData,
+        &_triangleVertices)))
+    {
+        std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
 
     return true;
 }
 
-bool HelloD3D11Application::Load()
-{
-    return true;
-}
 
-
-bool HelloD3D11Application::CreateSwapchainResources()
+bool DebugLayerApplication::CreateSwapchainResources()
 {
-    ComPtr<ID3D11Texture2D> backBuffer = nullptr;
+    WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
         0,
         IID_PPV_ARGS(&backBuffer))))
@@ -128,12 +186,12 @@ bool HelloD3D11Application::CreateSwapchainResources()
     return true;
 }
 
-void HelloD3D11Application::DestroySwapchainResources()
+void DebugLayerApplication::DestroySwapchainResources()
 {
     _renderTarget.Reset();
 }
 
-void HelloD3D11Application::OnResize(
+void DebugLayerApplication::OnResize(
     const int32_t width,
     const int32_t height)
 {
@@ -156,31 +214,18 @@ void HelloD3D11Application::OnResize(
     CreateSwapchainResources();
 }
 
-void HelloD3D11Application::Update()
+void DebugLayerApplication::Update()
 {
 }
 
-void HelloD3D11Application::Render()
+void DebugLayerApplication::Render()
 {
-    D3D11_VIEWPORT viewport = {};
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
-    viewport.MinDepth = 0.0f;
-    viewport.MaxDepth = 1.0f;
-
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    constexpr uint32_t vertexOffset = 0;
 
-    _deviceContext->ClearRenderTargetView(
-        _renderTarget.Get(),
-        clearColor);
-    _deviceContext->RSSetViewports(
-        1,
-        &viewport);
-    _deviceContext->OMSetRenderTargets(
-        1,
-        _renderTarget.GetAddressOf(),
-        nullptr);
+    _deviceContext->Clear(_renderTarget.Get(), clearColor);
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
+    _deviceContext->Draw();
     _swapChain->Present(1, 0);
 }

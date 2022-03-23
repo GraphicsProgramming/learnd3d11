@@ -92,7 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="HelloWindow.cpp" />
+    <ClCompile Include="HelloWindowApplication.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Input\Keyboard.cpp" />
     <ClCompile Include="Input\Mouse.cpp" />
@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
-    <ClInclude Include="HelloWindow.hpp" />
+    <ClInclude Include="HelloWindowApplication.hpp" />
     <ClInclude Include="Input\Input.hpp" />
     <ClInclude Include="Input\Keyboard.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />

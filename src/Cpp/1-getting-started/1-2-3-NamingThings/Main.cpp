@@ -1,4 +1,4 @@
-#include "NamingThings.hpp"
+#include "NamingThingsApplication.hpp"
 
 int main()
 {

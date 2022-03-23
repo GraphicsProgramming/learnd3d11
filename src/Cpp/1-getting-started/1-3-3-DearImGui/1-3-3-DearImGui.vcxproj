@@ -120,7 +120,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="DearImGui.cpp" />
+    <ClCompile Include="DearImGuiApplication.cpp" />
     <ClCompile Include="ModelFactory.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
@@ -130,7 +130,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
-    <ClInclude Include="DearImGui.hpp" />
+    <ClInclude Include="DearImGuiApplication.hpp" />
     <ClInclude Include="ModelFactory.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />

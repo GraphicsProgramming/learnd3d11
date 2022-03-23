@@ -1,14 +1,13 @@
-#include "HelloTriangle.hpp"
+#include "NamingThingsApplication.hpp"
 #include "DeviceContext.hpp"
 #include "Pipeline.hpp"
 #include "PipelineFactory.hpp"
+#include "VertexType.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <dxgi1_2.h>
-#include <d3d11_2.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
@@ -21,26 +20,36 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
+template<UINT TDebugNameLength>
+inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
+{
+    deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
+}
+
+NamingThingsApplication::NamingThingsApplication(const std::string_view title)
     : Application(title)
 {
 }
 
-HelloTriangleApplication::~HelloTriangleApplication()
+NamingThingsApplication::~NamingThingsApplication()
 {
     _deviceContext->Flush();
+    _triangleVertices.Reset();
     _pipeline.reset();
     _pipelineFactory.reset();
-    _triangleVertices.Reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
     _deviceContext.reset();
+#if !defined(NDEBUG)
+    _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
+    _debug.Reset();
+#endif
     _device.Reset();
     Application::Cleanup();
 }
 
-bool HelloTriangleApplication::Initialize()
+bool NamingThingsApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
@@ -56,13 +65,17 @@ bool HelloTriangleApplication::Initialize()
     }
 
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+    uint32_t deviceFlags = 0;
+#if !defined(NDEBUG)
+    deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
     WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
-        0,
+        deviceFlags,
         &deviceFeatureLevel,
         1,
         D3D11_SDK_VERSION,
@@ -74,7 +87,17 @@ bool HelloTriangleApplication::Initialize()
         return false;
     }
 
+    constexpr char deviceName[] = "DEV_Main";
+    _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
+    SetDebugName(deviceContext.Get(), "CTX_Main");
+
     _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
+
+    if (FAILED(_device.As(&_debug)))
+    {
+        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        return false;
+    }
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -110,7 +133,7 @@ bool HelloTriangleApplication::Initialize()
     return true;
 }
 
-bool HelloTriangleApplication::Load()
+bool NamingThingsApplication::Load()
 {
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
@@ -151,7 +174,7 @@ bool HelloTriangleApplication::Load()
 }
 
 
-bool HelloTriangleApplication::CreateSwapchainResources()
+bool NamingThingsApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
@@ -174,12 +197,12 @@ bool HelloTriangleApplication::CreateSwapchainResources()
     return true;
 }
 
-void HelloTriangleApplication::DestroySwapchainResources()
+void NamingThingsApplication::DestroySwapchainResources()
 {
     _renderTarget.Reset();
 }
 
-void HelloTriangleApplication::OnResize(
+void NamingThingsApplication::OnResize(
     const int32_t width,
     const int32_t height)
 {
@@ -202,11 +225,11 @@ void HelloTriangleApplication::OnResize(
     CreateSwapchainResources();
 }
 
-void HelloTriangleApplication::Update()
+void NamingThingsApplication::Update()
 {
 }
 
-void HelloTriangleApplication::Render()
+void NamingThingsApplication::Render()
 {
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     constexpr uint32_t vertexOffset = 0;

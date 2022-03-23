@@ -21,7 +21,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DearImGui.cpp">
+    <ClCompile Include="DearImGuiApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureFactory.cpp">
@@ -65,7 +65,7 @@
     <ClInclude Include="Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DearImGui.hpp">
+    <ClInclude Include="DearImGuiApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureFactory.hpp">

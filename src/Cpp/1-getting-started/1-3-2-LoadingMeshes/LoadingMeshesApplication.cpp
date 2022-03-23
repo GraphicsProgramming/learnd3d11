@@ -1,15 +1,21 @@
-#include "LoadingMeshes.hpp"
+#include "LoadingMeshesApplication.hpp"
 #include "DeviceContext.hpp"
 #include "PipelineFactory.hpp"
-#include "Pipeline.hpp"
 #include "TextureFactory.hpp"
-#include "ModelFactory.hpp"
+#include "Pipeline.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
 #include <d3dcompiler.h>
+
+#undef min
+#undef max
+
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
 #include <iostream>
 #include <vector>
@@ -42,11 +48,11 @@ LoadingMeshesApplication::~LoadingMeshesApplication()
     _pipelineFactory.reset();
     _modelVertices.Reset();
     _modelIndices.Reset();
-    _modelFactory.reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.reset();
+    _deviceContext.reset
+    ();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     _debug.Reset();
@@ -76,7 +82,7 @@ bool LoadingMeshesApplication::Initialize()
     deviceFlags |= D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-    WRL::ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
+    WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -132,11 +138,10 @@ bool LoadingMeshesApplication::Initialize()
         return false;
     }
 
+    CreateSwapchainResources();
+
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
     _textureFactory = std::make_unique<TextureFactory>(_device);
-    _modelFactory = std::make_unique<ModelFactory>(_device);
-
-    CreateSwapchainResources();
 
     return true;
 }
@@ -176,12 +181,7 @@ bool LoadingMeshesApplication::Load()
 
     _pipeline->BindSampler(0, _linearSamplerState.Get());
 
-    if (!_modelFactory->LoadModel(
-        "Assets/Models/SM_Good_Froge.fbx",
-        _modelVertices,
-        &_modelVertexCount,
-        _modelIndices,
-        &_modelIndexCount))
+    if (!LoadModel("Assets/Models/SM_Good_Froge.fbx"))
     {
         return false;
     }
@@ -195,11 +195,13 @@ bool LoadingMeshesApplication::Load()
         std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
         return false;
     }
+
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerFrame\n";
         return false;
     }
+
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
     {
         std::cout << "D3D11: Unable to create constant buffer PerObject\n";
@@ -219,7 +221,6 @@ bool LoadingMeshesApplication::Load()
 
     return true;
 }
-
 
 bool LoadingMeshesApplication::CreateSwapchainResources()
 {
@@ -276,7 +277,7 @@ void LoadingMeshesApplication::OnResize(
         GetWindowWidth() / static_cast<float>(GetWindowHeight()),
         0.1f,
         512);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerApplication].Get(), &_projectionMatrix);
 }
 
 void LoadingMeshesApplication::Update()
@@ -285,14 +286,14 @@ void LoadingMeshesApplication::Update()
     const auto focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
     const auto upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
     _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), &_viewMatrix);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerFrame].Get(), &_viewMatrix);
 
     static float angle = 0.0f;
     angle += 90.0f * (10.0 / 60000.0f);
     const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 
     _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
-    _deviceContext->UpdateSubresource(_constantBuffers[PerObject].Get(), &_worldMatrix);
+    _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerObject].Get(), &_worldMatrix);
 }
 
 void LoadingMeshesApplication::Render()
@@ -305,8 +306,96 @@ void LoadingMeshesApplication::Render()
     _deviceContext->SetPipeline(_pipeline.get());
     _deviceContext->SetVertexBuffer(_modelVertices.Get(), 0);
     _deviceContext->SetIndexBuffer(_modelIndices.Get(), 0);
-
     _deviceContext->DrawIndexed();
-
     _swapChain->Present(1, 0);
+}
+
+bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
+{
+    constexpr uint32_t importFlags = aiProcess_Triangulate | aiProcess_FlipUVs;
+
+    Assimp::Importer sceneImporter;
+    const aiScene* scene = sceneImporter.ReadFile(filePath, importFlags);
+
+    if (scene == nullptr)
+    {
+        std::cout << "ASSIMP: Unable to load model file\n";
+        return false;
+    }
+
+    if (!scene->HasMeshes())
+    {
+        std::cout << "ASSIMP: Model file is empty\n";
+        return false;
+    }
+
+    const aiMesh* mesh = scene->mMeshes[0];
+    if (!mesh->HasPositions())
+    {
+        std::cout << "ASSIMP: Model mesh has no positions\n";
+        return false;
+    }
+
+    constexpr Color defaultColor = Color{ 0.5f, 0.5f, 0.5f };
+    constexpr Uv defaultUv = Uv{ 0.0f, 0.0f };
+    std::vector<VertexPositionColorUv> vertices;
+    for (int32_t i = 0; i < (mesh->mNumVertices); i++)
+    {
+        const Position& position = Position{ mesh->mVertices[i].x / 100.0f, mesh->mVertices[i].y / 100.0f, mesh->mVertices[i].z / 100.0f };
+        const Color& color = mesh->HasVertexColors(0)
+            ? Color{ mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b}
+            : defaultColor;
+        const Uv& uv = mesh->HasTextureCoords(0)
+            ? Uv{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y }
+            : defaultUv;
+
+        vertices.push_back(VertexPositionColorUv{ Position{position}, Color{color}, Uv{uv} });
+    }
+
+    _modelVertexCount = vertices.size();
+
+    D3D11_BUFFER_DESC vertexBufferDescriptor = {};
+    vertexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(VertexPositionColorUv) * vertices.size());
+    vertexBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
+    vertexBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexBufferData = {};
+    vertexBufferData.pSysMem = vertices.data();
+
+    if (FAILED(_device->CreateBuffer(
+        &vertexBufferDescriptor,
+        &vertexBufferData,
+        &_modelVertices)))
+    {
+        std::cout << "D3D11: Failed to create model vertex buffer\n";
+        return false;
+    }
+
+    std::vector<uint32_t> indices;
+    for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+    {
+        for (uint32_t j = 0; j < mesh->mFaces[i].mNumIndices; j++)
+        {
+            indices.push_back(mesh->mFaces[i].mIndices[j]);
+        }
+    }
+
+    _modelIndexCount = indices.size();
+
+    D3D11_BUFFER_DESC indexBufferDescriptor = {};
+    indexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(uint32_t) * indices.size());
+    indexBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
+    indexBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
+    D3D11_SUBRESOURCE_DATA indexBufferData = {};
+    indexBufferData.pSysMem = indices.data();
+    if (FAILED(_device->CreateBuffer(
+        &indexBufferDescriptor,
+        &indexBufferData,
+        &_modelIndices)))
+    {
+        std::cout << "D3D11: Failed to create model index buffer\n";
+        return false;
+    }
+
+    return true;
 }

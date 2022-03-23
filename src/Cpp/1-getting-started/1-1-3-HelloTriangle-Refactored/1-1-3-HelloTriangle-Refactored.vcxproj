@@ -92,7 +92,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
-    <ClCompile Include="HelloTriangle.cpp" />
+    <ClCompile Include="HelloTriangleApplication.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
@@ -101,7 +101,7 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
-    <ClInclude Include="HelloTriangle.hpp" />
+    <ClInclude Include="HelloTriangleApplication.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />
     <ClInclude Include="VertexType.hpp" />

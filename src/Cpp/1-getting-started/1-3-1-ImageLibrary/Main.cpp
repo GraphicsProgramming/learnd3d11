@@ -1,4 +1,4 @@
-#include "ImageLibrary.hpp"
+#include "ImageLibraryApplication.hpp"
 
 int main()
 {

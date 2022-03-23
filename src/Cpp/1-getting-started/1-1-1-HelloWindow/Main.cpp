@@ -1,4 +1,4 @@
-#include "HelloWindow.hpp"
+#include "HelloWindowApplication.hpp"
 
 int main(int argc, char* argv[])
 {
