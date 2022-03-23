@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-LoadingMeshes-Refacto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-3-DearImGui", "Cpp\1-getting-started\1-3-3-DearImGui\1-3-3-DearImGui.vcxproj", "{0989B526-EC66-4C1C-8121-4B9AC53E2C83}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-4-DepthBuffer", "Cpp\1-getting-started\1-3-4-DepthBuffer\1-3-4-DepthBuffer.vcxproj", "{B2D92817-E897-4797-9864-C1470F217F1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -113,6 +115,10 @@ Global
 		{0989B526-EC66-4C1C-8121-4B9AC53E2C83}.Debug|x64.Build.0 = Debug|x64
 		{0989B526-EC66-4C1C-8121-4B9AC53E2C83}.Release|x64.ActiveCfg = Release|x64
 		{0989B526-EC66-4C1C-8121-4B9AC53E2C83}.Release|x64.Build.0 = Release|x64
+		{B2D92817-E897-4797-9864-C1470F217F1E}.Debug|x64.ActiveCfg = Debug|x64
+		{B2D92817-E897-4797-9864-C1470F217F1E}.Debug|x64.Build.0 = Debug|x64
+		{B2D92817-E897-4797-9864-C1470F217F1E}.Release|x64.ActiveCfg = Release|x64
+		{B2D92817-E897-4797-9864-C1470F217F1E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +141,7 @@ Global
 		{A1F990E5-58A1-4345-AF2B-599F785519A7} = {69E36221-7B54-4891-AB39-B9F2C5025815}
 		{1B3547F4-344F-41FC-8AB0-312AF6E01A96} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 		{0989B526-EC66-4C1C-8121-4B9AC53E2C83} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
+		{B2D92817-E897-4797-9864-C1470F217F1E} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
