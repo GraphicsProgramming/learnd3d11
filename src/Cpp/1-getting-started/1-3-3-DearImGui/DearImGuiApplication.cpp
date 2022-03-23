@@ -228,7 +228,6 @@ bool DearImGuiApplication::Load()
     return true;
 }
 
-
 bool DearImGuiApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
