@@ -8,7 +8,7 @@ While there are multiple graphics debuggers provided by multiple vendors such as
 
 To download RenderDoc, [click here](https://renderdoc.org/) and follow the instructions on the webpage.
 
-![Screenshot](media/RenderDocDefault)
+![Screenshot](media/RenderDocDefault.png)
 
 Before getting into the details of Renderdoc, an executable is needed to display what the application is capable of. 
 
