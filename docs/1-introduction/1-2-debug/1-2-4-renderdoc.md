@@ -8,35 +8,35 @@ While there are multiple graphics debuggers provided by multiple vendors such as
 
 To download RenderDoc, [click here](https://renderdoc.org/) and follow the instructions on the webpage.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374536671084586/image4.png)
+![Screenshot](media/RenderDocDefault)
 
 Before getting into the details of Renderdoc, an executable is needed to display what the application is capable of. 
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374535379247134/image7.png)
+![Screenshot](media/ApplicationDirs.png)
 
 In the “Executable Path” navigate to the directory of the last section’s project and set it as the executable. Set the “Working Directory” to the directory where the asset and shader folders are kept.
 
 RenderDoc can now be started by clicking the “Launch” button in the bottom right of the “Launch Application" tab. Upon launching the application it will have an overlay in the top left corner stating the active API, frame count, frame time, captures saved, and to press F12 to take a frame capture.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374535018524752/image6.png)
+![Screenshot](media/RenderDocOverlay.png)
 
 After a frame has been captured and the captured application is closed, return to RenderDoc.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374536348131328/image3.png)
+![Screenshot](media/OpeningCapture.png)
 
 The RenderDoc window is now fully populated, however for the sake of brevity only the “Event Browser”, “API Inspector”, “Pipeline State”, and “Resource Inspector” are of concern.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374535614103622/image8.png)
+![Screenshot](media/EventBrowser.png)
 
 The event browser displays a generalization of the API calls called in the form of events, an event is one or more API calls that have been grouped together by relation. 
 
 There is not much going on in this example, but it can be helpful when debugging scenes making hundreds or even thousands of draws and dispatches a frame.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374535844823070/image1.png)
+![Screenshot](media/APIInspector.png)
 
 The API Inspector displays the contents of an event by listing out the API calls that it contains. For example, all the calls made to set the state for the draw call are grouped together under an event called “Draw”.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374537119891476/image5.gif)
+![Screenshot](media/PipelineState.gif)
 
 The Pipeline State tab displays the state of each active pipeline stage in addition to bound resources for the currently selected event. 
 
@@ -44,7 +44,7 @@ In this instance, the hull, domain, and geometry shader stages are grayed out be
 
 The compute shader stage is called with its own dispatch commands and therefore is never active with the other stages; it is not a part of the rasterization pipeline.
 
-![Screenshot](https://cdn.discordapp.com/attachments/885023294586224673/956374536088080444/image2.png)
+![Screenshot](media/ResourceInspector.png)
 
 The Resource Inspector presents a list of all the resources used to render the frame on the right side of the window with information pertaining to its usage within the frame, related resources, and the functions used to initialize the resource. 
 
