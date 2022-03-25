@@ -119,9 +119,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
-    <ClCompile Include="Input\Input.cpp" />
-    <ClCompile Include="Input\Keyboard.cpp" />
-    <ClCompile Include="Input\Mouse.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CameraApplication.cpp" />
     <ClCompile Include="ModelFactory.cpp" />
@@ -134,9 +131,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="CameraApplication.hpp" />
-    <ClInclude Include="Input\Input.hpp" />
-    <ClInclude Include="Input\Keyboard.hpp" />
-    <ClInclude Include="Input\Mouse.hpp" />
     <ClInclude Include="ModelFactory.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />

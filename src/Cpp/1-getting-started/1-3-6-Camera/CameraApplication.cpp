@@ -75,8 +75,8 @@ CameraApplication::~CameraApplication()
 #endif
     _device.Reset();
 
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext(_imGuiContext);
+    //ImGui_ImplGlfw_Shutdown();
+    //ImGui::DestroyContext(_imGuiContext);
 
     Application::Cleanup();
 }
@@ -125,7 +125,7 @@ bool CameraApplication::Initialize()
         return false;
     }
 
-    InitializeImGui();
+    //InitializeImGui();
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
@@ -339,8 +339,8 @@ void CameraApplication::OnResize(
 
     CreateSwapchainResources();
 
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+    //ImGuiIO& io = ImGui::GetIO();
+    //io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
 
     _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
         DirectX::XMConvertToRadians(45.0f),
@@ -394,7 +394,7 @@ void CameraApplication::Render()
 
     _deviceContext->DrawIndexed();
 
-    RenderUi();
+    //RenderUi();
     _swapChain->Present(1, 0);
 }
 

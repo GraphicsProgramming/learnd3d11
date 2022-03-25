@@ -1,11 +1,13 @@
 #pragma once
 
+#include <DirectXMath.h>
+
 #include <string_view>
 #include <cstdint>
 #include <memory>
+#include <set>
 
 struct GLFWwindow;
-class Input;
 
 class Application
 {
@@ -15,13 +17,18 @@ public:
 
     void Run();
 protected:
-    static void HandleResize(
-        GLFWwindow* window,
-        const int32_t width,
-        const int32_t height);
     virtual void OnResize(
         const int32_t width,
         const int32_t height);
+    void OnKey(
+        const int32_t key,
+        const int32_t action);
+    void OnMouseButton(
+        const int32_t button,
+        const int32_t action);
+    void OnMouseMove(
+        const float x,
+        const float y);
 
     virtual bool Initialize();
     virtual bool Load() = 0;
@@ -34,16 +41,53 @@ protected:
     [[nodiscard]] int32_t GetWindowWidth() const;
     [[nodiscard]] int32_t GetWindowHeight() const;
 
-    [[nodiscard]] bool IsButtonPressed(const std::int32_t button) const;
-    [[nodiscard]] bool IsKeyDown(const std::int32_t key) const;
-    [[nodiscard]] bool IsKeyPressed(const std::int32_t key) const;
-    [[nodiscard]] bool IsKeyUp(const std::int32_t key) const;
+    [[nodiscard]] bool IsButtonPressed(const int32_t button) const;
+    [[nodiscard]] bool IsButtonDown(const int32_t button) const;
+    [[nodiscard]] bool IsButtonUp(const int32_t button) const;
+    [[nodiscard]] bool IsKeyDown(const int32_t key) const;
+    [[nodiscard]] bool IsKeyPressed(const int32_t key) const;
+    [[nodiscard]] bool IsKeyUp(const int32_t key) const;
 
-    std::unique_ptr<Input> _input = nullptr;
+    DirectX::XMFLOAT2 DeltaPosition = { 0.0f, 0.0f };
+    DirectX::XMFLOAT2 CursorPosition = { 0.0f, 0.0f };
 
 private:
+    static void HandleResize(
+        GLFWwindow* window,
+        const int32_t width,
+        const int32_t height);
+
+    static void HandleKeyboard(
+        GLFWwindow* window,
+        const int32_t key,
+        const int32_t scanCode,
+        const int32_t action,
+        const int32_t modifier);
+    static void HandleMouseButton(
+        GLFWwindow* window,
+        const int32_t button,
+        const int32_t action,
+        const int32_t modifiers);
+    static void HandleMouseMovement(
+        GLFWwindow* window,
+        const double x,
+        const double y);
+
+    void UpdateInput(float centerX, float centerY);
+
     GLFWwindow* _window = nullptr;
     int32_t _width = 0;
     int32_t _height = 0;
     std::string_view _title;
+
+    std::set<int32_t> _keysDown;
+    std::set<int32_t> _keysUp;
+    std::set<int32_t> _keysPressed;
+    std::set<int32_t> _keysReleased;
+
+    std::set<int32_t> _buttonsDown{};
+    std::set<int32_t> _buttonsPressed{};
+    std::set<int32_t> _buttonsUp{};
+    bool _isCaptured = false;
+
 };

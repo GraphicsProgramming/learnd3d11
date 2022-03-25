@@ -1,5 +1,5 @@
 #include "Application.hpp"
-#include "Input/Input.hpp"
+
 #include <GLFW/glfw3.h>
 
 Application::Application(const std::string_view title)
@@ -38,13 +38,14 @@ bool Application::Initialize()
         return false;
     }
 
-    _input = std::make_unique<Input>(_window);
-
     const int32_t windowLeft = videoMode->width / 2 - _width / 2;
     const int32_t windowTop = videoMode->height / 2 - _height / 2;
     glfwSetWindowPos(_window, windowLeft, windowTop);
     glfwSetWindowUserPointer(_window, this);
     glfwSetFramebufferSizeCallback(_window, HandleResize);
+    glfwSetKeyCallback(_window, HandleKeyboard);
+    glfwSetMouseButtonCallback(_window, HandleMouseButton);
+    glfwSetCursorPosCallback(_window, HandleMouseMovement);
     return true;
 }
 
@@ -56,8 +57,30 @@ void Application::OnResize(
     _height = height;
 }
 
+void Application::OnKey(
+    const int32_t key,
+    const int32_t action)
+{
+    switch (action)
+    {
+    case GLFW_PRESS:
+        _keysPressed.insert(key);
+        _keysDown.insert(key);
+        break;
+    case GLFW_RELEASE:
+        _keysReleased.insert(key);
+        _keysDown.erase(key);
+    }
+}
+
 void Application::Cleanup()
 {
+    glfwSetCursorPosCallback(_window, nullptr);
+    glfwSetMouseButtonCallback(_window, nullptr);
+    glfwSetKeyCallback(_window, nullptr);
+    glfwSetFramebufferSizeCallback(_window, nullptr);
+    glfwSetWindowUserPointer(_window, nullptr);
+
     glfwDestroyWindow(_window);
     glfwTerminate();
 }
@@ -82,9 +105,10 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(_window))
     {
-        _input->Update(
+        UpdateInput(
             static_cast<float>(_width) / 2.0f,
             static_cast<float>(_height) / 2.0f);
+
         glfwPollEvents();
         Update();
         Render();
@@ -98,6 +122,88 @@ void Application::HandleResize(
 {
     Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
     application.OnResize(width, height);
+}
+
+void Application::HandleKeyboard(
+    GLFWwindow* window,
+    const int32_t key,
+    const int32_t scanCode,
+    const int32_t action,
+    const int32_t modifier)
+{
+    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application.OnKey(key, action);
+}
+
+void Application::HandleMouseButton(
+    GLFWwindow* window,
+    const int32_t button,
+    const int32_t action,
+    const int32_t modifiers)
+{
+    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application.OnMouseButton(button, action);
+}
+
+void Application::HandleMouseMovement(
+    GLFWwindow* window,
+    const double x,
+    const double y)
+{
+    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application.OnMouseMove(static_cast<float>(x), static_cast<float>(y));
+}
+
+void Application::OnMouseButton(
+    const int32_t button,
+    const int32_t action)
+{
+    // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+    switch (action)
+    {
+    case GLFW_PRESS:
+        _buttonsPressed.insert(button);
+        _buttonsDown.insert(button);
+        break;
+    case GLFW_RELEASE:
+        _buttonsUp.insert(button);
+        _buttonsDown.erase(button);
+        break;
+    }
+}
+
+void Application::OnMouseMove(
+    const float x,
+    const float y)
+{
+    DeltaPosition = DirectX::XMFLOAT2(
+        x - CursorPosition.x,
+        y - CursorPosition.y);
+
+    CursorPosition = DirectX::XMFLOAT2(x, y);
+}
+
+void Application::UpdateInput(
+    float centerX,
+    float centerY)
+{
+    _keysDown.clear();
+    _keysUp.clear();
+    _keysPressed.clear();
+    _keysReleased.clear();
+
+    const auto window = glfwGetCurrentContext();
+    _buttonsDown.clear();
+    _buttonsPressed.clear();
+    _buttonsUp.clear();
+
+    DeltaPosition = DirectX::XMFLOAT2(0.0f, 0.0f);
+
+    if (_isCaptured)
+    {
+        CursorPosition = DirectX::XMFLOAT2(centerX, centerY);
+        glfwSetCursorPos(window, centerX, centerY);
+    }
 }
 
 GLFWwindow* Application::GetWindow() const
@@ -115,22 +221,32 @@ int32_t Application::GetWindowHeight() const
     return _height;
 }
 
-bool Application::IsKeyDown(const std::int32_t key) const
+bool Application::IsKeyDown(const int32_t key) const
 {
-    return _input->GetKeyboard().IsKeyDown(key);
+    return _keysDown.count(key) != 0;
 }
 
-bool Application::IsKeyPressed(const std::int32_t key) const
+bool Application::IsKeyPressed(const int32_t key) const
 {
-    return _input->GetKeyboard().IsKeyPressed(key);
+    return _keysPressed.count(key) != 0;
 }
 
-bool Application::IsKeyUp(const std::int32_t key) const
+bool Application::IsKeyUp(const int32_t key) const
 {
-    return _input->GetKeyboard().IsKeyUp(key);
+    return _keysUp.count(key) != 0;
 }
 
-bool Application::IsButtonPressed(const std::int32_t button) const
+bool Application::IsButtonDown(const int32_t button) const
 {
-    return _input->GetMouse().IsButtonPressed(button);
+    return _buttonsDown.count(button) != 0;
+}
+
+bool Application::IsButtonPressed(const int32_t button) const
+{
+    return _buttonsPressed.count(button) != 0;
+}
+
+bool Application::IsButtonUp(const int32_t button) const
+{
+    return _buttonsUp.count(button) != 0;
 }
