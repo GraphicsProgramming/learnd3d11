@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-4-DepthBuffer", "Cpp\1-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-5-RasterizerState", "Cpp\1-getting-started\1-3-5-RasterizerState\1-3-5-RasterizerState.vcxproj", "{1B35D552-7FE9-43AD-B0BC-7375D96034A5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-6-Camera", "Cpp\1-getting-started\1-3-6-Camera\1-3-6-Camera.vcxproj", "{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -125,6 +127,10 @@ Global
 		{1B35D552-7FE9-43AD-B0BC-7375D96034A5}.Debug|x64.Build.0 = Debug|x64
 		{1B35D552-7FE9-43AD-B0BC-7375D96034A5}.Release|x64.ActiveCfg = Release|x64
 		{1B35D552-7FE9-43AD-B0BC-7375D96034A5}.Release|x64.Build.0 = Release|x64
+		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}.Debug|x64.ActiveCfg = Debug|x64
+		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}.Debug|x64.Build.0 = Debug|x64
+		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}.Release|x64.ActiveCfg = Release|x64
+		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{0989B526-EC66-4C1C-8121-4B9AC53E2C83} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 		{B2D92817-E897-4797-9864-C1470F217F1E} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 		{1B35D552-7FE9-43AD-B0BC-7375D96034A5} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
+		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}
