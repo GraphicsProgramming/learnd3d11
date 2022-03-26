@@ -75,8 +75,8 @@ CameraApplication::~CameraApplication()
 #endif
     _device.Reset();
 
-    //ImGui_ImplGlfw_Shutdown();
-    //ImGui::DestroyContext(_imGuiContext);
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext(_imGuiContext);
 
     Application::Cleanup();
 }
@@ -125,7 +125,7 @@ bool CameraApplication::Initialize()
         return false;
     }
 
-    //InitializeImGui();
+    InitializeImGui();
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);

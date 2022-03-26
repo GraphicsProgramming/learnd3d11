@@ -9,12 +9,12 @@ DeviceContext::DeviceContext(
     WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 {
     _deviceContext = std::move(deviceContext);
-    //ImGui_ImplDX11_Init(device.Get(), _deviceContext.Get());
+    ImGui_ImplDX11_Init(device.Get(), _deviceContext.Get());
 }
 
 DeviceContext::~DeviceContext()
 {
-    //ImGui_ImplDX11_Shutdown();
+    ImGui_ImplDX11_Shutdown();
 }
 
 void DeviceContext::Clear(
