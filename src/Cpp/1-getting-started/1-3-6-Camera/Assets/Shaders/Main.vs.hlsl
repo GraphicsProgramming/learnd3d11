@@ -12,20 +12,16 @@ struct VSOutput
     float2 Uv: TEXCOORD0;
 };
 
-cbuffer PerApplication
+cbuffer CameraBuffer
 {
     matrix ProjectionMatrix;
-}
-
-cbuffer PerFrame
-{
     matrix ViewMatrix;
 }
 
-cbuffer PerObject
+cbuffer Object
 {
     matrix WorldMatrix;
-}
+};
 
 VSOutput Main(VSInput input)
 {

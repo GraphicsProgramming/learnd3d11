@@ -9,6 +9,7 @@
 #include <string_view>
 #include <memory>
 
+class Camera;
 class Pipeline;
 class PipelineFactory;
 class DeviceContext;
@@ -42,13 +43,7 @@ private:
     void InitializeImGui();
     void RenderUi();
 
-    enum ConstantBufferType
-    {
-        PerApplication,
-        PerFrame,
-        PerObject,
-        NumConstantBufferTypes
-    };
+    std::unique_ptr<Camera> _camera = nullptr;
 
     std::unique_ptr<Pipeline> _pipeline = nullptr;
     std::unique_ptr<DeviceContext> _deviceContext = nullptr;
@@ -87,11 +82,10 @@ private:
 
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
-    WRL::ComPtr<ID3D11Buffer> _constantBuffers[NumConstantBufferTypes];
+    WRL::ComPtr<ID3D11Buffer> _cameraConstantBuffer = nullptr;
+    WRL::ComPtr<ID3D11Buffer> _objectConstantBuffer = nullptr;
 
-    DirectX::XMMATRIX _projectionMatrix;
-    DirectX::XMMATRIX _viewMatrix;
-    DirectX::XMMATRIX _worldMatrix;
+    DirectX::XMMATRIX _worldMatrix = DirectX::XMMATRIX();
 
     uint32_t _modelVertexCount = 0;
     uint32_t _modelIndexCount = 0;

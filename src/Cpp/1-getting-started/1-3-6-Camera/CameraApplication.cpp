@@ -4,6 +4,7 @@
 #include "Pipeline.hpp"
 #include "TextureFactory.hpp"
 #include "ModelFactory.hpp"
+#include "Camera.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -56,9 +57,7 @@ CameraApplication::~CameraApplication()
     _solidFrameCullNoneRasterizerState.Reset();
 
     _depthStencilView.Reset();
-    _constantBuffers[ConstantBufferType::PerApplication].Reset();
-    _constantBuffers[ConstantBufferType::PerFrame].Reset();
-    _constantBuffers[ConstantBufferType::PerObject].Reset();
+    _cameraConstantBuffer.Reset();
     _textureSrv.Reset();
     _pipeline.reset();
     _pipelineFactory.reset();
@@ -165,6 +164,7 @@ bool CameraApplication::Initialize()
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
     _textureFactory = std::make_unique<TextureFactory>(_device);
     _modelFactory = std::make_unique<ModelFactory>(_device);
+    _camera = std::make_unique<PerspectiveCamera>(60.0f, GetWindowWidth(), GetWindowHeight(), 0.1f, 2048.0f);
 
     return true;
 }
@@ -213,36 +213,30 @@ bool CameraApplication::Load()
         return false;
     }
 
-    const D3D11_BUFFER_DESC constantBufferDescriptor = CD3D11_BUFFER_DESC(
+    const D3D11_BUFFER_DESC cameraConstantBufferDescriptor = CD3D11_BUFFER_DESC(
+        sizeof(CameraConstants),
+        D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER);
+
+    if (FAILED(_device->CreateBuffer(&cameraConstantBufferDescriptor, nullptr, &_cameraConstantBuffer)))
+    {
+        std::cout << "D3D11: Unable to create CameraConstants buffer\n";
+        return false;
+    }
+    SetDebugName(_cameraConstantBuffer.Get(), "CB_Camera");
+
+    const D3D11_BUFFER_DESC objectConstantBufferDescriptor = CD3D11_BUFFER_DESC(
         sizeof(DirectX::XMMATRIX),
         D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER);
 
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerApplication])))
+    if (FAILED(_device->CreateBuffer(&objectConstantBufferDescriptor, nullptr, &_objectConstantBuffer)))
     {
-        std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
+        std::cout << "D3D11: Unable to create ObjectConstants buffer\n";
         return false;
     }
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
-    {
-        std::cout << "D3D11: Unable to create constant buffer PerFrame\n";
-        return false;
-    }
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
-    {
-        std::cout << "D3D11: Unable to create constant buffer PerObject\n";
-        return false;
-    }
+    SetDebugName(_objectConstantBuffer.Get(), "CB_Object");
 
-    _pipeline->BindVertexStageConstantBuffer(0, _constantBuffers[ConstantBufferType::PerApplication].Get());
-    _pipeline->BindVertexStageConstantBuffer(1, _constantBuffers[ConstantBufferType::PerFrame].Get());
-    _pipeline->BindVertexStageConstantBuffer(2, _constantBuffers[ConstantBufferType::PerObject].Get());
-
-    _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
-        DirectX::XMConvertToRadians(45.0f),
-        GetWindowWidth() / static_cast<float>(GetWindowHeight()),
-        0.1f,
-        512.0f);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
+    _pipeline->BindVertexStageConstantBuffer(0, _cameraConstantBuffer.Get());
+    _pipeline->BindVertexStageConstantBuffer(1, _objectConstantBuffer.Get());
 
     if (!CreateDepthStencilStates())
     {
@@ -339,15 +333,10 @@ void CameraApplication::OnResize(
 
     CreateSwapchainResources();
 
-    //ImGuiIO& io = ImGui::GetIO();
-    //io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+    _camera->Resize(width, height);
 
-    _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
-        DirectX::XMConvertToRadians(45.0f),
-        GetWindowWidth() / static_cast<float>(GetWindowHeight()),
-        0.1f,
-        512);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(width, height);
 }
 
 void CameraApplication::Update()
@@ -357,11 +346,9 @@ void CameraApplication::Update()
         Close();
     }
 
-    const auto eyePosition = DirectX::XMVectorSet(0, 50, 200, 1);
-    const auto focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
-    const auto upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
-    _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), &_viewMatrix);
+    _camera->SetPosition(DirectX::XMFLOAT3{ 0.0f, 50.0f, -200.0f });
+    _camera->SetDirection(DirectX::XMFLOAT3{ 0.0f, 0.0f, 1.0f });
+    _camera->SetUp(DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f });
 
     static float angle = 0.0f;
     if (_toggledRotation)
@@ -375,12 +362,21 @@ void CameraApplication::Update()
 
     const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
 
-    _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
-    _deviceContext->UpdateSubresource(_constantBuffers[PerObject].Get(), &_worldMatrix);
+    _worldMatrix = DirectX::XMMatrixRotationAxis(
+        rotationAxis,
+        DirectX::XMConvertToRadians(angle));
+
+    DirectX::XMFLOAT4X4 worldMatrix;
+    DirectX::XMStoreFloat4x4(&worldMatrix, _worldMatrix);
+    _deviceContext->UpdateSubresource(_objectConstantBuffer.Get(), &worldMatrix);
 }
 
 void CameraApplication::Render()
 {
+    _camera->Update();
+    CameraConstants& cameraConstants = _camera->GetCameraConstants();
+    _deviceContext->UpdateSubresource(_cameraConstantBuffer.Get(), &cameraConstants);
+
     constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     _deviceContext->Clear(
@@ -394,7 +390,7 @@ void CameraApplication::Render()
 
     _deviceContext->DrawIndexed();
 
-    //RenderUi();
+    RenderUi();
     _swapChain->Present(1, 0);
 }
 

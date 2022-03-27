@@ -118,6 +118,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CameraApplication.cpp" />
@@ -128,6 +129,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="CameraApplication.hpp" />
