@@ -10,6 +10,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <d3dcompiler.h>
 
 #include <imgui/imgui.h>
@@ -248,6 +251,10 @@ bool CameraApplication::Load()
         return false;
     }
 
+    _camera->SetPosition(glm::vec3{ 0.0f, 50.0f, 400.0f });
+    _camera->SetDirection(glm::vec3{ 0.0f, 0.0f, 1.0f });
+    _camera->SetUp(glm::vec3{ 0.0f, 1.0f, 0.0f });
+
     return true;
 }
 
@@ -346,9 +353,36 @@ void CameraApplication::Update()
         Close();
     }
 
-    _camera->SetPosition(DirectX::XMFLOAT3{ 0.0f, 50.0f, -200.0f });
-    _camera->SetDirection(DirectX::XMFLOAT3{ 0.0f, 0.0f, 1.0f });
-    _camera->SetUp(DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f });
+    float speed = 0.0f;
+    if (IsKeyPressed(GLFW_KEY_W))
+    {
+        speed = 0.1f;
+        _camera->Move(speed);
+    }
+
+    if (IsKeyPressed(GLFW_KEY_S))
+    {
+        speed = -0.1f;
+        _camera->Move(speed);
+    }
+
+    if (IsKeyPressed(GLFW_KEY_A))
+    {
+        speed = -0.1f;
+        _camera->Slide(speed);
+    }
+
+    if (IsKeyPressed(GLFW_KEY_D))
+    {
+        speed = 0.1f;
+        _camera->Slide(speed);
+    }
+
+    if (IsButtonPressed(GLFW_MOUSE_BUTTON_1))
+    {
+        _camera->AddYaw(DeltaPosition.x * 0.1f);
+        _camera->AddPitch(DeltaPosition.y * 0.1f);
+    }
 
     static float angle = 0.0f;
     if (_toggledRotation)
@@ -360,15 +394,15 @@ void CameraApplication::Update()
         angle -= 90.0f * (10.0 / 60000.0f);
     }
 
-    const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
+    const auto rotationAxis = glm::vec3(0, 1, 0);
 
-    _worldMatrix = DirectX::XMMatrixRotationAxis(
-        rotationAxis,
-        DirectX::XMConvertToRadians(angle));
+    glm::mat4 identity = glm::mat4(1.0f);
+    _worldMatrix = glm::rotate(
+        identity,
+        glm::radians(angle),
+        rotationAxis);
 
-    DirectX::XMFLOAT4X4 worldMatrix;
-    DirectX::XMStoreFloat4x4(&worldMatrix, _worldMatrix);
-    _deviceContext->UpdateSubresource(_objectConstantBuffer.Get(), &worldMatrix);
+    _deviceContext->UpdateSubresource(_objectConstantBuffer.Get(), glm::value_ptr(_worldMatrix));
 }
 
 void CameraApplication::Render()
@@ -570,7 +604,7 @@ bool CameraApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.DepthBias = 0;
     rasterizerStateDescriptor.DepthBiasClamp = 0.0f;
     rasterizerStateDescriptor.DepthClipEnable = true;
-    rasterizerStateDescriptor.FrontCounterClockwise = false;
+    rasterizerStateDescriptor.FrontCounterClockwise = true;
     rasterizerStateDescriptor.MultisampleEnable = false;
     rasterizerStateDescriptor.ScissorEnable = false;
     rasterizerStateDescriptor.SlopeScaledDepthBias = 0.0f;

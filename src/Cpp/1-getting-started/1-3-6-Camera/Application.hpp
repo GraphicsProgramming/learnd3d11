@@ -1,11 +1,11 @@
 #pragma once
 
-#include <DirectXMath.h>
+#include <glm/vec2.hpp>
 
 #include <string_view>
 #include <cstdint>
 #include <memory>
-#include <set>
+#include <array>
 
 struct GLFWwindow;
 
@@ -48,8 +48,8 @@ protected:
     [[nodiscard]] bool IsKeyPressed(const int32_t key) const;
     [[nodiscard]] bool IsKeyUp(const int32_t key) const;
 
-    DirectX::XMFLOAT2 DeltaPosition = { 0.0f, 0.0f };
-    DirectX::XMFLOAT2 CursorPosition = { 0.0f, 0.0f };
+    glm::vec2 DeltaPosition = { 0.0f, 0.0f };
+    glm::vec2 CursorPosition = { 0.0f, 0.0f };
 
 private:
     static void HandleResize(
@@ -80,14 +80,8 @@ private:
     int32_t _height = 0;
     std::string_view _title;
 
-    std::set<int32_t> _keysDown;
-    std::set<int32_t> _keysUp;
-    std::set<int32_t> _keysPressed;
-    std::set<int32_t> _keysReleased;
-
-    std::set<int32_t> _buttonsDown{};
-    std::set<int32_t> _buttonsPressed{};
-    std::set<int32_t> _buttonsUp{};
+    std::array<bool, 512> _keys{};
+    std::array<bool, 512> _buttons{};
     bool _isCaptured = false;
 
 };

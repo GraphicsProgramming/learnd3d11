@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <iostream>
+
 Application::Application(const std::string_view title)
     : _title(title)
 {
@@ -64,12 +66,10 @@ void Application::OnKey(
     switch (action)
     {
     case GLFW_PRESS:
-        _keysPressed.insert(key);
-        _keysDown.insert(key);
+        _keys[key] = true;
         break;
     case GLFW_RELEASE:
-        _keysReleased.insert(key);
-        _keysDown.erase(key);
+        _keys[key] = false;
     }
 }
 
@@ -162,12 +162,10 @@ void Application::OnMouseButton(
     switch (action)
     {
     case GLFW_PRESS:
-        _buttonsPressed.insert(button);
-        _buttonsDown.insert(button);
+        _buttons[button] = true;
         break;
     case GLFW_RELEASE:
-        _buttonsUp.insert(button);
-        _buttonsDown.erase(button);
+        _buttons[button] = false;
         break;
     }
 }
@@ -176,32 +174,24 @@ void Application::OnMouseMove(
     const float x,
     const float y)
 {
-    DeltaPosition = DirectX::XMFLOAT2(
+    DeltaPosition = glm::vec2(
         x - CursorPosition.x,
         y - CursorPosition.y);
 
-    CursorPosition = DirectX::XMFLOAT2(x, y);
+    CursorPosition = glm::vec2(x, y);
 }
 
 void Application::UpdateInput(
     float centerX,
     float centerY)
 {
-    _keysDown.clear();
-    _keysUp.clear();
-    _keysPressed.clear();
-    _keysReleased.clear();
-
     const auto window = glfwGetCurrentContext();
-    _buttonsDown.clear();
-    _buttonsPressed.clear();
-    _buttonsUp.clear();
 
-    DeltaPosition = DirectX::XMFLOAT2(0.0f, 0.0f);
+    DeltaPosition = glm::vec2(0.0f, 0.0f);
 
     if (_isCaptured)
     {
-        CursorPosition = DirectX::XMFLOAT2(centerX, centerY);
+        CursorPosition = glm::vec2(centerX, centerY);
         glfwSetCursorPos(window, centerX, centerY);
     }
 }
@@ -223,30 +213,30 @@ int32_t Application::GetWindowHeight() const
 
 bool Application::IsKeyDown(const int32_t key) const
 {
-    return _keysDown.count(key) != 0;
+    return _keys[key];
 }
 
 bool Application::IsKeyPressed(const int32_t key) const
 {
-    return _keysPressed.count(key) != 0;
+    return _keys[key];
 }
 
 bool Application::IsKeyUp(const int32_t key) const
 {
-    return _keysUp.count(key) != 0;
+    return !_keys[key];
 }
 
 bool Application::IsButtonDown(const int32_t button) const
 {
-    return _buttonsDown.count(button) != 0;
+    return _buttons[button];
 }
 
 bool Application::IsButtonPressed(const int32_t button) const
 {
-    return _buttonsPressed.count(button) != 0;
+    return _buttons[button];
 }
 
 bool Application::IsButtonUp(const int32_t button) const
 {
-    return _buttonsUp.count(button) != 0;
+    return !_buttons[button];
 }

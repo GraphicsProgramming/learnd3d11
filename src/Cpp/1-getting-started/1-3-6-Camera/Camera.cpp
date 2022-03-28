@@ -1,4 +1,6 @@
 #include "Camera.hpp"
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 Camera::Camera(
     const float nearPlane,
@@ -8,12 +10,12 @@ Camera::Camera(
     _farPlane = farPlane;
 }
 
-DirectX::XMFLOAT4X4 Camera::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix()
 {
     return _viewMatrix;
 }
 
-DirectX::XMFLOAT4X4 Camera::GetProjectionMatrix()
+glm::mat4 Camera::GetProjectionMatrix()
 {
     return _projectionMatrix;
 }
@@ -35,81 +37,91 @@ void Camera::Update()
 
 void Camera::UpdateViewMatrix()
 {
-    DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookToLH(
-        DirectX::XMLoadFloat3(&_position),
-        DirectX::XMLoadFloat3(&_direction),
-        DirectX::XMLoadFloat3(&_up));
-    DirectX::XMStoreFloat4x4(&_viewMatrix, viewMatrix);
+    _viewMatrix = glm::lookAtRH(_position, _position + _direction, _up);
 }
 
 void Camera::UpdateVectors()
 {
-    float pitchSine;
-    float pitchCosine;
-    float yawSine;
-    float yawCosine;
+    float x = glm::cos(_pitch) * glm::cos(_yaw);
+    float y = glm::sin(_pitch);
+    float z = glm::cos(_pitch) * glm::sin(_yaw);
 
-    DirectX::XMScalarSinCos(&pitchSine, &pitchCosine, _pitch);
-    DirectX::XMScalarSinCos(&yawSine, &yawCosine, _yaw);
+    constexpr glm::vec3 unitY = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    float x = pitchCosine * yawCosine;
-    float y = pitchSine;
-    float z = pitchCosine * yawSine;
-
-    DirectX::XMFLOAT3 rotation = DirectX::XMFLOAT3(x, y, z);
-    DirectX::XMFLOAT3 unitY = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-    DirectX::XMVECTOR unitYVector = DirectX::XMLoadFloat3(&unitY);
-
-    DirectX::XMVECTOR direction = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&rotation));
-    DirectX::XMVECTOR right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction, unitYVector));
-    DirectX::XMVECTOR up = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(right, direction));
-
-    DirectX::XMStoreFloat3(&_direction, direction);
-    DirectX::XMStoreFloat3(&_right, right);
-    DirectX::XMStoreFloat3(&_up, up);
+    _direction = glm::normalize(glm::vec3(x, y, z));
+    _right = glm::normalize(glm::cross(_direction, unitY));
+    _up = glm::normalize(glm::cross(_right, _direction));
 }
 
-void Camera::SetPosition(const DirectX::XMFLOAT3& position)
+void Camera::SetPosition(const glm::vec3& position)
 {
     _position = position;
 }
 
-void Camera::SetDirection(const DirectX::XMFLOAT3& direction)
+void Camera::SetDirection(const glm::vec3& direction)
 {
     _direction = _direction;
 }
 
-void Camera::SetUp(const DirectX::XMFLOAT3& up)
+void Camera::SetUp(const glm::vec3& up)
 {
     _up = _up;
 }
 
+void Camera::Move(const float& speed)
+{
+    _position += _direction * speed;
+}
+
+void Camera::Slide(const float& speed)
+{
+    _position += _right * speed;
+}
+
+void Camera::Lift(const float& speed)
+{
+    _position += _up * speed;
+}
+
+void Camera::AddYaw(const float yawInDegrees)
+{
+    _yaw += glm::radians(yawInDegrees);
+}
+
+void Camera::AddPitch(const float pitchInDegrees)
+{
+    float pitch = glm::clamp(pitchInDegrees, -89.0f, 89.0f);
+    _pitch -= glm::radians(pitch);
+}
+
 PerspectiveCamera::PerspectiveCamera(
-    const float fieldOfView,
+    const float fieldOfViewInDegrees,
     const int32_t width,
     const int32_t height,
     const float nearPlane,
     const float farPlane) : Camera(nearPlane, farPlane)
 {
-    _aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-    _fieldOfView = DirectX::XMConvertToRadians(fieldOfView);
+    _width = width;
+    _height = height;
+    _fieldOfViewInRadians = glm::radians(fieldOfViewInDegrees);
 }
 
 void PerspectiveCamera::Resize(
     const int32_t width,
     const int32_t height)
 {
-    _aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+    _width = width;
+    _height = height;
 
     UpdateProjectionMatrix();
 }
 
 void PerspectiveCamera::UpdateProjectionMatrix()
 {
-    DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
-        _fieldOfView,
-        _aspectRatio,
+    _projectionMatrix = glm::perspectiveFovRH(
+        _fieldOfViewInRadians,
+        _width,
+        _height,
         _nearPlane,
         _farPlane);
-    DirectX::XMStoreFloat4x4(&_projectionMatrix, projectionMatrix);
 }

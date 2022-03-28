@@ -4,7 +4,7 @@
 #include "Definitions.hpp"
 
 #include <d3d11_2.h>
-#include <DirectXMath.h>
+#include <glm/mat4x4.hpp>
 
 #include <string_view>
 #include <memory>
@@ -85,12 +85,12 @@ private:
     WRL::ComPtr<ID3D11Buffer> _cameraConstantBuffer = nullptr;
     WRL::ComPtr<ID3D11Buffer> _objectConstantBuffer = nullptr;
 
-    DirectX::XMMATRIX _worldMatrix = DirectX::XMMATRIX();
+    glm::mat4 _worldMatrix = glm::mat4();
 
     uint32_t _modelVertexCount = 0;
     uint32_t _modelIndexCount = 0;
     bool _toggledRotation = false;
     int32_t _selectedDepthFunction = 1;
-    int32_t _selectedRasterizerState = 0;
+    int32_t _selectedRasterizerState = 11;
     bool _isWireframe = false;
 };
