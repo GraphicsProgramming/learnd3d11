@@ -186,7 +186,7 @@ bool CameraApplication::Load()
 
     _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
 
-    if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
+    if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Atlas.dds", _textureSrv))
     {
         return false;
     }
@@ -207,7 +207,7 @@ bool CameraApplication::Load()
     _pipeline->BindSampler(0, _linearSamplerState.Get());
 
     if (!_modelFactory->LoadModel(
-        "Assets/Models/SM_Good_Froge.fbx",
+        "Assets/Models/SM_Deccer_Cubes_Merged_Texture_Atlas.fbx",
         _modelVertices,
         &_modelVertexCount,
         _modelIndices,
