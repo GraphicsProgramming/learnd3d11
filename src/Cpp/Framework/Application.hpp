@@ -26,7 +26,7 @@ protected:
     virtual bool Load() = 0;
     virtual void Cleanup();
     virtual void Render() = 0;
-    virtual void Update() = 0;
+    virtual void Update();
 
     [[nodiscard]] GLFWwindow* GetWindow() const;
     [[nodiscard]] int32_t GetWindowWidth() const;

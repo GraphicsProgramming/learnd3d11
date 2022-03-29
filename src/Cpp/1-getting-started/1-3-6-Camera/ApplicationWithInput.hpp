@@ -65,7 +65,9 @@ private:
         const double x,
         const double y);
 
-    void UpdateInput(float centerX, float centerY);
+    void UpdateInput(
+        float centerX,
+        float centerY);
 
     std::array<bool, 512> _keys{};
     std::array<bool, 512> _buttons{};

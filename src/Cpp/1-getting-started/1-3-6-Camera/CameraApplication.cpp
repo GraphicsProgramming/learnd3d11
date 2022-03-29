@@ -83,7 +83,7 @@ CameraApplication::~CameraApplication()
 bool CameraApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
-    if (!Application::Initialize())
+    if (!ApplicationWithInput::Initialize())
     {
         return false;
     }

@@ -76,7 +76,6 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(_window))
     {
-        glfwPollEvents();
         Update();
         Render();
     }
@@ -104,4 +103,9 @@ int32_t Application::GetWindowWidth() const
 int32_t Application::GetWindowHeight() const
 {
     return _height;
+}
+
+void Application::Update()
+{
+    glfwPollEvents();
 }

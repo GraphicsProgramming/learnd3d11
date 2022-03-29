@@ -16,10 +16,15 @@ ApplicationWithInput::~ApplicationWithInput()
 
 bool ApplicationWithInput::Initialize()
 {
-    Application::Initialize();
+    if (!Application::Initialize())
+    {
+        return false;
+    }
+
     glfwSetKeyCallback(GetWindow(), HandleKeyboard);
     glfwSetMouseButtonCallback(GetWindow(), HandleMouseButton);
     glfwSetCursorPosCallback(GetWindow(), HandleMouseMovement);
+
     return true;
 }
 
@@ -53,7 +58,10 @@ void ApplicationWithInput::Close()
 
 void ApplicationWithInput::Update()
 {
-    UpdateInput(.0f, .0f);
+    UpdateInput(
+        static_cast<float>(GetWindowWidth()) / 2.0f,
+        static_cast<float>(GetWindowHeight()) / 2.0f);
+    Application::Update();
 }
 
 void ApplicationWithInput::HandleKeyboard(
@@ -113,18 +121,21 @@ void ApplicationWithInput::OnMouseMove(
     CursorPosition = DirectX::XMFLOAT2(x, y);
 }
 
-void ApplicationWithInput::UpdateInput(
-    float centerX,
-    float centerY)
+void ApplicationWithInput::UpdateInput(float centerX, float centerY)
 {
-    const auto window = glfwGetCurrentContext();
-
     DeltaPosition = DirectX::XMFLOAT2(0.0f, 0.0f);
 
     if (_isCaptured)
     {
-        CursorPosition = DirectX::XMFLOAT2(centerX, centerY);
-        glfwSetCursorPos(window, centerX, centerY);
+        CursorPosition = DirectX::XMFLOAT2(
+            centerX,
+            centerY);
+
+        const auto window = glfwGetCurrentContext();
+        glfwSetCursorPos(
+            window,
+            centerX,
+            centerY);
     }
 }
 
