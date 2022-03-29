@@ -58,7 +58,6 @@ LoadingMeshesApplication::~LoadingMeshesApplication()
     _debug.Reset();
 #endif
     _device.Reset();
-    Application::Cleanup();
 }
 
 bool LoadingMeshesApplication::Initialize()

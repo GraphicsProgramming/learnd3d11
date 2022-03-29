@@ -14,13 +14,14 @@ public:
     void Run();
 
 protected:
-    virtual void Cleanup();
     virtual bool Initialize();
     virtual bool Load() = 0;
     virtual void Render() = 0;
     virtual void Update() = 0;
 
 private:
+    virtual void Cleanup();
+
     GLFWwindow* _window = nullptr;
     int32_t _width = 0;
     int32_t _height = 0;

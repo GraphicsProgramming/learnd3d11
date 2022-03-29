@@ -69,8 +69,6 @@ DepthBufferApplication::~DepthBufferApplication()
 
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(_imGuiContext);
-
-    Application::Cleanup();
 }
 
 bool DepthBufferApplication::Initialize()

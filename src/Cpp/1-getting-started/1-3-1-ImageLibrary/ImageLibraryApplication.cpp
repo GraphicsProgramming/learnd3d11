@@ -48,7 +48,6 @@ ImageLibraryApplication::~ImageLibraryApplication()
     _debug.Reset();
 #endif
     _device.Reset();
-    Application::Cleanup();
 }
 
 bool ImageLibraryApplication::Initialize()

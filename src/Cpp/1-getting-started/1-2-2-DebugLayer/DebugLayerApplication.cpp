@@ -40,7 +40,6 @@ DebugLayerApplication::~DebugLayerApplication()
     _debug.Reset();
 #endif
     _device.Reset();
-    Application::Cleanup();
 }
 
 bool DebugLayerApplication::Initialize()

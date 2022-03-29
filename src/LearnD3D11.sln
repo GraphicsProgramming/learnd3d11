@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Getting-Started", "1-Getting-Started", "{69E36221-7B54-4891-AB39-B9F2C5025815}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2-HelloFroge", "Cpp\1-getting-started\2-HelloFroge\2-HelloFroge.vcxproj", "{664B6593-747C-4D41-AB59-0D0E792D0FA2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_items", "_items", "{315B2447-825D-406E-9347-509070A87B31}"
 	ProjectSection(SolutionItems) = preProject
@@ -28,36 +31,76 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-1-HelloWindow", "Cpp\1-getting-started\1-1-1-HelloWindow\1-1-1-HelloWindow.vcxproj", "{DE211E5C-4A95-4A67-9AA7-0A6DDBA68D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-2-HelloD3D11", "Cpp\1-getting-started\1-1-2-HelloD3D11\1-1-2-HelloD3D11.vcxproj", "{9C3191A6-5486-4F91-A467-19D407C44A83}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-3-HelloTriangle", "Cpp\1-getting-started\1-1-3-HelloTriangle\1-1-3-HelloTriangle.vcxproj", "{0D6F76D9-A15E-451F-A6CA-B3B0C45F631F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-0-Empty", "Cpp\1-getting-started\1-1-0-Empty\1-1-0-Empty.vcxproj", "{5C2CA1DA-6C84-4241-BF03-4D1E740B0CB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2-Debug-Layer", "2-Debug-Layer", "{8A1C7142-5362-42B8-AD0D-614758231633}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-2-2-DebugLayer", "Cpp\1-getting-started\1-2-2-DebugLayer\1-2-2-DebugLayer.vcxproj", "{E30FACD4-DD3A-425C-AE0E-874FD02D6161}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-2-3-NamingThings", "Cpp\1-getting-started\1-2-3-NamingThings\1-2-3-NamingThings.vcxproj", "{73748C0E-E32A-4276-8848-1DABD5136AE4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Models", "3-Models", "{125F76A8-AE74-44AE-B471-BE7C09EB5EB4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-1-ImageLibrary", "Cpp\1-getting-started\1-3-1-ImageLibrary\1-3-1-ImageLibrary.vcxproj", "{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-LoadingMeshes", "Cpp\1-getting-started\1-3-2-LoadingMeshes\1-3-2-LoadingMeshes.vcxproj", "{C1C659F7-25F7-463E-BC25-83DCD748044E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-3-HelloTriangle-Refactored", "Cpp\1-getting-started\1-1-3-HelloTriangle-Refactored\1-1-3-HelloTriangle-Refactored.vcxproj", "{A1F990E5-58A1-4345-AF2B-599F785519A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-LoadingMeshes-Refactored", "Cpp\1-getting-started\1-3-2-LoadingMeshes-Refactored\1-3-2-LoadingMeshes-Refactored.vcxproj", "{1B3547F4-344F-41FC-8AB0-312AF6E01A96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-3-DearImGui", "Cpp\1-getting-started\1-3-3-DearImGui\1-3-3-DearImGui.vcxproj", "{0989B526-EC66-4C1C-8121-4B9AC53E2C83}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-4-DepthBuffer", "Cpp\1-getting-started\1-3-4-DepthBuffer\1-3-4-DepthBuffer.vcxproj", "{B2D92817-E897-4797-9864-C1470F217F1E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-5-RasterizerState", "Cpp\1-getting-started\1-3-5-RasterizerState\1-3-5-RasterizerState.vcxproj", "{1B35D552-7FE9-43AD-B0BC-7375D96034A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-6-Camera", "Cpp\1-getting-started\1-3-6-Camera\1-3-6-Camera.vcxproj", "{E38C17E3-29B9-40BF-9372-0EB24DDE4B06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-2-HelloD3D11-Raw", "Cpp\1-getting-started\1-1-2-HelloD3D11-Raw\1-1-2-HelloD3D11-Raw.vcxproj", "{B88367A4-CB5C-4FB1-9FF9-ADDA3D9D0AB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{FDA61AEE-067D-4C41-B526-A4F6BC85C44E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Framework", "Cpp\Framework\Framework.vcxproj", "{A3B1AE74-436A-44B7-AD17-A0D19168773C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +180,10 @@ Global
 		{B88367A4-CB5C-4FB1-9FF9-ADDA3D9D0AB2}.Debug|x64.Build.0 = Debug|x64
 		{B88367A4-CB5C-4FB1-9FF9-ADDA3D9D0AB2}.Release|x64.ActiveCfg = Release|x64
 		{B88367A4-CB5C-4FB1-9FF9-ADDA3D9D0AB2}.Release|x64.Build.0 = Release|x64
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C}.Debug|x64.ActiveCfg = Debug|x64
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C}.Debug|x64.Build.0 = Debug|x64
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C}.Release|x64.ActiveCfg = Release|x64
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +210,8 @@ Global
 		{1B35D552-7FE9-43AD-B0BC-7375D96034A5} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 		{E38C17E3-29B9-40BF-9372-0EB24DDE4B06} = {125F76A8-AE74-44AE-B471-BE7C09EB5EB4}
 		{B88367A4-CB5C-4FB1-9FF9-ADDA3D9D0AB2} = {69E36221-7B54-4891-AB39-B9F2C5025815}
+		{FDA61AEE-067D-4C41-B526-A4F6BC85C44E} = {0AC134D5-97CD-4724-A717-1C0C8EC76F05}
+		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {FDA61AEE-067D-4C41-B526-A4F6BC85C44E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {839E559F-F97F-45D6-986E-121DDB0297EA}

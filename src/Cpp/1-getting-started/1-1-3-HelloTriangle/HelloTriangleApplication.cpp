@@ -42,7 +42,6 @@ HelloTriangleApplication::~HelloTriangleApplication()
     _dxgiFactory.Reset();
     _deviceContext.Reset();
     _device.Reset();
-    Application::Cleanup();
 }
 
 bool HelloTriangleApplication::Initialize()
