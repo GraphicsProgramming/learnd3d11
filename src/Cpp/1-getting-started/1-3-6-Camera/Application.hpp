@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/vec2.hpp>
+#include <DirectXMath.h>
 
 #include <string_view>
 #include <cstdint>
@@ -48,8 +48,8 @@ protected:
     [[nodiscard]] bool IsKeyPressed(const int32_t key) const;
     [[nodiscard]] bool IsKeyUp(const int32_t key) const;
 
-    glm::vec2 DeltaPosition = { 0.0f, 0.0f };
-    glm::vec2 CursorPosition = { 0.0f, 0.0f };
+    DirectX::XMFLOAT2 DeltaPosition = { 0.0f, 0.0f };
+    DirectX::XMFLOAT2 CursorPosition = { 0.0f, 0.0f };
 
 private:
     static void HandleResize(

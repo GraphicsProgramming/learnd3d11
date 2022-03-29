@@ -174,11 +174,11 @@ void Application::OnMouseMove(
     const float x,
     const float y)
 {
-    DeltaPosition = glm::vec2(
+    DeltaPosition = DirectX::XMFLOAT2(
         x - CursorPosition.x,
         y - CursorPosition.y);
 
-    CursorPosition = glm::vec2(x, y);
+    CursorPosition = DirectX::XMFLOAT2(x, y);
 }
 
 void Application::UpdateInput(
@@ -187,11 +187,11 @@ void Application::UpdateInput(
 {
     const auto window = glfwGetCurrentContext();
 
-    DeltaPosition = glm::vec2(0.0f, 0.0f);
+    DeltaPosition = DirectX::XMFLOAT2(0.0f, 0.0f);
 
     if (_isCaptured)
     {
-        CursorPosition = glm::vec2(centerX, centerY);
+        CursorPosition = DirectX::XMFLOAT2(centerX, centerY);
         glfwSetCursorPos(window, centerX, centerY);
     }
 }

@@ -10,9 +10,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <d3dcompiler.h>
 
 #include <imgui/imgui.h>
@@ -251,9 +248,9 @@ bool CameraApplication::Load()
         return false;
     }
 
-    _camera->SetPosition(glm::vec3{ 0.0f, 50.0f, 400.0f });
-    _camera->SetDirection(glm::vec3{ 0.0f, 0.0f, 1.0f });
-    _camera->SetUp(glm::vec3{ 0.0f, 1.0f, 0.0f });
+    _camera->SetPosition(DirectX::XMFLOAT3{ 0.0f, 50.0f, 400.0f });
+    _camera->SetDirection(DirectX::XMFLOAT3{ 0.0f, 0.0f, 1.0f });
+    _camera->SetUp(DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f });
 
     return true;
 }
@@ -394,15 +391,9 @@ void CameraApplication::Update()
         angle -= 90.0f * (10.0 / 60000.0f);
     }
 
-    const auto rotationAxis = glm::vec3(0, 1, 0);
-
-    glm::mat4 identity = glm::mat4(1.0f);
-    _worldMatrix = glm::rotate(
-        identity,
-        glm::radians(angle),
-        rotationAxis);
-
-    _deviceContext->UpdateSubresource(_objectConstantBuffer.Get(), glm::value_ptr(_worldMatrix));
+    DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle));
+    DirectX::XMStoreFloat4x4(&_worldMatrix, rotationMatrix);
+    _deviceContext->UpdateSubresource(_objectConstantBuffer.Get(), &_worldMatrix);
 }
 
 void CameraApplication::Render()

@@ -14,22 +14,22 @@ struct VSOutput
 
 cbuffer PerApplication
 {
-    matrix ProjectionMatrix;
+    column_major matrix ProjectionMatrix;
 }
 
 cbuffer PerFrame
 {
-    matrix ViewMatrix;
+    column_major matrix ViewMatrix;
 }
 
 cbuffer PerObject
 {
-    matrix WorldMatrix;
+    column_major matrix WorldMatrix;
 }
 
 VSOutput Main(VSInput input)
 {
-    const matrix modelViewProjection = mul(ProjectionMatrix, mul(ViewMatrix, WorldMatrix));
+    const matrix modelViewProjection = mul(WorldMatrix, mul(ViewMatrix, ProjectionMatrix));
 
     VSOutput output = (VSOutput)0;
     output.Position = mul(modelViewProjection, float4(input.Position, 1.0f));

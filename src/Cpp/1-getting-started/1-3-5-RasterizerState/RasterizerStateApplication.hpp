@@ -97,6 +97,6 @@ private:
     uint32_t _modelIndexCount = 0;
     bool _toggledRotation = false;
     int32_t _selectedDepthFunction = 1;
-    int32_t _selectedRasterizerState = 0;
+    int32_t _selectedRasterizerState = 11;
     bool _isWireframe = false;
 };

@@ -4,7 +4,6 @@
 #include "Definitions.hpp"
 
 #include <d3d11_2.h>
-#include <glm/mat4x4.hpp>
 
 #include <string_view>
 #include <memory>
@@ -85,7 +84,7 @@ private:
     WRL::ComPtr<ID3D11Buffer> _cameraConstantBuffer = nullptr;
     WRL::ComPtr<ID3D11Buffer> _objectConstantBuffer = nullptr;
 
-    glm::mat4 _worldMatrix = glm::mat4();
+    DirectX::XMFLOAT4X4 _worldMatrix = DirectX::XMFLOAT4X4();
 
     uint32_t _modelVertexCount = 0;
     uint32_t _modelIndexCount = 0;
