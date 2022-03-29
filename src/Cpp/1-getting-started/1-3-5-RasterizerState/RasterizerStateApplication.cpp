@@ -77,8 +77,6 @@ RasterizerStateApplication::~RasterizerStateApplication()
 
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(_imGuiContext);
-
-    Application::Cleanup();
 }
 
 bool RasterizerStateApplication::Initialize()

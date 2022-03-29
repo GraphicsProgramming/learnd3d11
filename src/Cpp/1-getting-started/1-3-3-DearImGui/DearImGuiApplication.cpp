@@ -58,8 +58,6 @@ DearImGuiApplication::~DearImGuiApplication()
 
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(_imGuiContext);
-
-    Application::Cleanup();
 }
 
 bool DearImGuiApplication::Initialize()

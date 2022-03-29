@@ -47,16 +47,16 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -70,7 +70,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
@@ -97,7 +97,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
@@ -117,7 +117,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Application.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DepthBufferApplication.cpp" />
@@ -127,7 +126,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="TextureFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="DepthBufferApplication.hpp" />

@@ -31,7 +31,7 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
 }
 
 CameraApplication::CameraApplication(const std::string_view title)
-    : Application(title)
+    : ApplicationWithInput(title)
 {
 }
 
@@ -77,13 +77,13 @@ CameraApplication::~CameraApplication()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext(_imGuiContext);
 
-    Application::Cleanup();
+    ApplicationWithInput::Cleanup();
 }
 
 bool CameraApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
-    if (!Application::Initialize())
+    if (!ApplicationWithInput::Initialize())
     {
         return false;
     }
@@ -345,6 +345,8 @@ void CameraApplication::OnResize(
 
 void CameraApplication::Update()
 {
+    ApplicationWithInput::Update();
+
     if (IsKeyDown(GLFW_KEY_ESCAPE))
     {
         Close();

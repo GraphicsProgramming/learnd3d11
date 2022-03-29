@@ -21,7 +21,7 @@ bool Application::Initialize()
 
     GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-    _width  = static_cast<int32_t>(videoMode->width * 0.9f);
+    _width = static_cast<int32_t>(videoMode->width * 0.9f);
     _height = static_cast<int32_t>(videoMode->height * 0.9f);
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
@@ -76,7 +76,6 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(_window))
     {
-        glfwPollEvents();
         Update();
         Render();
     }
@@ -87,8 +86,8 @@ void Application::HandleResize(
     const int32_t width,
     const int32_t height)
 {
-    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
-    application.OnResize(width, height);
+    Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application->OnResize(width, height);
 }
 
 GLFWwindow* Application::GetWindow() const
@@ -104,4 +103,9 @@ int32_t Application::GetWindowWidth() const
 int32_t Application::GetWindowHeight() const
 {
     return _height;
+}
+
+void Application::Update()
+{
+    glfwPollEvents();
 }

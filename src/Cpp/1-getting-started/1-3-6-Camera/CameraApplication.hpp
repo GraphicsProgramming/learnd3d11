@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Application.hpp"
+#include "ApplicationWithInput.hpp"
 #include "Definitions.hpp"
 
 #include <d3d11_2.h>
+#include <DirectXMath.h>
 
 #include <string_view>
 #include <memory>
@@ -17,7 +18,7 @@ class ModelFactory;
 
 struct ImGuiContext;
 
-class CameraApplication final : public Application
+class CameraApplication final : public ApplicationWithInput
 {
 public:
     CameraApplication(const std::string_view title);

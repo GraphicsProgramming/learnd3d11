@@ -1,8 +1,9 @@
 #pragma once
 
-#include <string_view>
 #include <cstdint>
+#include <string_view>
 
+// ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
 
 class Application
@@ -25,12 +26,12 @@ protected:
     virtual bool Load() = 0;
     virtual void Cleanup();
     virtual void Render() = 0;
-    virtual void Update() = 0;
+    virtual void Update();
 
     [[nodiscard]] GLFWwindow* GetWindow() const;
     [[nodiscard]] int32_t GetWindowWidth() const;
     [[nodiscard]] int32_t GetWindowHeight() const;
-    
+
 private:
     GLFWwindow* _window = nullptr;
     int32_t _width = 0;

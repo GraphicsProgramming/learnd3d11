@@ -1,4 +1,5 @@
 #include "HelloD3D11Application.hpp"
+#include "Application.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -28,7 +29,6 @@ HelloD3D11Application::~HelloD3D11Application()
     _dxgiFactory.Reset();
     _deviceContext.Reset();
     _device.Reset();
-    Application::Cleanup();
 }
 
 bool HelloD3D11Application::Initialize()
