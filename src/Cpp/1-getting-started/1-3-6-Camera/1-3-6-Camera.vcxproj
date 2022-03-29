@@ -141,9 +141,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Textures\T_Good_Froge.dds" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>

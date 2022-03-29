@@ -100,9 +100,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Textures\T_Good_Froge.dds" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl" />
     <None Include="Assets\Shaders\Main.vs.hlsl" />
   </ItemGroup>
