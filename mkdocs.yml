@@ -3,6 +3,7 @@ site_author: deccer
 site_url: https://graphicsprogramming.github.io/learnd3d11
 repo_name: graphicsprogramming/learnd3d11
 repo_url: https://github.com/graphicsprogramming/learnd3d11
+edit_uri: 'edit/main/docs'
 site_description: Learn D3D11
 copyright: Copyright 2022 Graphics Programming
 theme:
