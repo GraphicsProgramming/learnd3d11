@@ -26,14 +26,14 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
 
     for (auto [descriptor, resource] : pipeline->_resources)
     {
-        switch (descriptor.type)
+        switch (descriptor.Type)
         {
             case ResourceType::Sampler:
-                _deviceContext->PSSetSamplers(descriptor.slotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
+                _deviceContext->PSSetSamplers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
                 break;
 
             case ResourceType::Texture:
-                _deviceContext->PSSetShaderResources(descriptor.slotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
+                _deviceContext->PSSetShaderResources(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
                 break;
         }
     }
@@ -47,7 +47,12 @@ void DeviceContext::SetVertexBuffer(
 {
     D3D11_BUFFER_DESC description = {};
     triangleVertices->GetDesc(&description);
-    _deviceContext->IASetVertexBuffers(0, 1, &triangleVertices, &_activePipeline->_vertexSize, &vertexOffset);
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        &triangleVertices,
+        &_activePipeline->_vertexSize,
+        &vertexOffset);
     _drawVertices = description.ByteWidth / _activePipeline->_vertexSize;
 }
 

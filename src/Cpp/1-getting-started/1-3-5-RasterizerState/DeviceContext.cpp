@@ -47,24 +47,24 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
 
     for (auto [descriptor, resource] : pipeline->_resources)
     {
-        switch (descriptor.type)
+        switch (descriptor.Type)
         {
             case ResourceType::Sampler:
-                _deviceContext->PSSetSamplers(descriptor.slotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
+                _deviceContext->PSSetSamplers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
                 break;
 
             case ResourceType::Texture:
-                _deviceContext->PSSetShaderResources(descriptor.slotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
+                _deviceContext->PSSetShaderResources(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
                 break;
 
             case ResourceType::Buffer:
-                switch (descriptor.stage)
+                switch (descriptor.Stage)
                 {
                     case ResourceStage::VertexStage:
-                        _deviceContext->VSSetConstantBuffers(descriptor.slotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
+                        _deviceContext->VSSetConstantBuffers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
                         break;
                     case ResourceStage::PixelStage:
-                        _deviceContext->PSSetConstantBuffers(descriptor.slotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
+                        _deviceContext->PSSetConstantBuffers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
                         break;
                 }
                 break;
@@ -82,7 +82,12 @@ void DeviceContext::SetVertexBuffer(
 {
     D3D11_BUFFER_DESC description = {};
     vertexBuffer->GetDesc(&description);
-    _deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &_activePipeline->_vertexSize, &vertexOffset);
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        &vertexBuffer,
+        &_activePipeline->_vertexSize,
+        &vertexOffset);
     _drawVertices = description.ByteWidth / _activePipeline->_vertexSize;
 }
 
@@ -90,13 +95,22 @@ void DeviceContext::SetIndexBuffer(ID3D11Buffer* indexBuffer, uint32_t indexOffs
 {
     D3D11_BUFFER_DESC description = {};
     indexBuffer->GetDesc(&description);
-    _deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, indexOffset);
+    _deviceContext->IASetIndexBuffer(
+        indexBuffer,
+        DXGI_FORMAT::DXGI_FORMAT_R32_UINT,
+        indexOffset);
     _drawIndices = description.ByteWidth / sizeof(uint32_t);
 }
 
 void DeviceContext::UpdateSubresource(ID3D11Buffer* buffer, const void* data) const
 {
-    _deviceContext->UpdateSubresource(buffer, 0, nullptr, data, 0, 0);
+    _deviceContext->UpdateSubresource(
+        buffer,
+        0,
+        nullptr,
+        data,
+        0,
+        0);
 }
 
 void DeviceContext::Draw() const

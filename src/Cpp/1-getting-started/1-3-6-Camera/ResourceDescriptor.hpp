@@ -16,10 +16,11 @@ enum class ResourceStage : uint32_t
     PixelStage
 };
 
-struct ResourceDescriptor {
-    ResourceType type;
-    ResourceStage stage;
-    uint32_t slotIndex;
+struct ResourceDescriptor
+{
+    ResourceType Type;
+    ResourceStage Stage;
+    uint32_t SlotIndex;
 };
 
 namespace std
@@ -30,7 +31,7 @@ namespace std
         size_t operator ()(const ResourceDescriptor& resource) const noexcept
         {
             const hash<uint64_t> hash;
-            return hash(static_cast<uint64_t>(resource.slotIndex) << 32) ^ hash(static_cast<uint32_t>(resource.type));
+            return hash(static_cast<uint64_t>(resource.SlotIndex) << 32) ^ hash(static_cast<uint32_t>(resource.Type));
         }
     };
 
@@ -42,8 +43,8 @@ namespace std
             const ResourceDescriptor& rhs) const noexcept
         {
             return
-                lhs.slotIndex == rhs.slotIndex &&
-                lhs.type == rhs.type;
+                lhs.SlotIndex == rhs.SlotIndex &&
+                lhs.Type == rhs.Type;
         }
     };
 }

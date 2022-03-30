@@ -32,7 +32,12 @@ void DeviceContext::SetVertexBuffer(
 {
     D3D11_BUFFER_DESC description = {};
     triangleVertices->GetDesc(&description);
-    _deviceContext->IASetVertexBuffers(0, 1, &triangleVertices, &_activePipeline->_vertexSize, &vertexOffset);
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        &triangleVertices,
+        &_activePipeline->_vertexSize,
+        &vertexOffset);
     _drawVertices = description.ByteWidth / _activePipeline->_vertexSize;
 }
 
