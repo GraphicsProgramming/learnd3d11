@@ -18,7 +18,7 @@ bool Application::Initialize()
 {
     if (!glfwInit())
     {
-        std::cout << "GLFW: Failed to initialize GLFW\n";
+        std::cout << "GLFW: Failed to initialize\n";
         return false;
     }
 
