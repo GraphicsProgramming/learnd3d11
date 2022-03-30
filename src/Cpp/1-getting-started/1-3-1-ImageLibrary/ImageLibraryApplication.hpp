@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Application.hpp"
+#include <Application.hpp>
 #include "Definitions.hpp"
 
 #include <d3d11_2.h>

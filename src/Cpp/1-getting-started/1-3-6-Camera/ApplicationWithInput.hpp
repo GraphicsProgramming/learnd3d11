@@ -7,7 +7,7 @@
 #include <memory>
 #include <array>
 
-#include "Application.hpp"
+#include <Application.hpp>
 
 struct GLFWwindow;
 
