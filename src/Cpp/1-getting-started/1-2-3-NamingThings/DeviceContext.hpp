@@ -13,7 +13,7 @@ public:
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
-        const float clearColor[4]) const;
+        float clearColor[4]) const;
     void SetPipeline(const Pipeline* pipeline);
     void SetVertexBuffer(
         ID3D11Buffer* triangleVertices,

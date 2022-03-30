@@ -19,7 +19,7 @@ public:
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
-        const float clearColor[4],
+        float clearColor[4],
         ID3D11DepthStencilView* depthStencilView,
         float clearDepth) const;
     void SetPipeline(const Pipeline* pipeline);

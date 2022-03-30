@@ -17,10 +17,10 @@ public:
     void BindTexture(uint32_t slotIndex, ID3D11ShaderResourceView* texture);
     void BindSampler(uint32_t slotIndex, ID3D11SamplerState* sampler);
     void SetViewport(
-        const float left,
-        const float top,
-        const float width,
-        const float height);
+        float left,
+        float top,
+        float width,
+        float height);
 
 private:
     WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;

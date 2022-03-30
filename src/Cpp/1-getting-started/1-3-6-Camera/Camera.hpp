@@ -12,8 +12,8 @@ class Camera
 {
 public:
     virtual void Resize(
-        const int32_t width,
-        const int32_t height) = 0;
+        int32_t width,
+        int32_t height) = 0;
 
     void Update();
 
@@ -21,11 +21,11 @@ public:
     void SetDirection(const DirectX::XMFLOAT3& direction);
     void SetUp(const DirectX::XMFLOAT3& up);
 
-    void Move(const float& speed);
-    void Slide(const float& speed);
-    void Lift(const float& speed);
+    void Move(float speed);
+    void Slide(float speed);
+    void Lift(float speed);
 
-    void AddYaw(const float yawInDegrees);
+    void AddYaw(float yawInDegrees);
     void AddPitch(float pitchInDegrees);
 
     [[nodiscard]] DirectX::XMFLOAT4X4 GetViewMatrix();
@@ -34,8 +34,8 @@ public:
 
 protected:
     Camera(
-        const float nearPlane,
-        const float farPlane);
+        float nearPlane,
+        float farPlane);
 
     virtual void UpdateProjectionMatrix() = 0;
 
@@ -62,15 +62,15 @@ class PerspectiveCamera final : public Camera
 {
 public:
     PerspectiveCamera(
-        const float fieldOfViewInDegrees,
-        const int32_t width,
-        const int32_t height,
-        const float nearPlane,
-        const float farPlane);
+        float fieldOfViewInDegrees,
+        int32_t width,
+        int32_t height,
+        float nearPlane,
+        float farPlane);
 
     void Resize(
-        const int32_t width,
-        const int32_t height) override;
+        int32_t width,
+        int32_t height) override;
 
 protected:
     void UpdateProjectionMatrix() override;

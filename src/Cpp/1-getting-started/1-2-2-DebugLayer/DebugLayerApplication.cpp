@@ -223,7 +223,7 @@ void DebugLayerApplication::Update()
 
 void DebugLayerApplication::Render()
 {
-    constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     constexpr uint32_t vertexOffset = 0;
 
     _deviceContext->Clear(_renderTarget.Get(), clearColor);

@@ -184,9 +184,9 @@ bool HelloTriangleApplication::Load()
 
 
 bool HelloTriangleApplication::CompileShader(
-    const std::wstring_view fileName,
-    const std::string_view entryPoint,
-    const std::string_view profile,
+    const std::wstring& fileName,
+    const std::string& entryPoint,
+    const std::string& profile,
     ComPtr<ID3DBlob>& shaderBlob) const
 {
     constexpr uint32_t compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -218,7 +218,7 @@ bool HelloTriangleApplication::CompileShader(
 }
 
 HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::CreateVertexShader(
-    const std::wstring_view fileName,
+    const std::wstring& fileName,
     ComPtr<ID3DBlob>& vertexShaderBlob) const
 {
     if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
@@ -240,7 +240,7 @@ HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::C
     return vertexShader;
 }
 
-HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::CreatePixelShader(const std::wstring_view fileName) const
+HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::CreatePixelShader(const std::wstring& fileName) const
 {
     ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
     if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))

@@ -10,7 +10,7 @@ DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 
 void DeviceContext::Clear(
     ID3D11RenderTargetView* renderTarget,
-    const float clearColor[4]) const
+    float clearColor[4]) const
 {
     _deviceContext->ClearRenderTargetView(renderTarget, clearColor);
     _deviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);

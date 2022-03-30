@@ -18,8 +18,8 @@ protected:
     bool Initialize() override;
     bool Load() override;
     void OnResize(
-        const int32_t width,
-        const int32_t height) override;
+        int32_t width,
+        int32_t height) override;
     void Update() override;
     void Render() override;
 
@@ -28,14 +28,14 @@ private:
     void DestroySwapchainResources();
 
     bool CompileShader(
-        const std::wstring_view fileName,
-        const std::string_view entryPoint,
-        const std::string_view profile,
+        const std::wstring& fileName,
+        const std::string& entryPoint,
+        const std::string& profile,
         ComPtr<ID3DBlob>& shaderBlob) const;
     [[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
-        const std::wstring_view fileName,
+        const std::wstring& fileName,
         ComPtr<ID3DBlob>& vertexShaderBlob) const;
-    [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
+    [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(const std::wstring& fileName) const;
 
     ComPtr<ID3D11Device> _device = nullptr;
     ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;

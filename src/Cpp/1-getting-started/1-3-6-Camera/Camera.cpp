@@ -87,7 +87,7 @@ void Camera::SetUp(const DirectX::XMFLOAT3& up)
     _up = _up;
 }
 
-void Camera::Move(const float& speed)
+void Camera::Move(float speed)
 {
     DirectX::XMVECTOR scaled = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&_direction), speed);
     DirectX::XMVECTOR advancedPosition = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&_position), scaled);
@@ -95,7 +95,7 @@ void Camera::Move(const float& speed)
     DirectX::XMStoreFloat3(&_position, advancedPosition);
 }
 
-void Camera::Slide(const float& speed)
+void Camera::Slide(float speed)
 {
     DirectX::XMVECTOR scaled = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&_right), speed);
     DirectX::XMVECTOR advancedPosition = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&_position), scaled);
@@ -103,16 +103,15 @@ void Camera::Slide(const float& speed)
     DirectX::XMStoreFloat3(&_position, advancedPosition);
 }
 
-void Camera::Lift(const float& speed)
+void Camera::Lift(float speed)
 {
     DirectX::XMVECTOR scaled = DirectX::XMVectorScale(DirectX::XMLoadFloat3(&_up), speed);
     DirectX::XMVECTOR advancedPosition = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&_position), scaled);
 
     DirectX::XMStoreFloat3(&_position, advancedPosition);
-
 }
 
-void Camera::AddYaw(const float yawInDegrees)
+void Camera::AddYaw(float yawInDegrees)
 {
     _yaw += DirectX::XMConvertToRadians(yawInDegrees);
 }

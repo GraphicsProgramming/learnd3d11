@@ -18,10 +18,10 @@ public:
     void BindSampler(uint32_t slotIndex, ID3D11SamplerState* sampler);
     void BindVertexStageConstantBuffer(uint32_t slotIndex, ID3D11Buffer* buffer);
     void SetViewport(
-        const float left,
-        const float top,
-        const float width,
-        const float height);
+        float left,
+        float top,
+        float width,
+        float height);
     void SetDepthStencilState(ID3D11DepthStencilState* depthStencilState);
     void SetRasterizerState(ID3D11RasterizerState* rasterizerState);
 

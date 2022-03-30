@@ -18,26 +18,26 @@ public:
 
 protected:
     void OnKey(
-        const int32_t key,
-        const int32_t action);
+        int32_t key,
+        int32_t action);
     void OnMouseButton(
-        const int32_t button,
-        const int32_t action);
+        int32_t button,
+        int32_t action);
     void OnMouseMove(
-        const float x,
-        const float y);
+        float x,
+        float y);
 
     virtual bool Initialize() override;
     virtual void Cleanup() override;
     void Close();
     virtual void Update() override;
 
-    [[nodiscard]] bool IsButtonPressed(const int32_t button) const;
-    [[nodiscard]] bool IsButtonDown(const int32_t button) const;
-    [[nodiscard]] bool IsButtonUp(const int32_t button) const;
-    [[nodiscard]] bool IsKeyDown(const int32_t key) const;
-    [[nodiscard]] bool IsKeyPressed(const int32_t key) const;
-    [[nodiscard]] bool IsKeyUp(const int32_t key) const;
+    [[nodiscard]] bool IsButtonPressed(int32_t button) const;
+    [[nodiscard]] bool IsButtonDown(int32_t button) const;
+    [[nodiscard]] bool IsButtonUp(int32_t button) const;
+    [[nodiscard]] bool IsKeyDown(int32_t key) const;
+    [[nodiscard]] bool IsKeyPressed(int32_t key) const;
+    [[nodiscard]] bool IsKeyUp(int32_t key) const;
 
     DirectX::XMFLOAT2 DeltaPosition = { 0.0f, 0.0f };
     DirectX::XMFLOAT2 CursorPosition = { 0.0f, 0.0f };
@@ -45,24 +45,24 @@ protected:
 private:
     static void HandleResize(
         GLFWwindow* window,
-        const int32_t width,
-        const int32_t height);
+        int32_t width,
+        int32_t height);
 
     static void HandleKeyboard(
         GLFWwindow* window,
-        const int32_t key,
-        const int32_t scanCode,
-        const int32_t action,
-        const int32_t modifier);
+        int32_t key,
+        int32_t scanCode,
+        int32_t action,
+        int32_t modifier);
     static void HandleMouseButton(
         GLFWwindow* window,
-        const int32_t button,
-        const int32_t action,
-        const int32_t modifiers);
+        int32_t button,
+        int32_t action,
+        int32_t modifiers);
     static void HandleMouseMovement(
         GLFWwindow* window,
-        const double x,
-        const double y);
+        double x,
+        double y);
 
     void UpdateInput(
         float centerX,

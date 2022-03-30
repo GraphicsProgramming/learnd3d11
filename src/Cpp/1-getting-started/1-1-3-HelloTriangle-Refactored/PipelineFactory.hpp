@@ -33,7 +33,7 @@ private:
     [[nodiscard]] WRL::ComPtr<ID3D11PixelShader> CreatePixelShader(const std::wstring& filePath) const;
 
     bool CreateInputLayout(
-        const VertexType layoutInfo,
+        VertexType layoutInfo,
         const WRL::ComPtr<ID3DBlob>& vertexBlob,
         WRL::ComPtr<ID3D11InputLayout>& inputLayout);
 

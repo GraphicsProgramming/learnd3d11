@@ -13,10 +13,10 @@ public:
     friend class DeviceContext;
 
     void SetViewport(
-        const float left,
-        const float top,
-        const float width,
-        const float height);
+        float left,
+        float top,
+        float width,
+        float height);
 
 private:
     WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;

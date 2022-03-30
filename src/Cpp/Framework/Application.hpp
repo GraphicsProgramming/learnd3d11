@@ -16,11 +16,11 @@ public:
 protected:
     static void HandleResize(
         GLFWwindow* window,
-        const int32_t width,
-        const int32_t height);
+        int32_t width,
+        int32_t height);
     virtual void OnResize(
-        const int32_t width,
-        const int32_t height);
+        int32_t width,
+        int32_t height);
 
     virtual bool Initialize();
     virtual bool Load() = 0;

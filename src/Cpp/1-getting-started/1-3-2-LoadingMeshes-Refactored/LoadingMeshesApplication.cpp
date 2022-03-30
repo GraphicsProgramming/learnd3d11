@@ -300,7 +300,7 @@ void LoadingMeshesApplication::Update()
 
 void LoadingMeshesApplication::Render()
 {
-    constexpr float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     _deviceContext->Clear(
         _renderTarget.Get(),
