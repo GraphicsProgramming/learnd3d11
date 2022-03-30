@@ -90,7 +90,7 @@ bool PipelineFactory::CreatePipeline(
         return false;
     }
     pipeline->_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    pipeline->_vertexSize = GetLayoutByteSize(settings.VertexType);
+    pipeline->_vertexSize = static_cast<uint32_t>(GetLayoutByteSize(settings.VertexType));
     return true;
 }
 
@@ -181,7 +181,7 @@ bool PipelineFactory::CreateInputLayout(
     const std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc = _layoutMap[layoutInfo];
     if (FAILED(_device->CreateInputLayout(
         inputLayoutDesc.data(),
-        inputLayoutDesc.size(),
+        static_cast<uint32_t>(inputLayoutDesc.size()),
         vertexBlob->GetBufferPointer(),
         vertexBlob->GetBufferSize(),
         &inputLayout)))

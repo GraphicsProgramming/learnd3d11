@@ -164,8 +164,8 @@ void HelloD3D11Application::Render()
     D3D11_VIEWPORT viewport = {};
     viewport.TopLeftX = 0;
     viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
+    viewport.Width = static_cast<float>(GetWindowWidth());
+    viewport.Height = static_cast<float>(GetWindowHeight());
     viewport.MinDepth = 0.0f;
     viewport.MaxDepth = 1.0f;
 

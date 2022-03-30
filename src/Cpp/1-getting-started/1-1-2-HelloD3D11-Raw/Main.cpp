@@ -178,8 +178,8 @@ int main()
         D3D11_VIEWPORT viewport = {};
         viewport.TopLeftX = 0;
         viewport.TopLeftY = 0;
-        viewport.Width = g_Width;
-        viewport.Height = g_Height;
+        viewport.Width = static_cast<float>(g_Width);
+        viewport.Height = static_cast<float>(g_Height);
         viewport.MinDepth = 0.0f;
         viewport.MaxDepth = 1.0f;
 

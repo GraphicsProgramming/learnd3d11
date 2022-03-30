@@ -171,7 +171,11 @@ bool DepthBufferApplication::Load()
         return false;
     }
 
-    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+    _pipeline->SetViewport(
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
     {
@@ -325,35 +329,37 @@ void DepthBufferApplication::OnResize(
     CreateSwapchainResources();
 
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+    io.DisplaySize = ImVec2(
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
         DirectX::XMConvertToRadians(45.0f),
         GetWindowWidth() / static_cast<float>(GetWindowHeight()),
         0.1f,
-        512);
+        512.0f);
     _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
 }
 
 void DepthBufferApplication::Update()
 {
-    const auto eyePosition = DirectX::XMVectorSet(0, 50, 200, 1);
-    const auto focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
-    const auto upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
+    const auto eyePosition = DirectX::XMVectorSet(0.0f, 50.0f, 200, 1.0f);
+    const auto focusPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+    const auto upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
     _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), &_viewMatrix);
 
     static float angle = 0.0f;
     if (_toggledRotation)
     {
-        angle += 90.0f * (10.0 / 60000.0f);
+        angle += 90.0f * (10.0f / 60000.0f);
     }
     else
     {
-        angle -= 90.0f * (10.0 / 60000.0f);
+        angle -= 90.0f * (10.0f / 60000.0f);
     }
 
-    const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
+    const auto rotationAxis = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
     _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
     _deviceContext->UpdateSubresource(_constantBuffers[PerObject].Get(), &_worldMatrix);
@@ -431,7 +437,9 @@ void DepthBufferApplication::InitializeImGui()
 {
     _imGuiContext = ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+    io.DisplaySize = ImVec2(
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     ImGui_ImplGlfw_InitForOther(GetWindow(), true);
 }

@@ -133,7 +133,11 @@ bool DebugLayerApplication::Load()
         return false;
     }
 
-    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+    _pipeline->SetViewport(
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     constexpr VertexPositionColor vertices[] =
     {

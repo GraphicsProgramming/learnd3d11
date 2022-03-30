@@ -51,7 +51,7 @@ bool ModelFactory::LoadModel(
     constexpr Color defaultColor = Color{ 0.5f, 0.5f, 0.5f };
     constexpr Uv defaultUv = Uv{ 0.0f, 0.0f };
     std::vector<VertexPositionColorUv> vertices;
-    for (int32_t i = 0; i < (mesh->mNumVertices); i++)
+    for (size_t i = 0; i < (mesh->mNumVertices); i++)
     {
         const Position& position = Position{ mesh->mVertices[i].x / 100.0f, mesh->mVertices[i].y / 100.0f, mesh->mVertices[i].z / 100.0f };
         const Color& color = mesh->HasVertexColors(0)
@@ -64,7 +64,7 @@ bool ModelFactory::LoadModel(
         vertices.push_back(VertexPositionColorUv{ Position{position}, Color{color}, Uv{uv} });
     }
 
-    *vertexCount = vertices.size();
+    *vertexCount = static_cast<uint32_t>(vertices.size());
 
     D3D11_BUFFER_DESC vertexBufferDescriptor = {};
     vertexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(VertexPositionColorUv) * vertices.size());
@@ -92,14 +92,16 @@ bool ModelFactory::LoadModel(
         }
     }
 
-    *indexCount = indices.size();
+    *indexCount = static_cast<uint32_t>(indices.size());
 
     D3D11_BUFFER_DESC indexBufferDescriptor = {};
     indexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(uint32_t) * indices.size());
     indexBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
     indexBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
+
     D3D11_SUBRESOURCE_DATA indexBufferData = {};
     indexBufferData.pSysMem = indices.data();
+
     if (FAILED(_device->CreateBuffer(
         &indexBufferDescriptor,
         &indexBufferData,

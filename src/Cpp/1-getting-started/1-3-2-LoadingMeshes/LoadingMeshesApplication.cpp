@@ -158,7 +158,11 @@ bool LoadingMeshesApplication::Load()
         return false;
     }
 
-    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+    _pipeline->SetViewport(
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
     {
@@ -281,15 +285,15 @@ void LoadingMeshesApplication::OnResize(
 
 void LoadingMeshesApplication::Update()
 {
-    const auto eyePosition = DirectX::XMVectorSet(0, 50, 200, 1);
-    const auto focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
-    const auto upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
+    const auto eyePosition = DirectX::XMVectorSet(0.0f, 50.0f, 200.0f, 1.0f);
+    const auto focusPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+    const auto upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
     _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerFrame].Get(), &_viewMatrix);
 
     static float angle = 0.0f;
-    angle += 90.0f * (10.0 / 60000.0f);
-    const auto rotationAxis = DirectX::XMVectorSet(0, 1, 0, 0);
+    angle += 90.0f * (10.0f / 60000.0f);
+    const auto rotationAxis = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
     _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
     _deviceContext->UpdateSubresource(_constantBuffers[ConstantBufferType::PerObject].Get(), &_worldMatrix);
@@ -338,7 +342,7 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
     constexpr Color defaultColor = Color{ 0.5f, 0.5f, 0.5f };
     constexpr Uv defaultUv = Uv{ 0.0f, 0.0f };
     std::vector<VertexPositionColorUv> vertices;
-    for (int32_t i = 0; i < (mesh->mNumVertices); i++)
+    for (size_t i = 0; i < (mesh->mNumVertices); i++)
     {
         const Position& position = Position{ mesh->mVertices[i].x / 100.0f, mesh->mVertices[i].y / 100.0f, mesh->mVertices[i].z / 100.0f };
         const Color& color = mesh->HasVertexColors(0)
@@ -351,7 +355,7 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
         vertices.push_back(VertexPositionColorUv{ Position{position}, Color{color}, Uv{uv} });
     }
 
-    _modelVertexCount = vertices.size();
+    _modelVertexCount = static_cast<uint32_t>(vertices.size());
 
     D3D11_BUFFER_DESC vertexBufferDescriptor = {};
     vertexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(VertexPositionColorUv) * vertices.size());
@@ -371,15 +375,15 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
     }
 
     std::vector<uint32_t> indices;
-    for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+    for (size_t i = 0; i < mesh->mNumFaces; i++)
     {
-        for (uint32_t j = 0; j < mesh->mFaces[i].mNumIndices; j++)
+        for (size_t j = 0; j < mesh->mFaces[i].mNumIndices; j++)
         {
             indices.push_back(mesh->mFaces[i].mIndices[j]);
         }
     }
 
-    _modelIndexCount = indices.size();
+    _modelIndexCount = static_cast<uint32_t>(indices.size());
 
     D3D11_BUFFER_DESC indexBufferDescriptor = {};
     indexBufferDescriptor.ByteWidth = static_cast<uint32_t>(sizeof(uint32_t) * indices.size());

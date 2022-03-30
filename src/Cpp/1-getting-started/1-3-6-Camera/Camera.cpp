@@ -138,8 +138,8 @@ PerspectiveCamera::PerspectiveCamera(
     const float nearPlane,
     const float farPlane) : Camera(nearPlane, farPlane)
 {
-    _width = width;
-    _height = height;
+    _width = static_cast<float>(width);
+    _height = static_cast<float>(height);
     _fieldOfViewInRadians = DirectX::XMConvertToRadians(fieldOfViewInDegrees);
 }
 
@@ -147,8 +147,8 @@ void PerspectiveCamera::Resize(
     const int32_t width,
     const int32_t height)
 {
-    _width = width;
-    _height = height;
+    _width = static_cast<float>(width);
+    _height = static_cast<float>(height);
 
     UpdateProjectionMatrix();
 }

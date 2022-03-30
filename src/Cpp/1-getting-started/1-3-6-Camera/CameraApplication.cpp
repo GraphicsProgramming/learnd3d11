@@ -181,7 +181,11 @@ bool CameraApplication::Load()
         return false;
     }
 
-    _pipeline->SetViewport(0.0f, 0.0f, GetWindowWidth(), GetWindowHeight());
+    _pipeline->SetViewport(
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Atlas.dds", _textureSrv))
     {
@@ -340,7 +344,9 @@ void CameraApplication::OnResize(
     _camera->Resize(width, height);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(width, height);
+    io.DisplaySize = ImVec2(
+        static_cast<float>(width),
+        static_cast<float>(height));
 }
 
 void CameraApplication::Update()
@@ -386,11 +392,11 @@ void CameraApplication::Update()
     static float angle = 0.0f;
     if (_toggledRotation)
     {
-        angle += 90.0f * (10.0 / 60000.0f);
+        angle += 90.0f * (10.0f / 60000.0f);
     }
     else
     {
-        angle -= 90.0f * (10.0 / 60000.0f);
+        angle -= 90.0f * (10.0f / 60000.0f);
     }
 
     DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle));
@@ -512,7 +518,9 @@ void CameraApplication::InitializeImGui()
 {
     _imGuiContext = ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(GetWindowWidth(), GetWindowHeight());
+    io.DisplaySize = ImVec2(
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()));
 
     ImGui_ImplGlfw_InitForOther(GetWindow(), true);
 }

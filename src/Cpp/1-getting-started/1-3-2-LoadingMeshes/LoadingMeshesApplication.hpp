@@ -60,9 +60,9 @@ private:
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
 
     WRL::ComPtr<ID3D11Buffer> _constantBuffers[NumConstantBufferTypes];
-    DirectX::XMMATRIX _projectionMatrix;
-    DirectX::XMMATRIX _viewMatrix;
-    DirectX::XMMATRIX _worldMatrix;
+    DirectX::XMMATRIX _projectionMatrix = DirectX::XMMATRIX();
+    DirectX::XMMATRIX _viewMatrix = DirectX::XMMATRIX();
+    DirectX::XMMATRIX _worldMatrix = DirectX::XMMATRIX();
 
     uint32_t _modelVertexCount = 0;
     uint32_t _modelIndexCount = 0;
