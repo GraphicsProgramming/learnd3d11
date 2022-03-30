@@ -71,7 +71,7 @@ bool LoadingMeshesApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Unable to create DXGIFactory\n";
+        std::cout << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -94,7 +94,7 @@ bool LoadingMeshesApplication::Initialize()
         nullptr,
         &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cout << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
@@ -133,7 +133,7 @@ bool LoadingMeshesApplication::Initialize()
         nullptr,
         &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cout << "DXGI: Failed to create swapchain\n";
         return false;
     }
 
@@ -154,7 +154,7 @@ bool LoadingMeshesApplication::Load()
     pipelineDescriptor.VertexType = VertexType::PositionColorUv;
     if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
-        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        std::cout << "PipelineFactory: Failed to create pipeline\n";
         return false;
     }
 
@@ -178,7 +178,7 @@ bool LoadingMeshesApplication::Load()
     linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
     {
-        std::cout << "D3D11: Unable to create linear sampler state\n";
+        std::cout << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -195,19 +195,19 @@ bool LoadingMeshesApplication::Load()
 
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerApplication])))
     {
-        std::cout << "D3D11: Unable to create constant buffer PerApplication\n";
+        std::cout << "D3D11: Failed to create constant buffer PerApplication\n";
         return false;
     }
 
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
     {
-        std::cout << "D3D11: Unable to create constant buffer PerFrame\n";
+        std::cout << "D3D11: Failed to create constant buffer PerFrame\n";
         return false;
     }
 
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
     {
-        std::cout << "D3D11: Unable to create constant buffer PerObject\n";
+        std::cout << "D3D11: Failed to create constant buffer PerObject\n";
         return false;
     }
 
@@ -232,7 +232,7 @@ bool LoadingMeshesApplication::CreateSwapchainResources()
         0,
         IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -241,7 +241,7 @@ bool LoadingMeshesApplication::CreateSwapchainResources()
         nullptr,
         &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -269,7 +269,7 @@ void LoadingMeshesApplication::OnResize(
         DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
         0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 
@@ -322,7 +322,7 @@ bool LoadingMeshesApplication::LoadModel(const std::string& filePath)
 
     if (scene == nullptr)
     {
-        std::cout << "ASSIMP: Unable to load model file\n";
+        std::cout << "ASSIMP: Failed to load model file\n";
         return false;
     }
 

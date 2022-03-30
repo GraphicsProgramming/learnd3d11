@@ -55,7 +55,7 @@ bool HelloTriangleApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Unable to create DXGIFactory\n";
+        std::cout << "DXGI: Failed to create factory\n";
         return false;
     }
 

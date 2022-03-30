@@ -102,7 +102,7 @@ int main()
 
     if (window == nullptr)
     {
-        std::cout << "GLFW: Unable to create window\n";
+        std::cout << "GLFW: Failed to create window\n";
         glfwTerminate();
         return false;
     }
@@ -116,7 +116,7 @@ int main()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&g_DxgiFactory))))
     {
-        std::cout << "DXGI: Unable to create DXGIFactory\n";
+        std::cout << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -134,7 +134,7 @@ int main()
         nullptr,
         &g_DeviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cout << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
@@ -161,7 +161,7 @@ int main()
         nullptr,
         &g_SwapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cout << "DXGI: Failed to create swapchain\n";
         return false;
     }
 

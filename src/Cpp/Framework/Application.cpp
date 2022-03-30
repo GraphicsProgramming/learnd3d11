@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <iostream>
+
 Application::Application(const std::string& title)
     : _title(title)
 {
@@ -16,6 +18,7 @@ bool Application::Initialize()
 {
     if (!glfwInit())
     {
+        std::cout << "GLFW: Failed to initialize GLFW\n";
         return false;
     }
 
@@ -35,6 +38,7 @@ bool Application::Initialize()
 
     if (_window == nullptr)
     {
+        std::cout << "GLFW: Failed to create a window\n";
         Cleanup();
         return false;
     }

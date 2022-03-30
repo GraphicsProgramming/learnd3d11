@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
 {
     if (!glfwInit())
     {
-        std::cout << "GLFW: Unable to initialize\n";
+        std::cout << "GLFW: Failed to initialize\n";
         return -1;
     }
 
@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
         nullptr);
     if (window == nullptr)
     {
-        std::cout << "GLFW: Unable to create window\n";
+        std::cout << "GLFW: Failed to create window\n";
         glfwTerminate();
         return -1;
     }

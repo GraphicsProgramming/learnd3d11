@@ -61,7 +61,7 @@ bool ImageLibraryApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Unable to create DXGIFactory\n";
+        std::cout << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -142,7 +142,7 @@ bool ImageLibraryApplication::Load()
     pipelineDescriptor.VertexType = VertexType::PositionColorUv;
     if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
-        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        std::cout << "PipelineFactory: Failed to create pipeline\n";
         return false;
     }
 
@@ -179,7 +179,7 @@ bool ImageLibraryApplication::Load()
     DirectX::ScratchImage scratchImage;
     if (FAILED(DirectX::LoadFromDDSFile(L"Assets/Textures/T_Froge.dds", DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
     {
-        std::cout << "DXTEX: Unable to load image\n";
+        std::cout << "DXTEX: Failed to load image\n";
         return false;
     }
 
@@ -191,7 +191,7 @@ bool ImageLibraryApplication::Load()
         metaData,
         &texture)))
     {
-        std::cout << "DXTEX: Unable to create texture out of image\n";
+        std::cout << "DXTEX: Failed to create texture out of image\n";
         scratchImage.Release();
         return false;
     }
@@ -203,7 +203,7 @@ bool ImageLibraryApplication::Load()
         metaData,
         &_textureSrv)))
     {
-        std::cout << "DXTEX: Unable to create shader resource view out of texture\n";
+        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
         scratchImage.Release();
         return false;
     }
@@ -217,7 +217,7 @@ bool ImageLibraryApplication::Load()
     linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
     {
-        std::cout << "D3D11: Unable to create linear sampler state\n";
+        std::cout << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -233,7 +233,7 @@ bool ImageLibraryApplication::CreateSwapchainResources()
         0,
         IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -242,7 +242,7 @@ bool ImageLibraryApplication::CreateSwapchainResources()
         nullptr,
         &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -270,7 +270,7 @@ void ImageLibraryApplication::OnResize(
         DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
         0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 

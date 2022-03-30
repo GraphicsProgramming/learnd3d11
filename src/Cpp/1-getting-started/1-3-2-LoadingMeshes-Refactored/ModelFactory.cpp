@@ -31,7 +31,7 @@ bool ModelFactory::LoadModel(
 
     if (scene == nullptr)
     {
-        std::cout << "ASSIMP: Unable to load model file\n";
+        std::cout << "ASSIMP: Failed to load model file\n";
         return false;
     }
 

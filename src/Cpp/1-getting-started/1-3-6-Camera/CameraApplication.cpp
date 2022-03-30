@@ -91,7 +91,7 @@ bool CameraApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Unable to create DXGIFactory\n";
+        std::cout << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -177,7 +177,7 @@ bool CameraApplication::Load()
     pipelineDescriptor.VertexType = VertexType::PositionColorUv;
     if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
-        std::cout << "PipelineFactory: Unable to create pipeline\n";
+        std::cout << "PipelineFactory: Failed to create pipeline\n";
         return false;
     }
 
@@ -201,7 +201,7 @@ bool CameraApplication::Load()
     linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
     {
-        std::cout << "D3D11: Unable to create linear sampler state\n";
+        std::cout << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -223,7 +223,7 @@ bool CameraApplication::Load()
 
     if (FAILED(_device->CreateBuffer(&cameraConstantBufferDescriptor, nullptr, &_cameraConstantBuffer)))
     {
-        std::cout << "D3D11: Unable to create CameraConstants buffer\n";
+        std::cout << "D3D11: Failed to create CameraConstants buffer\n";
         return false;
     }
     SetDebugName(_cameraConstantBuffer.Get(), "CB_Camera");
@@ -234,7 +234,7 @@ bool CameraApplication::Load()
 
     if (FAILED(_device->CreateBuffer(&objectConstantBufferDescriptor, nullptr, &_objectConstantBuffer)))
     {
-        std::cout << "D3D11: Unable to create ObjectConstants buffer\n";
+        std::cout << "D3D11: Failed to create ObjectConstants buffer\n";
         return false;
     }
     SetDebugName(_objectConstantBuffer.Get(), "CB_Object");
@@ -266,7 +266,7 @@ bool CameraApplication::CreateSwapchainResources()
         0,
         IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -275,7 +275,7 @@ bool CameraApplication::CreateSwapchainResources()
         nullptr,
         &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -306,7 +306,7 @@ bool CameraApplication::CreateSwapchainResources()
         nullptr,
         &_depthStencilView)))
     {
-        std::cout << "D3D11: Failed to create SRV from Back Buffer\n";
+        std::cout << "D3D11: Failed to create shaderresource view from back buffer\n";
         return false;
     }
 
@@ -335,7 +335,7 @@ void CameraApplication::OnResize(
         DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
         0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 
@@ -535,63 +535,63 @@ bool CameraApplication::CreateDepthStencilStates()
 
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthDisabledDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create disabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create disabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthEnable = true;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessEqualDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledAlwaysDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNeverDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER_EQUAL;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterEqualDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledEqualDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
     depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
     if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNotEqualDepthStencilState)))
     {
-        std::cout << "D3D11: Unable to create enabled depth stencil state\n";
+        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
         return false;
     }
 
@@ -615,21 +615,21 @@ bool CameraApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullBackRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullFrontRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullNoneRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
@@ -638,21 +638,21 @@ bool CameraApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullBackRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullFrontRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullNoneRasterizerState)))
     {
-        std::cout << "D3D11: Unable to create rasterizer state\n";
+        std::cout << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
