@@ -21,7 +21,7 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
+HelloTriangleApplication::HelloTriangleApplication(const std::string& title)
     : Application(title)
 {
 }

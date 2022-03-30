@@ -5,7 +5,7 @@
 #include "Pipeline.hpp"
 
 #include <unordered_map>
-#include <string_view>
+#include <string>
 #include <memory>
 
 struct PipelineDescriptor

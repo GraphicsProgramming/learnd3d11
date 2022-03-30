@@ -5,7 +5,6 @@
 
 #include <d3d11_2.h>
 
-#include <string_view>
 #include <memory>
 
 class DeviceContext;
@@ -15,7 +14,7 @@ class PipelineFactory;
 class DebugLayerApplication final : public Application
 {
 public:
-    DebugLayerApplication(const std::string_view title);
+    DebugLayerApplication(const std::string& title);
     ~DebugLayerApplication() override;
 
 protected:

@@ -17,7 +17,7 @@ class TextureFactory;
 class LoadingMeshesApplication final : public Application
 {
 public:
-    LoadingMeshesApplication(const std::string_view title);
+    LoadingMeshesApplication(const std::string& title);
     ~LoadingMeshesApplication() override;
 
 protected:

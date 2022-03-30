@@ -6,14 +6,12 @@
 
 #include <Application.hpp>
 
-#include <string_view>
-
 class HelloD3D11Application final : public Application
 {
     template <typename T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
-    HelloD3D11Application(const std::string_view title);
+    HelloD3D11Application(const std::string& title);
     ~HelloD3D11Application() override;
 
 protected:

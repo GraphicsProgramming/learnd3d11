@@ -6,7 +6,6 @@
 #include <d3d11_2.h>
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <memory>
 
 class Pipeline;
@@ -18,7 +17,7 @@ class ModelFactory;
 class LoadingMeshesApplication final : public Application
 {
 public:
-    LoadingMeshesApplication(const std::string_view title);
+    LoadingMeshesApplication(const std::string& title);
     ~LoadingMeshesApplication() override;
 
 protected:

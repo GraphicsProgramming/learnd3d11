@@ -6,7 +6,6 @@
 #include <d3d11_2.h>
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <memory>
 
 class Pipeline;
@@ -20,7 +19,7 @@ struct ImGuiContext;
 class RasterizerStateApplication final : public Application
 {
 public:
-    RasterizerStateApplication(const std::string_view title);
+    RasterizerStateApplication(const std::string& title);
     ~RasterizerStateApplication() override;
 
 protected:

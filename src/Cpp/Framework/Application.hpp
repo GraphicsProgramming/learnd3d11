@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <string_view>
+#include <string>
 
 // ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
@@ -9,7 +9,7 @@ struct GLFWwindow;
 class Application
 {
 public:
-    Application(const std::string_view title);
+    Application(const std::string& title);
     virtual ~Application();
 
     void Run();
@@ -36,5 +36,5 @@ private:
     GLFWwindow* _window = nullptr;
     int32_t _width = 0;
     int32_t _height = 0;
-    std::string_view _title;
+    std::string _title;
 };

@@ -29,7 +29,7 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
 
-DearImGuiApplication::DearImGuiApplication(const std::string_view title)
+DearImGuiApplication::DearImGuiApplication(const std::string& title)
     : Application(title)
 {
 }

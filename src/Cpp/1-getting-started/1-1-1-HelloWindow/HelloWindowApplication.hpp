@@ -5,7 +5,7 @@
 class HelloWindowApplication final : public Application
 {
 public:
-    HelloWindowApplication(const std::string_view title);
+    HelloWindowApplication(const std::string& title);
 
 protected:
     bool Load() override;

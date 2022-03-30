@@ -2,7 +2,6 @@
 
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <cstdint>
 #include <memory>
 #include <array>
@@ -14,7 +13,7 @@ struct GLFWwindow;
 class ApplicationWithInput : public Application
 {
 public:
-    ApplicationWithInput(const std::string_view title);
+    ApplicationWithInput(const std::string& title);
     virtual ~ApplicationWithInput();
 
 protected:

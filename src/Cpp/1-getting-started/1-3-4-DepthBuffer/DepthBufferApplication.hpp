@@ -6,7 +6,6 @@
 #include <d3d11_2.h>
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <memory>
 
 class Pipeline;
@@ -20,7 +19,7 @@ struct ImGuiContext;
 class DepthBufferApplication final : public Application
 {
 public:
-    DepthBufferApplication(const std::string_view title);
+    DepthBufferApplication(const std::string& title);
     ~DepthBufferApplication() override;
 
 protected:

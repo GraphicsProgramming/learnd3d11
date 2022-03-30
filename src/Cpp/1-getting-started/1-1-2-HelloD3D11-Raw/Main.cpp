@@ -5,7 +5,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <string_view>
 #include <iostream>
 
 #pragma comment(lib, "d3d11.lib")

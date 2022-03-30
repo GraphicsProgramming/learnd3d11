@@ -2,7 +2,7 @@
 
 #include <string>
 
-HelloWindowApplication::HelloWindowApplication(const std::string_view title)
+HelloWindowApplication::HelloWindowApplication(const std::string& title)
     : Application(title)
 {
 }

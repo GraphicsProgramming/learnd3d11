@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-ApplicationWithInput::ApplicationWithInput(const std::string_view title)
+ApplicationWithInput::ApplicationWithInput(const std::string& title)
     : Application(title)
 {
 }

@@ -6,7 +6,6 @@
 #include <d3d11_2.h>
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <memory>
 
 class Pipeline;
@@ -20,7 +19,7 @@ struct ImGuiContext;
 class DearImGuiApplication final : public Application
 {
 public:
-    DearImGuiApplication(const std::string_view title);
+    DearImGuiApplication(const std::string& title);
     ~DearImGuiApplication() override;
 
 protected:

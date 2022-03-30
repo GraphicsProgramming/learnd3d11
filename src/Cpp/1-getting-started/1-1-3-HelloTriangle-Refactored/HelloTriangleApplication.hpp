@@ -5,7 +5,6 @@
 
 #include <d3d11_2.h>
 
-#include <string_view>
 #include <memory>
 
 class DeviceContext;
@@ -15,7 +14,7 @@ class PipelineFactory;
 class HelloTriangleApplication final : public Application
 {
 public:
-    HelloTriangleApplication(const std::string_view title);
+    HelloTriangleApplication(const std::string& title);
     ~HelloTriangleApplication() override;
 
 protected:

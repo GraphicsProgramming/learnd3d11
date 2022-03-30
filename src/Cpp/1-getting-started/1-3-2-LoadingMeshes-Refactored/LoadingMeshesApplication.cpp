@@ -26,7 +26,7 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
 
-LoadingMeshesApplication::LoadingMeshesApplication(const std::string_view title)
+LoadingMeshesApplication::LoadingMeshesApplication(const std::string& title)
     : Application(title)
 {
 }

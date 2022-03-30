@@ -6,14 +6,12 @@
 
 #include <Application.hpp>
 
-#include <string_view>
-
 class HelloTriangleApplication final : public Application
 {
     template <typename T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
-    HelloTriangleApplication(const std::string_view title);
+    HelloTriangleApplication(const std::string& title);
     ~HelloTriangleApplication() override;
 
 protected:

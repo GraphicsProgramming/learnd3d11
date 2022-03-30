@@ -10,7 +10,7 @@ TextureFactory::TextureFactory(const WRL::ComPtr<ID3D11Device>& device)
 }
 
 bool TextureFactory::CreateShaderResourceViewFromFile(
-    const std::wstring_view filePath,
+    const std::wstring& filePath,
     WRL::ComPtr<ID3D11ShaderResourceView>& shaderResourceView) const
 {
     DirectX::TexMetadata metaData = {};

@@ -5,7 +5,6 @@
 
 #include <d3d11_2.h>
 
-#include <string_view>
 #include <memory>
 
 class DeviceContext;
@@ -15,7 +14,7 @@ class PipelineFactory;
 class ImageLibraryApplication final : public Application
 {
 public:
-    ImageLibraryApplication(const std::string_view title);
+    ImageLibraryApplication(const std::string& title);
     ~ImageLibraryApplication() override;
 
 protected:

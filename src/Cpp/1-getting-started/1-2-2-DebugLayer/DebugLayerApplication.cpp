@@ -20,7 +20,7 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-DebugLayerApplication::DebugLayerApplication(const std::string_view title)
+DebugLayerApplication::DebugLayerApplication(const std::string& title)
     : Application(title)
 {
 }

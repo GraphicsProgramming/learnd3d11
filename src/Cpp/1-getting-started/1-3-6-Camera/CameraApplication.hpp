@@ -6,7 +6,6 @@
 #include <d3d11_2.h>
 #include <DirectXMath.h>
 
-#include <string_view>
 #include <memory>
 
 class Camera;
@@ -21,7 +20,7 @@ struct ImGuiContext;
 class CameraApplication final : public ApplicationWithInput
 {
 public:
-    CameraApplication(const std::string_view title);
+    CameraApplication(const std::string& title);
     ~CameraApplication() override;
 
 protected:

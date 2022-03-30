@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-Application::Application(const std::string_view title)
+Application::Application(const std::string& title)
 {
     _title = title;
 }

@@ -7,7 +7,7 @@
 #include <d3d11_2.h>
 
 #include <unordered_map>
-#include <string_view>
+#include <string>
 #include <memory>
 
 struct PipelineDescriptor

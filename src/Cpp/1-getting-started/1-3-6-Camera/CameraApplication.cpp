@@ -30,7 +30,7 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
 
-CameraApplication::CameraApplication(const std::string_view title)
+CameraApplication::CameraApplication(const std::string& title)
     : ApplicationWithInput(title)
 {
 }

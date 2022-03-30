@@ -5,7 +5,6 @@
 
 #include <d3d11_2.h>
 
-#include <string_view>
 #include <memory>
 
 class DeviceContext;
@@ -15,7 +14,7 @@ class PipelineFactory;
 class NamingThingsApplication final : public Application
 {
 public:
-    NamingThingsApplication(const std::string_view title);
+    NamingThingsApplication(const std::string& title);
     ~NamingThingsApplication() override;
 
 protected:

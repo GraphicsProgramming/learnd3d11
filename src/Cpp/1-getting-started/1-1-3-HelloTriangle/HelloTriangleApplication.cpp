@@ -25,7 +25,7 @@ struct VertexPositionColor
     Color color;
 };
 
-HelloTriangleApplication::HelloTriangleApplication(const std::string_view title)
+HelloTriangleApplication::HelloTriangleApplication(const std::string& title)
     : Application(title)
 {
 }
