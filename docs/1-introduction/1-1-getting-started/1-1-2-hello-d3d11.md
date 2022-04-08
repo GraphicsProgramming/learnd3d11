@@ -131,7 +131,7 @@ We need to include the following headers, here's what each of these headers incl
 #pragma comment(lib, "dxguid.lib")
 ```
 
-Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma` in `HelloD3D11.cpp` right below the includes.
+Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma comment(lib, "PATH_TO_LIB")` in `HelloD3D11.cpp` right below the includes to link these libraries. 
 
 ```cpp
 template <typename T>
@@ -181,7 +181,21 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-!!! error "What is `IID_PPV_ARGS`"?
+`IID_PPV_ARGS(type)` Is a complex compile time wrapper that (at a basic level) expands the inputted pointer into `_uuidof(*type), (void **)(type)` which means that for functions that have a `REFIID` as a parameter and immediatly after a `[out] void**` parameter, this macro will expand the IID_PPV_ARGS(type) expression into these parameters — this is seen with `CreateDXGIFactory2` where the second last and last parameter are a `REFIID` and `void**`:
+```cpp
+HRESULT CreateDXGIFactory2(
+        UINT   Flags,
+        REFIID riid,
+  [out] void   **ppFactory
+);
+```
+What this expression does as a result is 2 different things for the 2 things it expands into:
+
+[the `_uuidof(type)` part of `IID_PPV_ARGS(type)`]
+-  Computes and returns at compile time a Reference (REF) to an Interface Identifier (IID) (hence the type name of REFIID) based on the type of variable passed as an argument. A (REF)IID is a type of GUID (globally unique identifier), which means in simple terms that it is just an arbitrary value which always maps directly to the same variable type each and every time called.
+
+[the `(void **)(type)` part of `IID_PPV_ARGS(type)`]
+- IDD_PPV_ARGS also casts your inputted type to a `void**` so that your inputted variable can be set to the return of the function you used `IID_PPV_ARGS(type)` in
 
 !!! error "Explain DXGI"
 
