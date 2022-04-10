@@ -181,7 +181,11 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-`IID_PPV_ARGS(type)` Is a complex compile time wrapper that (at a basic level) expands the inputted pointer into `_uuidof(*type), (void **)(type)` which means that for functions that have a `REFIID` as a parameter and immediatly after a `[out] void**` parameter, this macro will expand the IID_PPV_ARGS(type) expression into these parameters — this is seen with `CreateDXGIFactory2` where the second last and last parameter are a `REFIID` and `void**`:
+`IID_PPV_ARGS(ppType)` Is a compile time macro that is defined as 
+```cpp
+#define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)
+```
+which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This funtionally means that for functions that have a parameter setup as `REFIID` and immediatly after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of the programmer — this can be seen with the used `CreateDXGIFactory2` method where the second last and last parameter are a `REFIID` and `void**`:
 ```cpp
 HRESULT CreateDXGIFactory2(
         UINT   Flags,
@@ -189,13 +193,27 @@ HRESULT CreateDXGIFactory2(
   [out] void   **ppFactory
 );
 ```
-What this expression does as a result is 2 different things for the 2 things it expands into:
+`REFIID` is a typedef that is a Reference (REF) to an Interface Identifier (`IID`) `typedef IID* REFIID`. This means that `REFIID` accepts a pointer to a Interface Identifier. An Interface Identifier is a type that holds data to describe a `GUID` (Global Unique Identifier) — which is described by a `UUID` through a specific formatted string repisenting the memory of a `GUID` type ("XXXXXXXX-XXXX-XXXX-XXXXXXXX"): 
+```cpp
+typedef struct _GUID
+{
+  unsigned long Data1;
+  unsigned short Data2;
+  unsigned short Data3;
+  unsigned char Data4[8];
+} GUID;
+```
+GUID's essentially are an arbitrary but unqiue value that repisent a Microsoft Interface Definition Language (MIDL) type, which breaks down into 2 things:
+- a single COM object/interface — the backbone to every ID3D11XXX type  
+- a single entry-point vector (EPV) — a unique array of function pointers geared towards Remote Procedure Call's (RPC) which is out of scope for d3d11 but can be learned more if read about in MSDN documentation (https://docs.microsoft.com/en-us/windows/win32/rpc/registering-interfaces#entry-point-vectors)
 
-[the `_uuidof(type)` part of `IID_PPV_ARGS(type)`]
--  Computes and returns at compile time a Reference (REF) to an Interface Identifier (IID) (hence the type name of REFIID) based on the type of variable passed as an argument. A (REF)IID is a type of GUID (globally unique identifier), which means in simple terms that it is just an arbitrary value which always maps directly to the same variable type each and every time called.
+What the parts of the `IID_PPV_ARGS(ppType)` macro do: 
 
-[the `(void **)(type)` part of `IID_PPV_ARGS(type)`]
-- IDD_PPV_ARGS also casts your inputted type to a `void**` so that your inputted variable can be set to the return of the function you used `IID_PPV_ARGS(type)` in
+[the `__uuidof(**(ppType))` part of `IID_PPV_ARGS(ppType)`]
+-  at compile time retrives a `UUID` which repisents a `GUID`, which is returned as a a `REFIID` — which means that the type returned is a reference to an identifier to a type of COM object (in the scope of D3D11).   
+
+[the `IID_PPV_ARGS_Helper(ppType)` part of `IID_PPV_ARGS(ppType)`]
+- `IID_PPV_ARGS_Helper` casts your inputted pointer to a COM type to a `void**` and returns it so that your inputted variable can be set to the `[out]` parameter of the function you used `IID_PPV_ARGS(ppType)` in to retrive the output of the function, like the created `IDXGIFactory2` in `CreateDXGIFactory2`.
 
 !!! error "Explain DXGI"
 
