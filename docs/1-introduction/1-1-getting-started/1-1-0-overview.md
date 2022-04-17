@@ -25,7 +25,7 @@ A few words about how each project will look like.
 
 Inside the project folder:
 
-```
+```bash
 Assets/
 Assets/Models/
 Assets/Shaders/
@@ -45,3 +45,5 @@ x-x-x-project.vcxproj
 - `obj/` contains all intermediate junk the compiler produced, to keep the folder structure clean
 - `bin/` will contain the compiled program of the chapter along with all necessary `Assets`
 - `Assets/` will contain all the used assets, such as models, shaders and textures and other things. It will be empty for the first few chapters, and we will copy it and its contents to the bin/Debug or bin/Release directory, depending on which configuration you chose
+
+[Next chapter](../1-1-1-hello-window/)

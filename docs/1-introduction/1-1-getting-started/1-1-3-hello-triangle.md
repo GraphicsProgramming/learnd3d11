@@ -4,7 +4,8 @@ In the last chapter we initialized core components of `D3D11` and DXGI such as t
 This time we'll be drawing our first triangle with a nice froge-like color.
 
 ## The Pipeline
-The fundamental part of all graphic APIs is the "Graphics Pipeline". Everything from a single triangle, textured frog or the whole Elden Ring map goes through this pipeline. It is a series of functions that either exist in hardware, can be configured or are fully programmable. It transforms everything we draw in 3D space to the 2D space that is our monitor. 
+
+The fundamental part of all graphic APIs is the "Graphics Pipeline". Everything from a single triangle, textured frog or the whole Elden Ring map goes through this pipeline. It is a series of functions that either exist in hardware, can be configured or are fully programmable. It transforms everything we draw in 3D space to the 2D space that is our monitor.
 
 All the steps in the graphics pipeline go from top to bottom and are shown below.
 
@@ -18,6 +19,7 @@ The Vertex and Pixel shaders are fully programmable and we'll write a very basic
 The other two stages are not programmable but they are fairly easy to understand and configure, the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive of our choice, which is of course, triangles in our case, and sending this processed output to the Vertex Shader. The **Output Merger** instead is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
 
 ### Vertex Shader
+
 The **Vertex Shader** is the stage where our vertices are processed however we want, although we don't do much processing here, and in the end they're transformed to [screen-space coordinates](link to the coordinate system chapter?)
 
 The vertices are usually read from a **Vertex Buffer** which are laid out in a particular way. The vertex shader will be run however many times we tell it to run, which is specified in the first parameter of `ID3D11DeviceContext::Draw()` (more on this later), for instance if we call `Draw(3, 0)`, the vertex shader will run 3 times.
@@ -27,7 +29,9 @@ Since we only want to draw a triangle, we don't need to do much processing, we c
 The vertex buffer can be omitted, for example if we want to draw a full screen triangle, instead of creating a vertex buffer, for simplicity we can just hardcode the vertices in the vertex shader without having to bind a vertex buffer.
 
 Let's look at our basic vertex shader for this section:
+
 #### Main.vs.hlsl
+
 ```hlsl
 struct VSInput
 {
@@ -49,14 +53,15 @@ VSOutput Main(VSInput input)
     return output;
 }
 ```
+
 First off, we define 2 types, `VSInput` and `VSOutput` which represent the vertex shader's input and output.
 
 The input is 2, `float3` (vector of 3 float components), the first is the "position" field, which are coordinates ranging from [-1.0, 1.0], if the values are outside this range they are clipped, and we won't see them on screen.
 
 The second is the "color" field, which we also pass as the output of this stage onto the pixel shader.
 
-Notice how all our fields have a colon and some identifier attached to them, these are "semantics". 
-Semantics that are preceded by `SV` are called "system-value semantics" and their meaning and usage is defined by D3D11. `SV_Position` for example means that the field `position` will be used by D3D11 as the actual output of the vertex shader. 
+Notice how all our fields have a colon and some identifier attached to them, these are "semantics".
+Semantics that are preceded by `SV` are called "system-value semantics" and their meaning and usage is defined by D3D11. `SV_Position` for example means that the field `position` will be used by D3D11 as the actual output of the vertex shader.
 Everything else are "user defined semantics" and their naming is up to us. These are used to pass data between shader stages.
 
 Then we have our `VSOutput`, which has our vertices in the first field `position` and our color in the second field `color`.
@@ -64,6 +69,7 @@ Then we have our `VSOutput`, which has our vertices in the first field `position
 Finally we have our main function, which takes in a single parameter which is our input in the form of `VSInput`, and returns our output in the form of a `VSOutput`. Since we don't do any processing, we simply make a new instance of `VSOutput`, initialize it all to 0 and forward our input position and color to the output.
 
 ### Pixel Shader
+
 The **Pixel Shader** is the stage where we give the pixels on our render target color, it is invoked for each pixel that is covered by a triangle.
 
 We use this stage to apply most of our shading techniques, from basic lighting, to textures and shadows, all the way to physically based rendering.
@@ -71,7 +77,9 @@ We use this stage to apply most of our shading techniques, from basic lighting, 
 Since we did not specify any shader between the VS and the PS, our input here is the output of the VS, and the output is one or more render targets.
 
 Let's look at our Pixel Shader now:
+
 #### Main.ps.hlsl
+
 ```hlsl
 struct PSInput
 {
@@ -91,6 +99,7 @@ PSOutput Main(PSInput input)
     return output;
 }
 ```
+
 Here as well we have an input `PSInput`, and an output `PSOutput`.
 
 Since there aren't any other shaders in between the VS and the PS, the VS's output is the PS's input, the naming might be a bit confusing but that's the gist of it, PSInput should match the VSOutput in vertex shader, this isn't entirely required but not doing so is only advisable if you really know what you are doing.
@@ -99,9 +108,10 @@ Next we have our output, `D3D11` gives us the possibility to write to multiple r
 
 Notice how we have another semantic string attached to the `color` field, this semantic string specifies which render target we want to be writing to, the `0` after `SV_Target` is the index of our render target, in our case, we have only one so we write `SV_Target0` or `SV_Target`.
 
-`D3D11` lets us write up to 8 render targets simultaneously from the same pixel shader, those come in handy when implementing more advanced shading techniques, for example a popular technique that uses 4 or more 
+`D3D11` lets us write up to 8 render targets simultaneously from the same pixel shader, those come in handy when implementing more advanced shading techniques, for example a popular technique that uses 4 or more
 
 And lastly, our `Main` function, following the same pattern as in the VS, we have one parameter, the input, and one return value, the output, again we create an instance of `PSOutput`, initialize everything to 0, and write the color we got from the input, to our output.
+
 ## Compiling shaders
 
 Now that we wrote our shader code and saved it somewhere, we have to feed this to the GPU, to do that we'll have our D3DCompiler get to work.
@@ -109,6 +119,7 @@ Now that we wrote our shader code and saved it somewhere, we have to feed this t
 First, we will declare some functions that will help us compile our shaders more quickly.
 
 ### HelloTriangle.hpp
+
 ```cpp
 bool CompileShader(
     const std::wstring_view fileName,
@@ -122,6 +133,7 @@ bool CompileShader(
 
 [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
 ```
+
 In order we have:
 
 `CompileShader`: This function is the core for compiling shaders, it requires 3 input parameters:
@@ -140,9 +152,13 @@ Then:
 `CreatePixelShader`: It does the same thing that `CreateVertexShader` does, except we don't need to pass a `ID3DBlob` here.
 
 Now that we know how our new members look, we will see how we implemented them.
+
 ### HelloTriangle.cpp
+
 First things first, let's see `CompileShader`:
+
 #### CompileShader
+
 ```cpp
 bool HelloTriangleApplication::CompileShader(
     const std::wstring_view fileName,
@@ -188,7 +204,7 @@ Then we call for [`D3DCompileFromFile`](https://docs.microsoft.com/en-us/windows
 - `pInclude`: optional, a pointer to a `ID3DInclude` object, it is useful to specify how to handle `#include` directives in shaders. It is common to just use `D3D_COMPILE_STANDARD_FILE_INCLUDE`, which is the default handler.
 - `pEntrypoint`: a string containing the name of the main function in the shader.
 - `pTarget`: a string containing the Shader Model version to use for this shader.
-- `Flags1`: the flags that changes how to compile our shaders, for example we pass `D3DCOMPILE_ENABLE_STRICTNESS` which makes the compiler stricter in judging our code and disables legacy syntax support. 
+- `Flags1`: the flags that changes how to compile our shaders, for example we pass `D3DCOMPILE_ENABLE_STRICTNESS` which makes the compiler stricter in judging our code and disables legacy syntax support.
 - `Flags2`: ignored, set to 0.
 - `ppCode`: output, a pointer to a `ID3DBlob*`, this is where our compiled code will be stored.
 - `ppErrorMsgs`: optional, output, a pointer to a `ID3DBlob*`, this is where the D3D compiler will store our errors, `nullptr` if everything went fine.
@@ -198,6 +214,7 @@ Then we do our usual checking, if there were errors, leave the output blob as is
 Now let's see `CreateVertexShader` and `CreatePixelShader`:
 
 #### CreateVertexShader
+
 ```cpp
 HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::CreateVertexShader(
     const std::wstring_view fileName,
@@ -228,6 +245,7 @@ As you can see here we are using our helper function `CompileShader` to avoid re
 After we get our blob successfully, we can create a vertex shader out of it with `ID3D11Device::CreateVertexShader`, it takes a pointer to a buffer with the compiled code and its size as the input. The resulting vertex shader is the last parameter which is our output.
 
 And finally
+
 #### CreatePixelShader
 
 ```cpp
@@ -253,10 +271,13 @@ HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::Cr
     return pixelShader;
 }
 ```
+
 Pretty much the same thing as `CreateVertexShader`, the only thing that changes is the `profile` parameter, from `"vs_5_0"` to `"ps_5_0"`, since we're not compiling a vertex shader now, we have to change this to the "Pixel Shader Model 5.0".
 
 After all of this, we can now call these functions, in `HelloTriangleApplication::Initialize()` you should now add:
+
 #### Initialize
+
 ```cpp
 ComPtr<ID3DBlob> vertexShaderBlob = nullptr;
 _vertexShader = CreateVertexShader(L"Assets/Shaders/Main.vs.hlsl", vertexShaderBlob);
@@ -275,6 +296,7 @@ if (_pixelShader == nullptr)
 We still have a `vertexShaderBlob` now, it will be useful to us later, in creating an input layout.
 
 ### Input Layouts
+
 We have successfully compiled our shaders now, we need one last thing, an **Input Layout**.
 An input layout, is basically the format we want to lay our vertices in our buffers.
 
@@ -487,3 +509,11 @@ _deviceContext->OMSetRenderTargets(
 As you can see, we go through the pipeline in an orderly fashion, and although we don't use all the stages, we can see the top-to-bottom execution of the stages, IA (Input Assembler) -> VS (Vertex Shader) -> RS (Rasterizer Stage) -> PS (Pixel Shader) -> OM (Output Merger).
 
 You should now be able to run this and see your first triangle!
+
+!!! error
+
+    Provide picture of window with triangle
+
+[Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-3-HelloTriangle)
+
+[Next chapter](../1-1-4-abstractions/)

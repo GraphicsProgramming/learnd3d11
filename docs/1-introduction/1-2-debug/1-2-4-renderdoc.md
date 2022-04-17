@@ -1,8 +1,8 @@
 # RenderDoc
 
-Typically while developing an application there will be complications that cannot be easily deduced by watching the program execute or by reading the code; in a situation like this one will use a debugger to monitor the state of the program to locate the bug, and this is no different for graphics programming. 
+Typically while developing an application there will be complications that cannot be easily deduced by watching the program execute or by reading the code; in a situation like this one will use a debugger to monitor the state of the program to locate the bug, and this is no different for graphics programming.
 
-Graphics programmers will use what is called a "graphics debugger" when working with a graphics API to monitor API calls, pipeline state, data within the pipeline, etc. 
+Graphics programmers will use what is called a "graphics debugger" when working with a graphics API to monitor API calls, pipeline state, data within the pipeline, etc.
 
 While there are multiple graphics debuggers provided by multiple vendors such as Nvidia's Nsight, AMD's Radeon Graphics Profiler (Does not directly support DX11), Intel's Graphics Performance Analyzers, and Microsoft's PIX, we will instead be using a cross-platform open-source option, RenderDoc.
 
@@ -10,7 +10,7 @@ To download RenderDoc, [click here](https://renderdoc.org/) and follow the instr
 
 ![Screenshot](media/1-2-3-naming-things/render-doc-default.png)
 
-Before getting into the details of Renderdoc, an executable is needed to display what the application is capable of. 
+Before getting into the details of Renderdoc, an executable is needed to display what the application is capable of.
 
 ![Screenshot](media/1-2-3-naming-things/application-dirs.png)
 
@@ -28,7 +28,7 @@ The RenderDoc window is now fully populated, however for the sake of brevity onl
 
 ![Screenshot](media/1-2-3-naming-things/event-browser.png)
 
-The event browser displays a generalization of the API calls called in the form of events, an event is one or more API calls that have been grouped together by relation. 
+The event browser displays a generalization of the API calls called in the form of events, an event is one or more API calls that have been grouped together by relation.
 
 There is not much going on in this example, but it can be helpful when debugging scenes making hundreds or even thousands of draws and dispatches a frame.
 
@@ -38,14 +38,16 @@ The API Inspector displays the contents of an event by listing out the API calls
 
 ![Screenshot](media/1-2-3-naming-things/pipeline-state.gif)
 
-The Pipeline State tab displays the state of each active pipeline stage in addition to bound resources for the currently selected event. 
+The Pipeline State tab displays the state of each active pipeline stage in addition to bound resources for the currently selected event.
 
-In this instance, the hull, domain, and geometry shader stages are grayed out because they were not used for that draw. 
+In this instance, the hull, domain, and geometry shader stages are grayed out because they were not used for that draw.
 
 The compute shader stage is called with its own dispatch commands and therefore is never active with the other stages; it is not a part of the rasterization pipeline.
 
 ![Screenshot](media/1-2-3-naming-things/resource-inspector.png)
 
-The Resource Inspector presents a list of all the resources used to render the frame on the right side of the window with information pertaining to its usage within the frame, related resources, and the functions used to initialize the resource. 
+The Resource Inspector presents a list of all the resources used to render the frame on the right side of the window with information pertaining to its usage within the frame, related resources, and the functions used to initialize the resource.
 
 To learn more about RenderDoc, [click here](https://renderdoc.org/docs/index.html) for its documentation.
+
+[Next chapter](./1-2-5-laptop-gpus.md)

@@ -106,3 +106,7 @@ struct VertexPositionColor
 !!! error "Explain DeviceContext"
 
 !!! error "Migrate from current hello-triangle to hello-triangle-refactored"
+
+[Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-3-HelloTriangle-Refactored)
+
+[Next chapter](../1-2-debug/1-2-0-overview.md)

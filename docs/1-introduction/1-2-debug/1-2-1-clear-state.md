@@ -19,9 +19,11 @@ Setting their states/buffers/resources/targets to NULL where possible by hand.
 Or call a more "reset it all" function that exists on the ID3D11DeviceContext aptly called __ClearState()__.
 !!! info
     https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-clearstate
-	
+
 Though keep in mind that using the latter function also resets stuff like the inputlayout, primitive topology and literally everything. This might require a bit more work in making sure all rendering state is setup correctly again afterwards
 
-In pure performance terms it can be quite wasteful to reset a whole bunch of state (or re-set it) every draw/pass/frame which is why this is viewed as a debugging option. 
+In pure performance terms it can be quite wasteful to reset a whole bunch of state (or re-set it) every draw/pass/frame which is why this is viewed as a debugging option.
 
 In the end, one generally should make sure their draws always set (or have set) their required state so they do not need to use a clear-state.
+
+[Next chapter](./1-2-2-debug-layer.md)

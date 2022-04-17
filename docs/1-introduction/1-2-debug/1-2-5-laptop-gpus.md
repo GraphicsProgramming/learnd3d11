@@ -21,3 +21,5 @@ This will enforce graphics cards from NVIDIA and AMD to use the dedicated graphi
 You can find more information [here for NVIDIA](http://developer.download.nvidia.com/devzone/devcenter/gamegraphics/files/OptimusRenderingPolicies.pdf) and [here for AMD](http://developer.amd.com/community/blog/2015/10/02/amd-enduro-system-for-developers/)
 
 Intel might have something similar, once they release their dedicated graphics cards for laptops.
+
+[Next chapter](../1-3-models/1-3-0-overview.md)

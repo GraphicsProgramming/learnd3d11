@@ -15,3 +15,5 @@ There are various tools and techniques which can help us getting the triangle on
 [RenderDoc](1-2-4-renderdoc.md)
 
 [Laptop GPUs](1-2-5-laptop-gpus.md)
+
+[Next chapter](./1-2-1-clear-state.md)

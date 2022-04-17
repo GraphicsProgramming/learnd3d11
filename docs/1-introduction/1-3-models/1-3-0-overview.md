@@ -27,3 +27,5 @@ At the end we will also be able to roam around freely by using a camera.
 [Coordinate Systems](1-3-6-coordinate-systems.md)
 
 [Camera](1-3-7-camera.md)
+
+[Next chapter](./1-3-1-image-library.md)

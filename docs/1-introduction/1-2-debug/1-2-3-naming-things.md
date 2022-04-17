@@ -47,3 +47,7 @@ D3D11 WARNING:  Live ID3D11Context at 0x000002214E8A5B50, Name: CTX_Main, Refcou
 Notice anything?
 
 Exactly, they show names.
+
+[Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-2-3-NamingThings)
+
+[Next chapter](./1-2-4-renderdoc.md)

@@ -478,4 +478,6 @@ glfwSetFramebufferSizeCallback(_window, HandleResize);
 
 [`glfwSetFramebufferSizeCallback`](https://www.glfw.org/docs/3.3/group__window.html#gab3fb7c3366577daef18c0023e2a8591f) will tell `GLFW` what to do when we resize the window, in this case execute `HandleResize` which will fetch our application instance and all `OnResize` on it, where we can handle resizing in our application code.
 
-## Abstraction into Application & D3D11Context
+[Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-2-HelloD3D11)
+
+[Next chapter](../1-1-3-hello-triangle/)

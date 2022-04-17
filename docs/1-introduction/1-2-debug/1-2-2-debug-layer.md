@@ -110,3 +110,7 @@ However the developer probably did not intend to make use of this behavior.  [ E
     How to do that via the control panel
 
 One thing which should go without saying, the debug layer will slow down your application a bit.
+
+[Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-2-2-DebugLayer)
+
+[Next chapter](./1-2-3-naming-things.md)
