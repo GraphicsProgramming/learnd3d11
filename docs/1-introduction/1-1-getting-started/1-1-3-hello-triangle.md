@@ -414,6 +414,7 @@ D3D11_BUFFER_DESC bufferInfo = {};
 bufferInfo.ByteWidth = sizeof(vertices);
 bufferInfo.Usage = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
 bufferInfo.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
 D3D11_SUBRESOURCE_DATA resourceData = {};
 resourceData.pSysMem = vertices;
 if (FAILED(_device->CreateBuffer(
