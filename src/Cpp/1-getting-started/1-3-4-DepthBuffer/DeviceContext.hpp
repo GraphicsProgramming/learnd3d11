@@ -13,7 +13,7 @@ class DeviceContext
 {
 public:
     DeviceContext(
-        WRL::ComPtr<ID3D11Device>& device,
+        const WRL::ComPtr<ID3D11Device>& device,
         WRL::ComPtr<ID3D11DeviceContext>&& deviceContext);
     ~DeviceContext();
 

@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-static size_t GetLayoutByteSize(VertexType vertexType)
+size_t PipelineFactory::GetLayoutByteSize(const VertexType vertexType)
 {
     switch (vertexType)
     {
@@ -43,6 +43,7 @@ PipelineFactory::PipelineFactory(const WRL::ComPtr<ID3D11Device>& device)
             },
         }
     };
+
     _layoutMap[VertexType::PositionColorUv] =
     {
         {

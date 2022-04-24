@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-static size_t GetLayoutByteSize(VertexType vertexType)
+size_t PipelineFactory::GetLayoutByteSize(const VertexType vertexType)
 {
     switch (vertexType)
     {

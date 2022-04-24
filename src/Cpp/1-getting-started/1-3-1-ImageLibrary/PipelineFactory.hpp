@@ -25,6 +25,8 @@ public:
         std::unique_ptr<Pipeline>& pipeline);
 
 private:
+    static size_t GetLayoutByteSize(VertexType vertexType);
+
     [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
         const std::wstring& filePath,
         WRL::ComPtr<ID3DBlob>& vertexShaderBlob) const;

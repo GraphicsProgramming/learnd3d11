@@ -6,6 +6,9 @@
 DeviceContext::DeviceContext(WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 {
     _deviceContext = std::move(deviceContext);
+    _activePipeline = nullptr;
+    _drawVertices = 0;
+    _drawIndices = 0;
 }
 
 void DeviceContext::Clear(

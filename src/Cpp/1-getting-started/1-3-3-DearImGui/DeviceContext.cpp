@@ -5,10 +5,13 @@
 #include <utility>
 
 DeviceContext::DeviceContext(
-    WRL::ComPtr<ID3D11Device>& device,
+    const WRL::ComPtr<ID3D11Device>& device,
     WRL::ComPtr<ID3D11DeviceContext>&& deviceContext)
 {
     _deviceContext = std::move(deviceContext);
+    _activePipeline = nullptr;
+    _drawVertices = 0;
+    _drawIndices = 0;
     ImGui_ImplDX11_Init(device.Get(), _deviceContext.Get());
 }
 
