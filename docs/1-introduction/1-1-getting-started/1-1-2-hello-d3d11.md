@@ -185,7 +185,7 @@ The first part calls the parent class, where `GLFW` is initialized and setup.
 ```cpp
 #define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)
 ```
-which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This functionally means that for functions that have a parameter setup as `REFIID` and functionally after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of use — this can be seen with the used `CreateDXGIFactory2` method where the second last and last parameter are a `REFIID` and `void**`:
+Which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This functionally means that for functions that have a parameter setup as `REFIID` and functionally after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of use — this can be seen with the used `CreateDXGIFactory2` method where the second last and last parameter are a `REFIID` and `void**`:
 ```cpp
 HRESULT CreateDXGIFactory2(
         UINT   Flags,
@@ -203,7 +203,7 @@ What the parts of the `IID_PPV_ARGS(ppType)` macro are:
 - a pointer to a pointer of a object.
 
 [the `__uuidof(**(ppType))` part of `IID_PPV_ARGS(ppType)`]
--  at compile time retrieves a `UUID` from `ppType` type which represents a `GUID`, which is returned as a a `REFIID` — which means that the type returned is a reference to an identifier to a specific type of COM object.   
+-  at compile time retrieves a `UUID` from `ppType` type which represents a `GUID`, which is returned as a `REFIID` — which means that the type returned is a reference to an identifier to a specific type of COM object.   
 
 !!! error "Explain DXGI"
 
