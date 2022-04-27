@@ -142,7 +142,7 @@ We need to include the following headers, here's what each of these headers incl
 #pragma comment(lib, "dxguid.lib")
 ```
 
-Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma` in `HelloD3D11.cpp` right below the includes.
+Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma comment(lib, "PATH_TO_LIB")` in `HelloD3D11.cpp` right below the includes to link these libraries. 
 
 ```cpp
 template <typename T>
@@ -192,7 +192,29 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-!!! error "What is `IID_PPV_ARGS`"?
+`IID_PPV_ARGS(ppType)` Is a compile time macro that is defined as 
+```cpp
+#define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)
+```
+Which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This functionally means that for functions that have a parameter setup as `REFIID` and functionally after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of use — this can be seen with the used `CreateDXGIFactory2` method where the second last and last parameter are a `REFIID` and `void**`:
+```cpp
+HRESULT CreateDXGIFactory2(
+        UINT   Flags,
+        REFIID riid,
+  [out] void   **ppFactory
+);
+```
+`REFIID` is a typedef that is a Reference (REF) to an Interface Identifier type (`IID`) — this means that it is a reference to a type that uniquely identifies a [COM](link-to-com-subsystem-in-msdn) object.
+[more information like underlying memory organization can be read about IID's at https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/iid]
+
+
+What the parts of the `IID_PPV_ARGS(ppType)` macro are: 
+
+[the `ppType` in `IID_PPV_ARGS(ppType)`]
+- a pointer to a pointer of a object.
+
+[the `__uuidof(**(ppType))` part of `IID_PPV_ARGS(ppType)`]
+-  at compile time retrieves a `UUID` from `ppType` type which represents a `GUID`, which is returned as a `REFIID` — which means that the type returned is a reference to an identifier to a specific type of COM object.   
 
 !!! error "Explain DXGI"
 
