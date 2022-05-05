@@ -1,16 +1,16 @@
 # Hello D3D11
 
 In this chapter, we'll introduce you to the basics of using D3D11; how to create a ID3D11Device and
-how to use it to show something in our window. In the last chapter we setup a basic implementation
+how to use it to show something in our window. In the last chapter we set up a basic implementation
 for an application with a window through GLFW. The implementation for `Main.cpp` and
 `Application.cpp` won't be shown here anymore.
 
-If you are looking at the source code for this chapter, you will also notice that
-`Application.cpp` and `Application.hpp` do not exist anymore, as we have moved both of these
-files into a separate `Framework` project to ease development between chapters. This `Framework`
-project will include code that is shared between all chapters, so it might include a lot of other
-files which are not used or are not relevant within some chapters. Please note that the code for
-already existing files is also subject to change to accomodate newer chapters and their needs.
+If you are looking at the source code for this chapter, you will also notice that `Application.cpp`
+and `Application.hpp` do not exist anymore, as we have moved both of these  files into a separate
+`Framework` project to ease development between chapters. This `Framework` project will include
+code that is shared between all chapters, so it might include a lot of other  files which are not
+used or are not relevant within some chapters. Please note that the code for already existing files
+is also subject to change to accommodate newer chapters and their needs.
 
 However, let's start by breaking down the relevant bits and pieces by showing you how the new
 class, which derives from `Application` will look like.
@@ -173,7 +173,7 @@ You might have noticed that we are not using raw pointers for those pieces, but 
 
 `DXGI` stands for DirectX Graphics Infrastructure, in case you are wondering.
 
-Lets go in to `Initialize`
+Let's go in to `Initialize`
 
 ```cpp
 if (!Application::Initialize())
@@ -192,7 +192,7 @@ if (FAILED(CreateDXGIFactory2(
 
 The first part calls the parent class, where `GLFW` is initialized and setup.
 
-`IID_PPV_ARGS(ppType)` Is a compile time macro that is defined as 
+`IID_PPV_ARGS(ppType)` Is a compile-time macro that is defined as 
 ```cpp
 #define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)
 ```
@@ -211,7 +211,7 @@ HRESULT CreateDXGIFactory2(
 What the parts of the `IID_PPV_ARGS(ppType)` macro are: 
 
 [the `ppType` in `IID_PPV_ARGS(ppType)`]
-- a pointer to a pointer of a object.
+- a pointer to a pointer of an object.
 
 [the `__uuidof(**(ppType))` part of `IID_PPV_ARGS(ppType)`]
 -  at compile time retrieves a `UUID` from `ppType` type which represents a `GUID`, which is returned as a `REFIID` — which means that the type returned is a reference to an identifier to a specific type of COM object.   
@@ -245,7 +245,7 @@ if (FAILED(D3D11CreateDevice(
 }
 ```
 
-This block is the the entry point into D3D11, where we ask for a device and its device context to be created. The input parameters are:
+This block is the entry point into D3D11, where we ask for a device and its device context to be created. The input parameters are:
 
 We want a LEVEL_11_0, hardware accelerated device, which has support for a specific color format.
 Feature levels are a concept that has been introduced with D3D11, it is a way to specify which set of features we would like to use. Each GPU may support different feature levels (for example a very old GPU might only support LEVEL_9_1, while a more modern one may support every feature level up to, and including LEVEL_11_0), this is a way to avoid rewriting our application in D3D9 just because our GPU doesn't support D3D11.
@@ -290,7 +290,7 @@ The majority of values should make some sense without explanation, like width an
 
 `BufferCount` is 2, because we want double buffering. Double buffering is an age-old technique to avoid presenting an image that is being used by the GPU, instead we work on the "back buffer", while the GPU is happy presenting the "front buffer", then, as soon as we are done with the back buffer, we swap front and back, and begin working on the former front buffer present that one and render to the other one again in the meantime. That process is supposed to reduce flicker or tearing.
 
-`SwapEffect` specifies if the contents of the back buffer should be preserved or discarded after a swap, here we don't care about preserving the back buffer so we just discard everything.
+`SwapEffect` specifies if the contents of the back buffer should be preserved or discarded after a swap, here we don't care about preserving the back buffer, so we just discard everything.
 
 `AlphaMode` specifies how DXGI should handle transparency, we don't care about that (yet), so we'll just say it's unspecified and rely on default behaviour
 
@@ -332,7 +332,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
 }
 ```
 
-When we render things, the GPU simply writes color values to a texture, which you can picture as a buffer which holds color information Swapchain is a container to manage those buffers we want to present on screen. To do that we have to create a special kind of texture called a "Render Target View" or an RTV. First off we have to grab a texture from the swapchain's main buffer (index 0), from that texture, we now have create an RTV from that, which specifies the subresource of the texture that we will be drawing to. We wont keep the actual texture around, we just need the render target view, which we will refer to as render target.
+When we render things, the GPU simply writes color values to a texture, which you can picture as a buffer which holds color information Swapchain is a container to manage those buffers we want to present on screen. To do that we have to create a special kind of texture called a "Render Target View" or an RTV. First off we have to grab a texture from the swapchain's main buffer (index 0), from that texture, we now have to create an RTV from that, which specifies the subresource of the texture that we will be drawing to. We won't keep the actual texture around, we just need the render target view, which we will refer to as render target.
 
 ```cpp
 void HelloD3D11Application::DestroySwapchainResources()
@@ -426,7 +426,7 @@ bool HelloD3D11Application::Load()
 }
 ```
 
-Finally we need to modify `Appplication.hpp` and `Application.cpp`. Since we want to handle resizing as well.
+Finally, we need to modify `Appplication.hpp` and `Application.cpp`. Since we want to handle resizing as well.
 
 ### Application.hpp
 
@@ -446,7 +446,7 @@ virtual void OnResize(
 [[nodiscard]] int32_t GetWindowHeight() const;
 ```
 
-`HandleResize` will be the callback from `GLFW` which handles resize events and `OnResize` will be execute when GLFW runs HandleResize, so that we can handle our custom things we want to execute when resizing the window, like changing the size of the swapchain in our example.
+`HandleResize` will be the callback from `GLFW` which handles resize events and `OnResize` will be executed when GLFW runs HandleResize, so that we can handle our custom things we want to execute when resizing the window, like changing the size of the swapchain in our example.
 
 `GetWindow()` is used to derive the actual native window handle from, which is needed when we create the swapchain. `GetWindowWidth()` and `GetWindowHeight()` do what they say :) Also required for swapchain creation.
 
