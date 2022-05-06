@@ -1,6 +1,6 @@
 # Abstractions and Quality of Life improvements
 
-Before we move on, we are going to change a few things. When you write software you dont always want all your code
+Before we move on, we are going to change a few things. When you write software you don't always want all your code
 in one spot, one method or one class, but split it up and separate where it makes sense to do so.
 
 This is always a good exercise in projects which are getting a bit bigger, and this project will be getting
@@ -103,7 +103,7 @@ This file will contain all future vertex types as well.
 
 ### Pipeline
 
-What is a pipeline? It's just a immutable container of various things. It describes all state for the current thing you want to render or compute. All Vertex and Pixel or Compute shaders we might require for that render task to complete, the type of primitives we want to draw and how they are setup. Since we are coming from the Hello Triangle chapter our pipeline will not contain much, but it will grow in complexity further down the chapter road.
+What is a pipeline? It's just an immutable container of various things. It describes all state for the current thing you want to render or compute. All Vertex and Pixel or Compute shaders we might require for that render task to complete, the type of primitives we want to draw and how they are set up. Since we are coming from the Hello Triangle chapter our pipeline will not contain much, but it will grow in complexity further down the chapter road.
 
 ### PipelineFactory
 
@@ -147,7 +147,7 @@ private:
 };
 ```
 
-`Pipeline` is supposed to be an immutable object, there fore all relevant fields are `private`, so that you cant accidentally set them from outside. Only `PipelineFactory` will be able to access those fields, as its creating them. Also `DeviceContext` can access them too, as it needs these to set the actual state/values.
+`Pipeline` is supposed to be an immutable object, therefore all relevant fields are `private`, so that you can't accidentally set them from outside. Only `PipelineFactory` will be able to access those fields, as its creating them. Also `DeviceContext` can access them too, as it needs these to set the actual state/values.
 
 We also create `Pipeline.cpp` with the following content:
 
@@ -171,7 +171,7 @@ void Pipeline::SetViewport(
 
 Its quite empty for now.
 
-Lets move on to `PipelineFactory`. Create a new file `PipelineFactory.hpp` and add the following content:
+Let's move on to `PipelineFactory`. Create a new file `PipelineFactory.hpp` and add the following content:
 
 ```cpp
 #pragma once

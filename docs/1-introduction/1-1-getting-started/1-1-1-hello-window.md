@@ -98,9 +98,9 @@ resolution you use. Size-wise it will cover 90% of your main monitor.
 glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
 ```
 
-This will tell `GLFW` to not scale the window in any way, should you have setup a specific scaling
-other than 100% on your desktop. That will keep the windowsize at what we set it, without thinking
-about odd fractionals to manually scale the windowsize for any arbitrary scaling on your OS.
+This will tell `GLFW` to not scale the window in any way, should you have set up a specific scaling
+other than 100% on your desktop. That will keep the window size at what we set it, and lets us
+forget about fractional window and pixel scaling.
 
 ```cpp
 glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -108,8 +108,8 @@ glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 `GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its
 name, but over the years it also started to support other APIs and not just OpenGL. Now since `GLFW`
-automatically creates a context for OpenGL and we want to use DirectX, we will have to tell it to not
-to do so via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
+by default creates a context for OpenGL, and as we want to use DirectX we need to tell `GLFW`
+to not do so via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
 
 There are many other options one can define through glfwWindowHint which can be found [here](https://www.glfw.org/docs/3.3/group__window.html).
 Many of these options might be useful in your application, depending on what you want and how you
@@ -156,7 +156,7 @@ That is more or less the heart of your application, the mainloop.
 You could also call it game loop, since in here everything happens.
 From reading keyboard and mouse input, reacting to it, to telling the graphics
 card to put a frog on the screen. It will keep doing it, until it gets signaled
-to not to do that anymore because you closed the window for example
+to not do that anymore because you closed the window for example
 ([glfwWindowShouldClose](https://www.glfw.org/docs/3.3/group__window.html#ga24e02fbfefbb81fc45320989f8140ab5)),
 or hit Escape and mapped Escape to close the window. [glfwPollEvents](https://www.glfw.org/docs/3.3/group__window.html#ga37bd57223967b4211d60ca1a0bf3c832)
 will make sure that `GLFW` knows about all required events coming from the operating system.
@@ -200,7 +200,7 @@ The further we go into this tutorial series the more stuff we will add to the pr
 But we don't want to cram everything into `Main.cpp`, your main entry point of the program.
 A good practise is to split up things into smaller units, to not lose overview.
 
-Right now we dont have much to show for, just a window, made by a few lines of code,
+Right now we don't have much to show for, just a window, made by a few lines of code,
 but we are going to abstract that code into a new class called `Application` which will also be
 our main container so to speak, in which all the magic will happen.
 
@@ -363,9 +363,9 @@ int main(int argc, char* argv[])
 }
 ```
 
-Let's start with `Main.cpp`. That's all its doing, creating the hellowindow application and running it.
+Let's start with `Main.cpp`. That's all its doing, creating the "hellowindow" application and running it.
 In the future this can be accompanied by loading a configuration, initializing a logger,
-initiating a connection to a possible server server, or other stuff.
+initiating a connection to a possible server, or other stuff.
 
 ```cpp
 public:
@@ -377,7 +377,7 @@ public:
 This is a section of the `Application` class, showing only its publicly available methods. `Run` being
 the most important one to the outside world, like `Main`, it's the entry point into this Application.
 
-We still dont want to cram everything into one main or one method, therefore `Run` is split up
+We still don't want to cram everything into one main or one method, therefore `Run` is split up
 again into the following blocks.
 
 ```cpp
@@ -402,22 +402,22 @@ void Application::Run()
 }
 ```
 
-You can clearly see what it is doing. `Initialize`, as the name suggests, will initialize everything
-which is required for the app to run, which currently is the window in our case. In future chapters it
-will also including initializing `D3D11` and its resources or imgui for some UI.
+This function is pretty simple. `Initialize`, as the name suggests, will initialize everything
+which is required for the app to run, which currently is the window in our case. In future
+chapters it will also include initializing `D3D11`, its resources, and ImGUI for the UI.
 
-`Load`s purpose is to load all the assets required to run the application, in further chapters it will
+`Load`'s purpose is to load all the assets required to run the application, in further chapters it will
 encompass textures, shaders, models and other things.
 
-The next block is the aforementioned mainloop or gameloop, which still does what it was doing before,
-checking with the OS if events need to be processed and now we also call a `Update` and `Render` method.
+The next block is the aforementioned mainloop or game loop, which still does what it was doing before,
+checking with the OS if events need to be processed, and now we also call a `Update` and `Render` method.
 
 `Update` may contain queries about pressed key or mouse buttons, updating variables or other things
 which are - for instance - reflected on display inside the `Render` method.
 
 You probably have noticed that all the protected method in `Application` are virtual, that's because
 we are deriving from `Application` in form of `HelloWindowApplication` and only focus on those four
-methods if required. We now dont have to deal with the mainloop anymore for the time being.
+methods if required. We now don't have to deal with the mainloop anymore for the time being.
 
 ```cpp
 virtual void Cleanup();
@@ -438,5 +438,3 @@ and more.
 [Raw Winapi Hello Window Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-1-HelloWin32Window)
 
 [Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-1-HelloWindow)
-
-[Next chapter](../1-1-2-hello-d3d11/)

@@ -14,9 +14,9 @@ All the steps in the graphics pipeline go from top to bottom and are shown below
 As you can see, each stage in the pipeline takes in the previous stage's output as the input, the rectangle blocks are pipeline stages that are not programmable but are configurable, while the rounded rectangle blocks are stages that are fully programmable.
 To draw most of the things throughout this series we'll mostly need these stages: Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
 
-The Vertex and Pixel shaders are fully programmable and we'll write a very basic program for them.
+The Vertex and Pixel shaders are fully programmable, and we'll write a very basic program for them.
 
-The other two stages are not programmable but they are fairly easy to understand and configure, the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive of our choice, which is of course, triangles in our case, and sending this processed output to the Vertex Shader. The **Output Merger** instead is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
+The other two stages are not programmable, but they are fairly easy to understand and configure, the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive of our choice, which is of course, triangles in our case, and sending this processed output to the Vertex Shader. The **Output Merger** instead is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
 
 ### Vertex Shader
 
@@ -66,7 +66,7 @@ Everything else are "user defined semantics" and their naming is up to us. These
 
 Then we have our `VSOutput`, which has our vertices in the first field `position` and our color in the second field `color`.
 
-Finally we have our main function, which takes in a single parameter which is our input in the form of `VSInput`, and returns our output in the form of a `VSOutput`. Since we don't do any processing, we simply make a new instance of `VSOutput`, initialize it all to 0 and forward our input position and color to the output.
+Finally, we have our main function, which takes in a single parameter which is our input in the form of `VSInput`, and returns our output in the form of a `VSOutput`. Since we don't do any processing, we simply make a new instance of `VSOutput`, initialize it all to 0 and forward our input position and color to the output.
 
 ### Pixel Shader
 
@@ -106,7 +106,7 @@ Since there aren't any other shaders in between the VS and the PS, the VS's outp
 
 Next we have our output, `D3D11` gives us the possibility to write to multiple render targets, but we are not doing that, so we'll just be writing a `float4` as our output, which is an RGBA color.
 
-Notice how we have another semantic string attached to the `color` field, this semantic string specifies which render target we want to be writing to, the `0` after `SV_Target` is the index of our render target, in our case, we have only one so we write `SV_Target0` or `SV_Target`.
+Notice how we have another semantic string attached to the `color` field, this semantic string specifies which render target we want to be writing to, the `0` after `SV_Target` is the index of our render target, in our case, we have only one, so we write `SV_Target0` or `SV_Target`.
 
 `D3D11` lets us write up to 8 render targets simultaneously from the same pixel shader, those come in handy when implementing more advanced shading techniques, for example a popular technique that uses 4 or more
 
@@ -134,7 +134,7 @@ bool CompileShader(
 [[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
 ```
 
-In order we have:
+In order, we have:
 
 `CompileShader`: This function is the core for compiling shaders, it requires 3 input parameters:
 
@@ -301,7 +301,7 @@ We have successfully compiled our shaders now, we need one last thing, an **Inpu
 An input layout, is basically the format we want to lay our vertices in our buffers.
 
 Since all our vertices we want to give to the GPU must be tightly packed in the same buffer, the Input Assembler needs a way to make sense of our data, this is exactly what an input layout is for.
-Let's see what input we expect in the vertes shader:
+Let's see what input we expect in the vertex shader:
 
 ```hlsl
 struct VSInput
@@ -313,7 +313,7 @@ struct VSInput
 
 The vertex shader expects 2 vectors of 3 components each, for each vertex. We should then create an input layout exactly with this format.
 
-First of all, creating a `struct` in our C++ source with that maps to our `VSInput` as closely as possible will make our life easier.
+First, creating a `struct` in our C++ source with that maps to our `VSInput` as closely as possible will make our life easier.
 
 To do this we'll use DirectXMath which has types that map perfectly to HLSL, both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3`.
 
@@ -358,12 +358,12 @@ constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
 
 Now let's make sense of what each field means, let's go over one by one in order.
 
-- `SemanticName`: let's us refer to a particular field given the string after the colon in HLSL (remember `float3 position: POSITION`)
+- `SemanticName`: lets us refer to a particular field given the string after the colon in HLSL (remember `float3 position: POSITION`)
 - `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to `POSITION0`, where the number at the end is our index, so we'll just pass in 0.
 - `Format`: the format of this field, basically how many components there are and what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 bytes wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`.
 - `InputSlot`: we'll see about this later.
 - `AlignedByteOffset`: the offset of this field, in bytes; this is our first field so there is no offset, but the `COLOR` one for example, will have an offset of 12 bytes.
-- `InputSlotClass`: The rate of input either per-vertex or per-instance, we don't care about instances right now so we'll set this to PER_VERTEX.
+- `InputSlotClass`: The rate of input either per-vertex or per-instance, we don't care about instances right now, so we'll set this to PER_VERTEX.
 - `InstanceDataStepRate`: if `InputSlotClass` was PER_INSTANCE, this would mean how many instances should be drawn with the same data; this is 0 since we don't care about this.
 
 Hopefully it makes a bit more sense now, all we have to do is create the input layout using this data:
@@ -381,7 +381,7 @@ if (FAILED(_device->CreateInputLayout(
 }
 ```
 
-As usual we follow the same pattern, we pass in our `vertexInputLayoutInfo` that we just created and its size, we also need to pass our vertex blob pointer and size, and finally our output parameter which is our input layout.
+As usual, we follow the same pattern, we pass in our `vertexInputLayoutInfo` that we just created and its size, we also need to pass our vertex blob pointer and size, and finally our output parameter which is our input layout.
 
 Now all we have to do is create a vertex buffer (don't worry it's really easy) and issue our first `Draw` command!
 
@@ -392,7 +392,7 @@ Now all we have to do is create a vertex buffer (don't worry it's really easy) a
 
 Vertex Buffers might seem hard at first, but they're really nothing more than a buffer that resides in our device's memory, which means really fast access. This buffer will be then bound and read by the vertex shader.
 
-Creating a vertex buffer is also really easy, first of all we have to make some data to put in our buffer, since we want to draw a triangle, we will be creating 3 vertices using our `VertexPositionColor` struct.
+Creating a vertex buffer is also really easy, first we have to make some data to put in our buffer, since we want to draw a triangle, we will be creating 3 vertices using our `VertexPositionColor` struct.
 
 ```cpp
 constexpr VertexPositionColor vertices[] =
@@ -431,11 +431,11 @@ We begin by filling a `bufferInfo` descriptor for our buffer, we specify how man
 
 And finally we create a `resourceData`, and populate the only field we care about: `pSysMem`, which is a pointer to our vertices which are currently in system RAM.
 
-Then we issue the creation of the buffer using `CreateBuffer`, using the informations we collected until now.
+Then we issue the creation of the buffer using `CreateBuffer`, using the information we collected until now.
 
 ## Drawing our triangle
 
-Finally we have reached the moment of truth, in our `Render` function we will add a few things:
+Now, we have reached the moment of truth, in our `Render` function we will add a few things:
 
 ```cpp
 _deviceContext->IASetInputLayout(_vertexLayout.Get());
@@ -479,7 +479,7 @@ _deviceContext->Draw(3, 0);
 
 And finally, tell the GPU to draw 3 vertices, this will invoke the vertex shader 3 times, and it will successfully process the 3 vertices we put in our vertex buffer.
 
-Finally let's review all the commands we issue in `Render`
+Finally, let's review all the commands we issue in `Render`
 
 ```cpp
 _deviceContext->IASetInputLayout(_vertexLayout.Get());
