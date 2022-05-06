@@ -6,9 +6,9 @@ for an application with a window through GLFW. The implementation for `Main.cpp`
 `Application.cpp` won't be shown here anymore.
 
 If you are looking at the source code for this chapter, you will also notice that `Application.cpp`
-and `Application.hpp` do not exist anymore, as we have moved both of these  files into a separate
+and `Application.hpp` do not exist anymore, as we have moved both of these files into a separate
 `Framework` project to ease development between chapters. This `Framework` project will include
-code that is shared between all chapters, so it might include a lot of other  files which are not
+code that is shared between all chapters, so it might include a lot of other files which are not
 used or are not relevant within some chapters. Please note that the code for already existing files
 is also subject to change to accommodate newer chapters and their needs.
 

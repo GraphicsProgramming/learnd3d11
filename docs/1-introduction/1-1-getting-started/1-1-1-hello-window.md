@@ -99,16 +99,16 @@ glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
 ```
 
 This will tell `GLFW` to not scale the window in any way, should you have set up a specific scaling
-other than 100% on your desktop. That will keep the window size at what we set it, without thinking
-about odd fractional to manually scale the window size for any arbitrary scaling on your OS.
+other than 100% on your desktop. That will keep the window size at what we set it, and lets us
+forget about fractional window and pixel scaling.
 
 ```cpp
 glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 ```
 
 `GLFW` was initially meant to support development of OpenGL based applications, hence the gl in its
-name, but over the years it also started to support other APIs and not just OpenGL. Now since
-`GLFW` by default creates a context for OpenGL, and as we want to use DirectX we need to tell GLFW
+name, but over the years it also started to support other APIs and not just OpenGL. Now since `GLFW`
+by default creates a context for OpenGL, and as we want to use DirectX we need to tell `GLFW`
 to not do so via [glfwWindowHint](https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033).
 
 There are many other options one can define through glfwWindowHint which can be found [here](https://www.glfw.org/docs/3.3/group__window.html).

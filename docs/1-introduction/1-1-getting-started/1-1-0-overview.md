@@ -14,7 +14,7 @@ The goal of LearnD3D11 is, as one might guess, the targeted explanation and show
 within C++, or as one generally refers to it: "DirectX 11". This guide does _NOT_ cover DirectX 12,
 the newer version of the API, as it is very low level and will usually require a good understanding
 of the GPU and how it works. We will cover concepts and some techniques used in graphics programming,
-and we do not expect you to have any prerequisites in this field.  It is, however, not a guide
+and we do not expect you to have any prerequisites in this field. It is, however, not a guide
 covering C++ or programming in general; we expect at least the ability and understanding to write
 object-oriented programs in C++.
 
@@ -22,7 +22,8 @@ During each step we'll provide a project for you to follow along as we explain e
 to start rendering geometry using your GPU.
 
 Also note that DirectX is made by Microsoft and is generally only available on Windows. However,
-for DirectX 12 translation layers such as vkd3d exist for it to work on Linux as well.
+`DXVK` was developed to run D3D9 through D3D11 on Linux or Wine on top of Vulkan and would be the
+only way of developing and using D3D11 on those platforms. 
 
 This initial section will cover creating the actual window, initializing Direct3D11 and getting our
 very first visuals (which is commonly known as the Hello Triangle)

@@ -435,7 +435,7 @@ Then we issue the creation of the buffer using `CreateBuffer`, using the informa
 
 ## Drawing our triangle
 
-Finally, we have reached the moment of truth, in our `Render` function we will add a few things:
+Now, we have reached the moment of truth, in our `Render` function we will add a few things:
 
 ```cpp
 _deviceContext->IASetInputLayout(_vertexLayout.Get());
