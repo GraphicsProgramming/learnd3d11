@@ -316,6 +316,7 @@ void HelloTriangleApplication::OnResize(
 
 void HelloTriangleApplication::Update()
 {
+    Application::Update();
 }
 
 void HelloTriangleApplication::Render()

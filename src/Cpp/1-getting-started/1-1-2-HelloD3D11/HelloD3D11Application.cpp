@@ -157,6 +157,7 @@ void HelloD3D11Application::OnResize(
 
 void HelloD3D11Application::Update()
 {
+    Application::Update();
 }
 
 void HelloD3D11Application::Render()

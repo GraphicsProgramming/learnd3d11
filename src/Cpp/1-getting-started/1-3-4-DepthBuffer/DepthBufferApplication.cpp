@@ -343,6 +343,8 @@ void DepthBufferApplication::OnResize(
 
 void DepthBufferApplication::Update()
 {
+    Application::Update();
+
     const auto eyePosition = DirectX::XMVectorSet(0.0f, 50.0f, 200, 1.0f);
     const auto focusPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
     const auto upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);

@@ -279,6 +279,7 @@ void ImageLibraryApplication::OnResize(
 
 void ImageLibraryApplication::Update()
 {
+    Application::Update();
 }
 
 void ImageLibraryApplication::Render()

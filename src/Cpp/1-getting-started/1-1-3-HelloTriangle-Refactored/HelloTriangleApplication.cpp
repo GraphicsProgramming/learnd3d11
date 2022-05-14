@@ -153,7 +153,6 @@ bool HelloTriangleApplication::Load()
     return true;
 }
 
-
 bool HelloTriangleApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
@@ -207,6 +206,7 @@ void HelloTriangleApplication::OnResize(
 
 void HelloTriangleApplication::Update()
 {
+    Application::Update();
 }
 
 void HelloTriangleApplication::Render()

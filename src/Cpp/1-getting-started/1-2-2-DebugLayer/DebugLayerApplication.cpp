@@ -165,7 +165,6 @@ bool DebugLayerApplication::Load()
     return true;
 }
 
-
 bool DebugLayerApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
@@ -219,6 +218,7 @@ void DebugLayerApplication::OnResize(
 
 void DebugLayerApplication::Update()
 {
+    Application::Update();
 }
 
 void DebugLayerApplication::Render()

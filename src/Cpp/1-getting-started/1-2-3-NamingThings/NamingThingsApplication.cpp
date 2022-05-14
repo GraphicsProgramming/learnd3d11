@@ -176,7 +176,6 @@ bool NamingThingsApplication::Load()
     return true;
 }
 
-
 bool NamingThingsApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
@@ -230,6 +229,7 @@ void NamingThingsApplication::OnResize(
 
 void NamingThingsApplication::Update()
 {
+    Application::Update();
 }
 
 void NamingThingsApplication::Render()
