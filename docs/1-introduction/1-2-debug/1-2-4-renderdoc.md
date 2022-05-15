@@ -32,7 +32,7 @@ The event browser displays a generalization of the API calls called in the form 
 
 There is not much going on in this example, but it can be helpful when debugging scenes making hundreds or even thousands of draws and dispatches a frame.
 
-![Screenshot](media/1-2-3-naming-things/API-inspector.png)
+![Screenshot](media/1-2-3-naming-things/api-inspector.png)
 
 The API Inspector displays the contents of an event by listing out the API calls that it contains. For example, all the calls made to set the state for the draw call are grouped together under an event called “Draw”.
 
