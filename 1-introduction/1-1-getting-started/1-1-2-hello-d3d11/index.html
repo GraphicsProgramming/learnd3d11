@@ -1,0 +1,1334 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Learn D3D11">
+      
+      
+        <meta name="author" content="deccer">
+      
+      
+        <link rel="canonical" href="https://graphicsprogramming.github.io/learnd3d11/1-introduction/1-1-getting-started/1-1-2-hello-d3d11/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+    
+    
+      
+        <title>Hello D3D11 - LearnD3D11</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.c382b1dc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-green" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#hello-d3d11" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="LearnD3D11" class="md-header__button md-logo" aria-label="LearnD3D11" data-md-component="logo">
+      
+  <img src="https://cdn.discordapp.com/attachments/908076591547052032/937089306009432084/unknown.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnD3D11
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hello D3D11
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="light-green" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="orange" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/graphicsprogramming/learnd3d11" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    graphicsprogramming/learnd3d11
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="LearnD3D11" class="md-nav__button md-logo" aria-label="LearnD3D11" data-md-component="logo">
+      
+  <img src="https://cdn.discordapp.com/attachments/908076591547052032/937089306009432084/unknown.png" alt="logo">
+
+    </a>
+    LearnD3D11
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/graphicsprogramming/learnd3d11" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    graphicsprogramming/learnd3d11
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-1-0-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-1-1-hello-window/" class="md-nav__link">
+        Hello Window
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Hello D3D11
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Hello D3D11
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hellod3d11hpp" class="md-nav__link">
+    HelloD3D11.hpp
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hellod3d11cpp" class="md-nav__link">
+    HelloD3D11.cpp
+  </a>
+  
+    <nav class="md-nav" aria-label="HelloD3D11.cpp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#applicationhpp" class="md-nav__link">
+    Application.hpp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applicationcpp" class="md-nav__link">
+    Application.cpp
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-1-3-hello-triangle/" class="md-nav__link">
+        Hello Triangle
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-1-4-abstractions/" class="md-nav__link">
+        Abstractions and Quality of Life improvements
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Debugging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Debugging" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Debugging
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-0-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-1-clear-state/" class="md-nav__link">
+        Clear State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-2-debug-layer/" class="md-nav__link">
+        Debug Layer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-3-naming-things/" class="md-nav__link">
+        Naming things
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-4-renderdoc/" class="md-nav__link">
+        RenderDoc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-2-debug/1-2-5-laptop-gpus/" class="md-nav__link">
+        Laptop GPUs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Models" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-0-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-1-image-library/" class="md-nav__link">
+        Image Library
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-2-loading-meshes/" class="md-nav__link">
+        Loading Meshes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-3-dear-imgui/" class="md-nav__link">
+        Dear ImGUI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-4-depth-buffer/" class="md-nav__link">
+        Depth Buffer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-5-rasterizer-state/" class="md-nav__link">
+        Rasterizer State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-6-coordinate-systems/" class="md-nav__link">
+        Coordinate Systems
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-3-models/1-3-7-camera/" class="md-nav__link">
+        Camera
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Code
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Code" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../8-code/repository/" class="md-nav__link">
+        Code Repository
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hellod3d11hpp" class="md-nav__link">
+    HelloD3D11.hpp
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hellod3d11cpp" class="md-nav__link">
+    HelloD3D11.cpp
+  </a>
+  
+    <nav class="md-nav" aria-label="HelloD3D11.cpp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#applicationhpp" class="md-nav__link">
+    Application.hpp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applicationcpp" class="md-nav__link">
+    Application.cpp
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/graphicsprogramming/learnd3d11/edit/main/docs/1-introduction/1-1-getting-started/1-1-2-hello-d3d11.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="hello-d3d11">Hello D3D11<a class="headerlink" href="#hello-d3d11" title="Permanent link">&para;</a></h1>
+<p>In this chapter, we'll introduce you to the basics of using D3D11; how to create a ID3D11Device and
+how to use it to show something in our window. In the last chapter we set up a basic implementation
+for an application with a window through GLFW. The implementation for <code>Main.cpp</code> and
+<code>Application.cpp</code> won't be shown here anymore.</p>
+<p>If you are looking at the source code for this chapter, you will also notice that <code>Application.cpp</code>
+and <code>Application.hpp</code> do not exist anymore, as we have moved both of these files into a separate
+<code>Framework</code> project to ease development between chapters. This <code>Framework</code> project will include
+code that is shared between all chapters, so it might include a lot of other files which are not
+used or are not relevant within some chapters. Please note that the code for already existing files
+is also subject to change to accommodate newer chapters and their needs.</p>
+<p>However, let's start by breaking down the relevant bits and pieces by showing you how the new
+class, which derives from <code>Application</code> will look like.</p>
+<h2 id="hellod3d11hpp">HelloD3D11.hpp<a class="headerlink" href="#hellod3d11hpp" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;d3d11_2.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;wrl.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Application.hpp&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string_view&gt;</span><span class="cp"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HelloD3D11Application</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Application</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">ComPtr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Microsoft</span><span class="o">::</span><span class="n">WRL</span><span class="o">::</span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">HelloD3D11Application</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">title</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="o">~</span><span class="n">HelloD3D11Application</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">protected</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">Initialize</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">Load</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Render</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">CreateSwapchainResources</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">DestroySwapchainResources</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11Device</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11DeviceContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_deviceContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">IDXGIFactory2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_dxgiFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">IDXGISwapChain1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_swapChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11RenderTargetView</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_renderTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</code></pre></div>
+<h2 id="hellod3d11cpp">HelloD3D11.cpp<a class="headerlink" href="#hellod3d11cpp" title="Permanent link">&para;</a></h2>
+<p>And the implementation side</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;HelloD3D11.hpp&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;GLFW/glfw3.h&gt;</span><span class="cp"></span>
+<span class="cp">#define GLFW_EXPOSE_NATIVE_WIN32</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;GLFW/glfw3native.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;d3dcompiler.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;DirectXMath.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma comment(lib, &quot;d3d11.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;dxgi.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;d3dcompiler.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;winmm.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;dxguid.lib&quot;)</span>
+
+<span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">HelloD3D11Application</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">Application</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">HelloD3D11Application</span><span class="o">::~</span><span class="n">HelloD3D11Application</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">Initialize</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">Load</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">CreateSwapchainResources</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">DestroySwapchainResources</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">OnResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">Update</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">HelloD3D11Application</span><span class="o">::</span><span class="n">Render</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;GLFW/glfw3.h&gt;</span><span class="cp"></span>
+<span class="cp">#define GLFW_EXPOSE_NATIVE_WIN32</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;GLFW/glfw3native.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;d3dcompiler.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;DirectXMath.h&gt;</span><span class="cp"></span>
+</code></pre></div>
+<p>We need to include the following headers, here's what each of these headers includes:</p>
+<ul>
+<li><code>d3d11.h</code>: The core of D3D11, it contains all the ID3D11XXX types and most of the enums we will be using with D3D11</li>
+<li><code>dxgi.h</code>: The core of DXGI, it contains all the IDXGIXXX types and additional enums that are required for DXGI structures</li>
+<li><code>d3dcompiler.h</code>: Contains all the functions necessary to compiler our HLSL shaders into bytecode that will be fed into the GPU</li>
+<li><code>DirectXMath.h</code>: DirectX's own math library, it contains all the types and math functions we will be using throughout the series</li>
+<li><code>wrl.h</code>: Is used for <code>Microsoft::WRL::ComPtr&lt;T&gt;</code>, to manage COM resources automatically.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cp">#pragma comment(lib, &quot;d3d11.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;dxgi.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;d3dcompiler.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;winmm.lib&quot;)</span>
+<span class="cp">#pragma comment(lib, &quot;dxguid.lib&quot;)</span>
+</code></pre></div>
+<p>Of course just including the headers isn't enough, we must also link against D3D11 &amp; friends to be able to actually use the stuff declared in the headers, put these <code>#pragma comment(lib, "PATH_TO_LIB")</code> in <code>HelloD3D11.cpp</code> right below the includes to link these libraries. </p>
+<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">ComPtr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Microsoft</span><span class="o">::</span><span class="n">WRL</span><span class="o">::</span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>Since the namespace name for ComPtr<T> is quite long, we are making a type alias like this.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">IDXGIFactory2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_dxgiFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11Device</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11DeviceContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_deviceContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">IDXGISwapChain1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_swapChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11RenderTargetView</span><span class="o">&gt;</span><span class="w"> </span><span class="n">_renderTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>You might have noticed that we are not using raw pointers for those pieces, but <code>ComPtr</code>. DirectX is built on top of COM (<a href="https://en.wikipedia.org/wiki/Component_Object_Model">Component Object Model</a>) and with that COM objects utilize reference counting to manage object lifetimes, in form of <code>AddRef</code> and <code>Release</code> methods. <code>ComPtr&lt;T&gt;</code> wraps that functionlity for us, by creating a smart pointer. You can find more information about it <a href="https://docs.microsoft.com/en-us/cpp/cppcx/wrl/comptr-class?view=msvc-170">here</a>.</p>
+<p><code>IDXGIFactory2</code> helps us find an adapter we can use to run our graphics on. It can enumerate all existing adapters (GPUs), of which there could be several installed in your system. If you have a laptop there is most likely an integrated one coming with your cpu, but often these days laptops also have a dedicated GPU as well, or your PC might have more than one dedicated GPUs installed. With <code>IDXGIFactory2</code> we can pick one. It also creates the swapchain for us, a surface to store rendered data before presenting it to an output (or screen).</p>
+<p><code>ID3D11Device</code> is the object which we use to create all sorts of things, buffers, textures, samplers, shaders.</p>
+<p><code>ID3D11DeviceContext</code> is the one we use to issue draw and compute commands to the GPU.</p>
+<p><code>IDXGISwapChain1</code> The aforementioned surface, which stores rendered data which it can present to an output (or screen).</p>
+<p><code>ID3D11RenderTargetView</code> Is a fancy pointer to a texture, this tells D3D11 that the texture this points to, is drawable within the subresource of the referenced texture</p>
+<p><code>DXGI</code> stands for DirectX Graphics Infrastructure, in case you are wondering.</p>
+<p>Let's go in to <code>Initialize</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">Application</span><span class="o">::</span><span class="n">Initialize</span><span class="p">())</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">CreateDXGIFactory2</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_dxgiFactory</span><span class="p">))))</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;DXGI: Unable to create DXGIFactory</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>The first part calls the parent class, where <code>GLFW</code> is initialized and setup.</p>
+<p><code>IID_PPV_ARGS(ppType)</code> Is a compile-time macro that is defined as 
+<div class="highlight"><pre><span></span><code><span class="cp">#define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)</span>
+</code></pre></div>
+Which means that typing <code>IID_PPV_ARGS(&amp;_dxgiFactory)</code> it is expanded by the compiler into <code>__uuidof(**(&amp;_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)</code>. This functionally means that for functions that have a parameter setup as <code>REFIID</code> and functionally after a <code>[out] void**</code> parameter, this macro will expand the <code>IID_PPV_ARGS(ppType)</code> expression into these parameters for ease of use — this can be seen with the used <code>CreateDXGIFactory2</code> method where the second last and last parameter are a <code>REFIID</code> and <code>void**</code>:
+<div class="highlight"><pre><span></span><code><span class="n">HRESULT</span><span class="w"> </span><span class="nf">CreateDXGIFactory2</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">UINT</span><span class="w">   </span><span class="n">Flags</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">REFIID</span><span class="w"> </span><span class="n">riid</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="p">[</span><span class="n">out</span><span class="p">]</span><span class="w"> </span><span class="kt">void</span><span class="w">   </span><span class="o">**</span><span class="n">ppFactory</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<code>REFIID</code> is a typedef that is a Reference (REF) to an Interface Identifier type (<code>IID</code>) — this means that it is a reference to a type that uniquely identifies a <a href="link-to-com-subsystem-in-msdn">COM</a> object.
+[more information like underlying memory organization can be read about IID's at https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/iid]</p>
+<p>What the parts of the <code>IID_PPV_ARGS(ppType)</code> macro are: </p>
+<p>[the <code>ppType</code> in <code>IID_PPV_ARGS(ppType)</code>]
+- a pointer to a pointer of an object.</p>
+<p>[the <code>__uuidof(**(ppType))</code> part of <code>IID_PPV_ARGS(ppType)</code>]
+-  at compile time retrieves a <code>UUID</code> from <code>ppType</code> type which represents a <code>GUID</code>, which is returned as a <code>REFIID</code> — which means that the type returned is a reference to an identifier to a specific type of COM object.   </p>
+<div class="admonition error">
+<p class="admonition-title">Explain DXGI</p>
+<p>https://docs.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi</p>
+</div>
+<p><a href="https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2"><code>CreateDXGIFactory2</code></a> is the entry point to create a factory for us, a <code>IDXGIFactory2</code> to be precise.
+There are various implementations of it, depending on what version you aim for, you get additional functionality.</p>
+<p>DXGI 1.0 up to 1.6 More information can be found <a href="https://docs.microsoft.com/en-us/windows/win32/api/_direct3ddxgi/">here</a> We will stick with <code>IDXGIFactory2</code> for now.</p>
+<div class="highlight"><pre><span></span><code><span class="k">constexpr</span><span class="w"> </span><span class="n">D3D_FEATURE_LEVEL</span><span class="w"> </span><span class="n">deviceFeatureLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D3D_FEATURE_LEVEL</span><span class="o">::</span><span class="n">D3D_FEATURE_LEVEL_11_0</span><span class="p">;</span><span class="w"></span>
+<span class="k">constexpr</span><span class="w"> </span><span class="n">UINT</span><span class="w"> </span><span class="n">deviceFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D3D11_CREATE_DEVICE_FLAG</span><span class="o">::</span><span class="n">D3D11_CREATE_DEVICE_BGRA_SUPPORT</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">D3D11CreateDevice</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">nullptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">D3D_DRIVER_TYPE</span><span class="o">::</span><span class="n">D3D_DRIVER_TYPE_HARDWARE</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">nullptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">deviceFlags</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">deviceFeatureLevel</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">D3D11_SDK_VERSION</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">_device</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">nullptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">_deviceContext</span><span class="p">)))</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D3D11: Failed to create Device and Device Context</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>This block is the entry point into D3D11, where we ask for a device and its device context to be created. The input parameters are:</p>
+<p>We want a LEVEL_11_0, hardware accelerated device, which has support for a specific color format.
+Feature levels are a concept that has been introduced with D3D11, it is a way to specify which set of features we would like to use. Each GPU may support different feature levels (for example a very old GPU might only support LEVEL_9_1, while a more modern one may support every feature level up to, and including LEVEL_11_0), this is a way to avoid rewriting our application in D3D9 just because our GPU doesn't support D3D11.</p>
+<p>If <a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdevice"><code>D3D11CreateDevice</code></a> succeeds we will get a <code>ID3D11Device</code> and a <code>ID3D11DeviceContext</code> back.</p>
+<div class="highlight"><pre><span></span><code><span class="n">DXGI_SWAP_CHAIN_DESC1</span><span class="w"> </span><span class="n">swapChainDescriptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">Width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowWidth</span><span class="p">();</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">Height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowHeight</span><span class="p">();</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">Format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DXGI_FORMAT</span><span class="o">::</span><span class="n">DXGI_FORMAT_B8G8R8A8_UNORM</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">SampleDesc</span><span class="p">.</span><span class="n">Count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">SampleDesc</span><span class="p">.</span><span class="n">Quality</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">BufferUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DXGI_USAGE_RENDER_TARGET_OUTPUT</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">BufferCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">SwapEffect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DXGI_SWAP_EFFECT</span><span class="o">::</span><span class="n">DXGI_SWAP_EFFECT_FLIP_DISCARD</span><span class="p">;</span><span class="w"></span>
+<span class="n">swapChainDescriptor</span><span class="p">.</span><span class="n">Flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+
+<span class="n">DXGI_SWAP_CHAIN_FULLSCREEN_DESC</span><span class="w"> </span><span class="n">swapChainFullscreenDescriptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+<span class="n">swapChainFullscreenDescriptor</span><span class="p">.</span><span class="n">Windowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">_dxgiFactory</span><span class="o">-&gt;</span><span class="n">CreateSwapChainForHwnd</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">_device</span><span class="p">.</span><span class="n">Get</span><span class="p">(),</span><span class="w"></span>
+<span class="w">    </span><span class="n">glfwGetWin32Window</span><span class="p">(</span><span class="n">GetWindow</span><span class="p">()),</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">swapChainDescriptor</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">swapChainFullscreenDescriptor</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">nullptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">_swapChain</span><span class="p">)))</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;DXGI: Failed to create SwapChain</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>After we successfully create device and device context, the next step is to create a swapchain, that storage containing the rendered images which we can present to the screen.</p>
+<p>The majority of values should make some sense without explanation, like width and height, and whether we want it to support a windowed window or not.</p>
+<p><code>BufferUsage</code> tells the swapchain's buffers their usage, something we render to, and can present. The format here is in BGRA order, like the device creation flag we specified earlier, if you remember.</p>
+<p><code>Scaling</code> tells DXGI to scale the buffer's contents to fit the presentation's target size.</p>
+<p><code>BufferCount</code> is 2, because we want double buffering. Double buffering is an age-old technique to avoid presenting an image that is being used by the GPU, instead we work on the "back buffer", while the GPU is happy presenting the "front buffer", then, as soon as we are done with the back buffer, we swap front and back, and begin working on the former front buffer present that one and render to the other one again in the meantime. That process is supposed to reduce flicker or tearing.</p>
+<p><code>SwapEffect</code> specifies if the contents of the back buffer should be preserved or discarded after a swap, here we don't care about preserving the back buffer, so we just discard everything.</p>
+<p><code>AlphaMode</code> specifies how DXGI should handle transparency, we don't care about that (yet), so we'll just say it's unspecified and rely on default behaviour</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">CreateSwapchainResources</span><span class="p">())</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>And the last bits of the <code>Initialize</code> method.</p>
+<p>We need to create a few more things. Those are based on the swapchain, hence their name. These resources need to be destroyed and recreated whenever we want to resize the window. When that happens, the swapchain needs to be resized as well (since that is a prameter in its descriptor as you can see above)</p>
+<div class="highlight"><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">HelloD3D11Application::CreateSwapchainResources</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">ComPtr</span><span class="o">&lt;</span><span class="n">ID3D11Texture2D</span><span class="o">&gt;</span><span class="w"> </span><span class="n">backBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">_swapChain</span><span class="o">-&gt;</span><span class="n">GetBuffer</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">IID_PPV_ARGS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">backBuffer</span><span class="p">))))</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D3D11: Failed to get Back Buffer from the SwapChain</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">_device</span><span class="o">-&gt;</span><span class="n">CreateRenderTargetView</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">backBuffer</span><span class="p">.</span><span class="n">Get</span><span class="p">(),</span><span class="w"></span>
+<span class="w">        </span><span class="k">nullptr</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">_renderTarget</span><span class="p">)))</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D3D11: Failed to create RTV from Back Buffer</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>When we render things, the GPU simply writes color values to a texture, which you can picture as a buffer which holds color information Swapchain is a container to manage those buffers we want to present on screen. To do that we have to create a special kind of texture called a "Render Target View" or an RTV. First off we have to grab a texture from the swapchain's main buffer (index 0), from that texture, we now have to create an RTV from that, which specifies the subresource of the texture that we will be drawing to. We won't keep the actual texture around, we just need the render target view, which we will refer to as render target.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">HelloD3D11Application::DestroySwapchainResources</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">_renderTarget</span><span class="p">.</span><span class="n">Reset</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>The render target needs to be disposed when we want to resize (or cleanup in general), it will be recreated via <code>CreateSwapchainResources</code> when we resize the window as shown here:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">HelloD3D11Application::OnResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">Application</span><span class="o">::</span><span class="n">OnResize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">_deviceContext</span><span class="o">-&gt;</span><span class="n">Flush</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">DestroySwapchainResources</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">_swapChain</span><span class="o">-&gt;</span><span class="n">ResizeBuffers</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">height</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">DXGI_FORMAT</span><span class="o">::</span><span class="n">DXGI_FORMAT_B8G8R8A8_UNORM</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="mi">0</span><span class="p">)))</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D3D11: Failed to recreate SwapChain buffers</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">CreateSwapchainResources</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>When we resize, let the base application know about it, and make sure
+the device context has done all its work (<a href="https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush"><code>Flush</code></a>)</p>
+<p>Before we can resize the swapchain, make sure all resources based on it are disposed. Afterwards recreate them with the new dimensions of the swapchain</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">HelloD3D11Application::Render</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">D3D11_VIEWPORT</span><span class="w"> </span><span class="n">viewport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">TopLeftX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">TopLeftY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">Width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowWidth</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">Height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetWindowHeight</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">MinDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">viewport</span><span class="p">.</span><span class="n">MaxDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">clearColor</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">_deviceContext</span><span class="o">-&gt;</span><span class="n">ClearRenderTargetView</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">_renderTarget</span><span class="p">.</span><span class="n">Get</span><span class="p">(),</span><span class="w"></span>
+<span class="w">        </span><span class="n">clearColor</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">_deviceContext</span><span class="o">-&gt;</span><span class="n">RSSetViewports</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">viewport</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">_deviceContext</span><span class="o">-&gt;</span><span class="n">OMSetRenderTargets</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">_renderTarget</span><span class="p">.</span><span class="n">GetAddressOf</span><span class="p">(),</span><span class="w"></span>
+<span class="w">        </span><span class="k">nullptr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">_swapChain</span><span class="o">-&gt;</span><span class="n">Present</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>Now we can actually use those things we have created before.
+We just set it up so that we tell <code>D3D11</code> that we want to render into the render target, and when we clear we want to use a dark gray.</p>
+<p>We also have to specify an area in form of a rectangle, in this case, its equivalent to the window size.</p>
+<p>Last but not least, we Present the content of the swapchain to the window, using <a href="https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present"><code>Present</code></a>. The first argument defines which vblanks to synchronize with presentation, 0 means: no synchronization (unlimited FPS), 1 means: sync every v-blank (regular v-sync), 2 means: sync every other v-blank and so on, up to 4. The second are optional flags, we don't need them so 0 is passed.</p>
+<p><code>Application</code> also defines an abstract method <code>Update</code> which we have to define here as well, so we will add:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">HelloD3D11Application::Update</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>But keep it empty for now.</p>
+<p>Same applies for <code>Application</code>'s <code>Load</code> method.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">HelloD3D11Application::Load</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>Finally, we need to modify <code>Appplication.hpp</code> and <code>Application.cpp</code>. Since we want to handle resizing as well.</p>
+<h3 id="applicationhpp">Application.hpp<a class="headerlink" href="#applicationhpp" title="Permanent link">&para;</a></h3>
+<p>Find <code>protected:</code> and add the following lines</p>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">HandleResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">GLFWwindow</span><span class="o">*</span><span class="w"> </span><span class="n">window</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+
+<span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">GLFWwindow</span><span class="o">*</span><span class="w"> </span><span class="n">GetWindow</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">GetWindowWidth</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">GetWindowHeight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p><code>HandleResize</code> will be the callback from <code>GLFW</code> which handles resize events and <code>OnResize</code> will be executed when GLFW runs HandleResize, so that we can handle our custom things we want to execute when resizing the window, like changing the size of the swapchain in our example.</p>
+<p><code>GetWindow()</code> is used to derive the actual native window handle from, which is needed when we create the swapchain. <code>GetWindowWidth()</code> and <code>GetWindowHeight()</code> do what they say :) Also required for swapchain creation.</p>
+<h3 id="applicationcpp">Application.cpp<a class="headerlink" href="#applicationcpp" title="Permanent link">&para;</a></h3>
+<p>Add the following lines</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">Application::OnResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">Application::HandleResize</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">GLFWwindow</span><span class="o">*</span><span class="w"> </span><span class="n">window</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">Application</span><span class="o">&amp;</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Application</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">glfwGetWindowUserPointer</span><span class="p">(</span><span class="n">window</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">application</span><span class="p">.</span><span class="n">OnResize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">GLFWwindow</span><span class="o">*</span><span class="w"> </span><span class="nf">Application::GetWindow</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">_window</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int32_t</span><span class="w"> </span><span class="nf">Application::GetWindowWidth</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">_width</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int32_t</span><span class="w"> </span><span class="nf">Application::GetWindowHeight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">_height</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>Find the <code>Initialize</code> method and add the following two lines
+before <code>return true;</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">glfwSetWindowUserPointer</span><span class="p">(</span><span class="n">_window</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">);</span><span class="w"></span>
+<span class="n">glfwSetFramebufferSizeCallback</span><span class="p">(</span><span class="n">_window</span><span class="p">,</span><span class="w"> </span><span class="n">HandleResize</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<p><a href="https://www.glfw.org/docs/3.3/group__window.html#ga3d2fc6026e690ab31a13f78bc9fd3651"><code>glfwSetWindowUserPointer</code></a> will set our application instance as a custom variable, so that we can retrieve it using <a href="https://www.glfw.org/docs/3.3/group__window.html#gae77a4add0d2023ca21ff1443ced01653"><code>glfwGetWindowUserPointer</code></a> in the <code>HandleResize</code> callback.</p>
+<p><a href="https://www.glfw.org/docs/3.3/group__window.html#gab3fb7c3366577daef18c0023e2a8591f"><code>glfwSetFramebufferSizeCallback</code></a> will tell <code>GLFW</code> what to do when we resize the window, in this case execute <code>HandleResize</code> which will fetch our application instance and all <code>OnResize</code> on it, where we can handle resizing in our application code.</p>
+<p><a href="https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-2-HelloD3D11">Project on GitHub</a></p>
+<p><a href="../1-1-3-hello-triangle/">Next chapter</a></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../1-1-1-hello-window/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hello Window" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Hello Window
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../1-1-3-hello-triangle/" class="md-footer__link md-footer__link--next" aria-label="Next: Hello Triangle" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Hello Triangle
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright 2022 Graphics Programming
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    <a href="https://github.com/graphicsprogramming/learnd3d11" target="_blank" rel="noopener" title="Graphics Programming on Github" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    <a href="https://discord.gg/6mgNGk7" target="_blank" rel="noopener" title="Graphics Programming on discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541ZM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241Zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["tabs", "instant", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
