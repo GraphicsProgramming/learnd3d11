@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Make sure git is installed
-        run: apt-get update && apt-get install git -y && git --version
+        run: sudo apt-get update && apt-get install git -y && git --version
         # "https://google.com/serch"
 
         # The first grep filters out everything that has a link in it. The second filters anything
