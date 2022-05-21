@@ -247,10 +247,60 @@ if (FAILED(D3D11CreateDevice(
 
 This block is the entry point into D3D11, where we ask for a device and its device context to be created. The input parameters are:
 
-We want a LEVEL_11_0, hardware accelerated device, which has support for a specific color format.
-Feature levels are a concept that has been introduced with D3D11, it is a way to specify which set of features we would like to use. Each GPU may support different feature levels (for example a very old GPU might only support LEVEL_9_1, while a more modern one may support every feature level up to, and including LEVEL_11_0), this is a way to avoid rewriting our application in D3D9 just because our GPU doesn't support D3D11.
+```cpp
+HRESULT D3D11CreateDevice(
+  [in, optional]  IDXGIAdapter            *pAdapter,
+                  D3D_DRIVER_TYPE         DriverType,
+                  HMODULE                 Software,
+                  UINT                    Flags,
+  [in, optional]  const D3D_FEATURE_LEVEL *pFeatureLevels,
+                  UINT                    FeatureLevels,
+                  UINT                    SDKVersion,
+  [out, optional] ID3D11Device            **ppDevice,
+  [out, optional] D3D_FEATURE_LEVEL       *pFeatureLevel,
+  [out, optional] ID3D11DeviceContext     **ppImmediateContext
+);
+```
 
-If [`D3D11CreateDevice`](https://docs.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdevice) succeeds we will get a `ID3D11Device` and a `ID3D11DeviceContext` back.
+[`pAdapter`]
+- This is where you use a `IDXGIAdapter*` as input to select the GPU you want to use this instance of D3D11 with. If you pass `nullptr`, a default is chosen on your behalf (which is what we will be doing).
+    - IDXGIFactory::EnumAdapters can be used to fetch a GPU of your choice to use for D3D11
+
+[`DriverType`]
+- choose from the `D3D_DRIVER_TYPE` enum a driver that guides how D3D11 API calls will be processed.
+    - **D3D_DRIVER_TYPE_HARDWARE**: Use hardware (a GPU) primarily to process and CPU for areas where the GPU does not support required features
+
+    Less relevant Driver types for this tutorial:
+    - D3D_DRIVER_TYPE_REFERENCE: A full CPU implementation of D3D11 (accuracy targeted by not using special CPU instructions)
+    - D3D_DRIVER_TYPE_NULL: Do not enable API calls of D3D11 by assigning no way to process them
+    - D3D_DRIVER_TYPE_SOFTWARE: Use a CPU to process D3D11 API calls based on a user chosen driver to power this specific implementation
+    - D3D_DRIVER_TYPE_WARP: Use a CPU to process D3D11 API calls with performance in mind (limited support of D3D11 features and shader usage) 
+
+[`Software`]
+- If choosen to use `D3D_DRIVER_TYPE_SOFTWARE` a `HMODULE` must be passed to specify the CPU rasterizer to use. We will not be using `D3D_DRIVER_TYPE_SOFTWARE` so it was safe to leave as `nullptr`.
+
+[`Flags`]
+- A enum to specify special features D3D11 will use. We specifically set `D3D11_CREATE_DEVICE_BGRA_SUPPORT` to enable support for textures using a `BGRA` (blue green red alpha) color scheme.  
+    - Other flags can be found here: [https://docs.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_create_device_flag]
+
+[`pFeatureLevels`]
+- Inputted here is the targeted feature levels that this instance of D3D11 will support. Some hardware will not support newer feature levels, so we are given the power to choose what possible feature levels our program will support — A higher feature level supports all features of a lower level feature level, but not the other way around; *as a result* `D3D_FEATURE_LEVEL_11_0` means we support 11.0 feature level which supports special color formats we will use **BUT** we cannot use features of a newer feature level like 11.1 which also supports everything 11.0 supports (which requires the `D3D_FEATURE_LEVEL_11_1` flag). If `nullptr`, `D3D_FEATURE_LEVEL_11_0` is targeted by default.  
+    - More feature levels and differences can be found here: [https://docs.microsoft.com/en-us/windows/win32/api/d3dcommon/ne-d3dcommon-d3d_feature_level]  
+
+[`FeatureLevels`]
+- The number of elements inside your inputted `pFeatureLevels` array — we have 1 item, so we put 1.
+
+[`SDKVersion`]
+- A UINT repisenting the D3D11 SDK to load — `D3D11_SDK_VERSION` is a UINT storing the reccomended SDK version to build with.
+
+[`ppDevice`]
+- Returns a valid `ID3D11Device*` to the inputted variable here if the API call runs without error. This parameter is optional (can be `nullptr`) to allow testing if certain features are valid with current hardware running the program.
+
+[`pFeatureLevel`]
+- Returns the first `D3D_FEATURE_LEVEL` that is valid inside `pFeatureLevels` that works with the current users hardware. This parameter is optional.  
+
+[`ppImmediateContext`]
+- Returns a valid `ID3D11DeviceContext*` to the inputted varaible here if the API call runs without error. This parameter is optional (can be `nullptr`) to allow testing if certain features are valid with current hardware running the program.
 
 ```cpp
 DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
