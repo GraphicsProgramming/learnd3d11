@@ -371,7 +371,7 @@ D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] is an array since when we pass 
         UINT AlignedByteOffset,
         D3D11_INPUT_CLASSIFICATION InputSlotClass,
         UINT InstanceDataStepRate
-    }
+    } 
 ```
 - `SemanticName`: Tells the GPU to expect in the **vertex shader** that a variable in a vertex shader input struct (`VSInput` in this case) with the same `SemanticName` (string after a colon in the vertex shader's declaration — recall `float3 position: STUFF_AFTER_COLON`) will be where the GPU puts the received data.
 - `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to `POSITION0`, where the number at the end is our index, so we'll just pass in 0.
