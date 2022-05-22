@@ -15,7 +15,7 @@ project is also still a **work in progress**; a lot of content may be missing or
 If you find typos, bugs or have questions, don't hesitate to open an issue or even send a PR.
 Also feel free to join us on our [Discord server](https://discord.gg/6mgNGk7).
 
-## Getting started
+## Getting started - this is a test
 
 To get started reading LearnD3D11, you can jump right into the
 [first chapter](1-introduction/1-1-getting-started/1-1-0-overview/)!
