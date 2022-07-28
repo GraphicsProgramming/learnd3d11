@@ -268,8 +268,7 @@ bool HelloTriangleApplication::CompileShader(
 We start by creating two `ID3DBlob`s, we will need a temporary blob, where we'll 
 load our shader file and an error blob, which will contain our error messages, if any.
 
-Then we call for [`D3DCompileFromFile`
-](https://docs.microsoft.com/en-us/windows/win32/api/d3dcompiler/nf-d3dcompiler-d3dcompilefromfile), 
+Then we call for [`D3DCompileFromFile`](https://docs.microsoft.com/en-us/windows/win32/api/d3dcompiler/nf-d3dcompiler-d3dcompilefromfile), 
 it requires quite a lot of parameters so let's go over them one by one in order:
 
 - `pFileName`: a UTF-8 string containing the file name of the shader we want to compile.
@@ -429,7 +428,8 @@ The type aliases help us make this more readable and more easily guess what is
 what, so obviously the first field is our position vector and the second field 
 is our color vector.
 
-Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. You can think of each element in this array as describing
+Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. 
+You can think of each element in this array as describing
 one field in the `VSInput`.
 
 ```cpp
