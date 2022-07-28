@@ -22,6 +22,7 @@ to watch what you are doing you can run (and should)
 ```bash
 mkdocs serve
 ```
+(in windows if you did not add to path: ```python -m mkdocs serve```)
 
 that will provide a live version of your edit, running on your local machine.
 
