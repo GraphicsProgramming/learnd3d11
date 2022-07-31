@@ -1,28 +1,8 @@
 package framework
 
 import "core:fmt"
+import "core:strings"
 import "vendor:glfw"
-
-
-A :: struct {
-	my : i32,
-	using _a : A_vtable,
-}
-A_vtable :: struct {
-	one : proc (a : ^A),
-	two : proc (a : ^A) -> (ok : b32),
-}
-One :: proc (a : ^A) {
-	fmt.println("in one")
-	if !a->two() {
-		fmt.printf("false")
-		return
-	}
-
-	fmt.printf("true")
-	return
-}
-
 
 Application :: struct {
 	window : glfw.WindowHandle,
@@ -32,6 +12,7 @@ Application :: struct {
 	using _application_vtable : ApplicationVTable,
 }
 
+@(private)
 ApplicationVTable :: struct {
 	Run : proc (app : ^Application),
 	Cleanup : proc (app : ^Application),
@@ -53,22 +34,18 @@ Run :: proc (using app : ^Application) {
 		return
 	} 
 
-	fmt.println("Loop")
 	if !app->Load() {
 		return
 	}
-	fmt.println("Loop")
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
-		fmt.println("Loop")
 		app->Update()
-		fmt.println("Loop")
 		app->Render()
 	}
 }
 
-//@(private)
+@(private)
 Cleanup :: proc (using app : ^Application) {
 	if window != nil {
 		glfw.DestroyWindow(window)
@@ -77,7 +54,7 @@ Cleanup :: proc (using app : ^Application) {
 	glfw.Terminate()
 }
 
-//@(private)
+@(private)
 Initialize :: proc (using app : ^Application) -> (ok : b32) {
 	result := glfw.Init()
 	if result == 0 {
@@ -92,7 +69,7 @@ Initialize :: proc (using app : ^Application) -> (ok : b32) {
 
 	glfw.WindowHint(glfw.SCALE_TO_MONITOR, 0)
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
-	window = glfw.CreateWindow(dimensions.x, dimensions.y, "Learn D3D11 - Hello Window", nil, nil)
+	window = glfw.CreateWindow(dimensions.x, dimensions.y, strings.clone_to_cstring(title), nil, nil)
 	if window == nil {
 		fmt.println("GLFW: Unable to create window")
 		return false
