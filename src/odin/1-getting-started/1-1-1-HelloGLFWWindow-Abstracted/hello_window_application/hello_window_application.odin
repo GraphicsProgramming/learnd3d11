@@ -1,6 +1,7 @@
 package hello_window_application
 
 import "core:fmt"
+import "vendor:glfw"
 
 import "../../../framework"
 
@@ -10,25 +11,38 @@ HelloWindowApplication :: struct {
 
 CreateHelloWindowApplication :: proc (title : string) -> (app : HelloWindowApplication) {
 	app.title = title
-	app._application_vtable = framework.application_vtable
-	app.Load = Load
-	app.Update = Update
-	app.Render = Render
-	
 	return
 }
 
+Run :: proc (app : ^HelloWindowApplication) {
+	ok := framework.Initialize(app)
+	defer framework.Cleanup(app)
+	if !ok {
+		return
+	} 
+
+	if !Load(app) {
+		return
+	}
+
+	for !glfw.WindowShouldClose(app.window) {
+		glfw.PollEvents()
+		Update(app)
+		Render(app)
+	}
+}
+
 @(private)
-Load :: proc (app : ^framework.Application) -> (ok : b32) {
+Load :: proc (app : ^HelloWindowApplication) -> (ok : b32) {
 	return true
 }
 
 @(private)
-Update :: proc (app : ^framework.Application) {
+Update :: proc (app : ^HelloWindowApplication) {
 
 }
 
 @(private)
-Render :: proc (app : ^framework.Application) {
+Render :: proc (app : ^HelloWindowApplication) {
 	
 }

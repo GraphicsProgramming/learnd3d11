@@ -8,44 +8,8 @@ Application :: struct {
 	window : glfw.WindowHandle,
 	dimensions : [2]i32,
 	title : string,
-
-	using _application_vtable : ApplicationVTable,
 }
 
-@(private)
-ApplicationVTable :: struct {
-	Run : proc (app : ^Application),
-	Cleanup : proc (app : ^Application),
-	Initialize : proc (app : ^Application) -> (ok : b32),
-	Load : proc (app : ^Application) -> (ok : b32),
-	Update : proc (app : ^Application),
-	Render : proc (app : ^Application),
-}
-application_vtable := (ApplicationVTable) {
-	Run = Run,
-	Cleanup = Cleanup,
-	Initialize = Initialize,
-}
-
-Run :: proc (using app : ^Application) {
-	ok := app->Initialize()
-	defer app->Cleanup()
-	if !ok {
-		return
-	} 
-
-	if !app->Load() {
-		return
-	}
-
-	for !glfw.WindowShouldClose(window) {
-		glfw.PollEvents()
-		app->Update()
-		app->Render()
-	}
-}
-
-@(private)
 Cleanup :: proc (using app : ^Application) {
 	if window != nil {
 		glfw.DestroyWindow(window)
@@ -54,7 +18,6 @@ Cleanup :: proc (using app : ^Application) {
 	glfw.Terminate()
 }
 
-@(private)
 Initialize :: proc (using app : ^Application) -> (ok : b32) {
 	result := glfw.Init()
 	if result == 0 {
