@@ -10,6 +10,14 @@ Application :: struct {
 	title : string,
 }
 
+GetWindowWidth :: proc (app : ^Application) -> (width : i32) {
+	return app.dimensions.x
+}
+
+GetWindowHeight :: proc (app : ^Application) -> (height : i32) {
+	return app.dimensions.y
+}
+
 Cleanup :: proc (using app : ^Application) {
 	if window != nil {
 		glfw.DestroyWindow(window)
