@@ -15,13 +15,12 @@ CreateHelloWindowApplication :: proc (title : string) -> (app : HelloWindowAppli
 }
 
 Run :: proc (app : ^HelloWindowApplication) {
-	ok := framework.Initialize(app)
-	defer framework.Cleanup(app)
-	if !ok {
+	defer Cleanup(app)
+	if ok := Initialize(app); !ok {
 		return
-	} 
+	}
 
-	if !Load(app) {
+	if ok := Load(app); !ok {
 		return
 	}
 
@@ -30,6 +29,13 @@ Run :: proc (app : ^HelloWindowApplication) {
 		Update(app)
 		Render(app)
 	}
+}
+
+@(private)
+Initialize :: proc (app : ^HelloWindowApplication) -> (ok : b32) {
+	framework.Initialize(app) or_return
+
+	return true
 }
 
 @(private)
@@ -45,4 +51,9 @@ Update :: proc (app : ^HelloWindowApplication) {
 @(private)
 Render :: proc (app : ^HelloWindowApplication) {
 	
+}
+
+@(private)
+Cleanup :: proc (app : ^HelloWindowApplication) {
+	framework.Cleanup(app)
 }

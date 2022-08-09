@@ -63,8 +63,8 @@ Initialize :: proc (app : ^HelloD3D11Application) -> (ok : b32) {
 	}
 
 	swapchain_desc := dxgi.SWAP_CHAIN_DESC1{
-		Width = u32(app.dimensions.x),
-		Height = u32(app.dimensions.y),
+		Width = app.dimensions.x,
+		Height = app.dimensions.y,
 		Format = .B8G8R8A8_UNORM,
 		SampleDesc = { Count = 1, Quality = 0, },
 		BufferUsage = .RENDER_TARGET_OUTPUT,
@@ -128,17 +128,18 @@ Render :: proc (app : ^HelloD3D11Application) {
 @(private)
 ResizeHandler :: proc (window : glfw.WindowHandle, width : i32, height : i32) {
 	ptr := (^HelloD3D11Application)(glfw.GetWindowUserPointer(window))
-	OnResize(ptr, width, height)
+	new_dimensions := [2]u32{u32(width), u32(height)}
+	OnResize(ptr, new_dimensions)
 }
 
 @(private)
-OnResize :: proc (app : ^HelloD3D11Application, width : i32, height : i32) {
-	app.dimensions = {width, height}
+OnResize :: proc (app : ^HelloD3D11Application, new_dimensions : [2]u32) {
+	app.dimensions = new_dimensions
 	app.device_context->Flush()
 
 	DestroySwapchainResources(app)
 
-	result := app.swapchain->ResizeBuffers(0, u32(app.dimensions.x), u32(app.dimensions.y), .UNKNOWN, 0)
+	result := app.swapchain->ResizeBuffers(0, app.dimensions.x, app.dimensions.y, .UNKNOWN, 0)
 	if !win.SUCCEEDED(result) {
 		fmt.printf("D3D11: Failed to recreate Swapchain buffers %x\n", u32(result))
 		return
