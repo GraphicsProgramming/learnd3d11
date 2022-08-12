@@ -93,8 +93,8 @@ Initialize :: proc (app : ^framework.Application, using renderer : ^Renderer) ->
 Load :: proc (using renderer : ^Renderer) -> (ok : b32) {
 	// Create Pipeline
 	pipeline_settings_desc := (PipelineDescriptor) {
-		vertex_file_path = "main.vs.hlsl",
-		pixel_file_path = "main.ps.hlsl",
+		vertex_file_path = "Assets/Shaders/main.vs.hlsl",
+		pixel_file_path = "Assets/Shaders/main.ps.hlsl",
 		vertex_type = .PositionColor,
 	}
 	pipeline = CreatePipeline(device, pipeline_settings_desc) or_return
