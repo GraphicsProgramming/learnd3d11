@@ -3,8 +3,8 @@
 #include "ApplicationWithInput.hpp"
 #include "Definitions.hpp"
 
-#include <d3d11_2.h>
 #include <DirectXMath.h>
+#include <d3d11_2.h>
 
 #include <memory>
 

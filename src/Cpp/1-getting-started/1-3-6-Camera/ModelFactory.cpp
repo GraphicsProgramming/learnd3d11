@@ -55,13 +55,13 @@ bool ModelFactory::LoadModel(
     {
         const Position& position = Position{ mesh->mVertices[i].x / 10.0f, mesh->mVertices[i].y / 10.0f, mesh->mVertices[i].z / 10.0f };
         const Color& color = mesh->HasVertexColors(0)
-            ? Color{ mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b }
-        : defaultColor;
+                               ? Color{ mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b }
+                               : defaultColor;
         const Uv& uv = mesh->HasTextureCoords(0)
-            ? Uv{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y }
-        : defaultUv;
+                         ? Uv{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y }
+                         : defaultUv;
 
-        vertices.push_back(VertexPositionColorUv{ Position{position}, Color{color}, Uv{uv} });
+        vertices.push_back(VertexPositionColorUv{ Position{ position }, Color{ color }, Uv{ uv } });
     }
 
     *vertexCount = static_cast<uint32_t>(vertices.size());
@@ -75,9 +75,9 @@ bool ModelFactory::LoadModel(
     vertexBufferData.pSysMem = vertices.data();
 
     if (FAILED(_device->CreateBuffer(
-        &vertexBufferDescriptor,
-        &vertexBufferData,
-        &vertexBuffer)))
+            &vertexBufferDescriptor,
+            &vertexBufferData,
+            &vertexBuffer)))
     {
         std::cout << "D3D11: Failed to create model vertex buffer\n";
         return false;
@@ -103,9 +103,9 @@ bool ModelFactory::LoadModel(
     indexBufferData.pSysMem = indices.data();
 
     if (FAILED(_device->CreateBuffer(
-        &indexBufferDescriptor,
-        &indexBufferData,
-        &indexBuffer)))
+            &indexBufferDescriptor,
+            &indexBufferData,
+            &indexBuffer)))
     {
         std::cout << "D3D11: Failed to create model index buffer\n";
         return false;

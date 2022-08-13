@@ -13,7 +13,8 @@ class Camera
 public:
     virtual void Resize(
         int32_t width,
-        int32_t height) = 0;
+        int32_t height)
+        = 0;
 
     void Update();
 

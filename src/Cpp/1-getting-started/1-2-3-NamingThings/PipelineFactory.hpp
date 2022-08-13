@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "VertexType.hpp"
 #include "Pipeline.hpp"
+#include "VertexType.hpp"
 
 #include <d3d11_2.h>
 
-#include <unordered_map>
-#include <string>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 struct PipelineDescriptor
 {

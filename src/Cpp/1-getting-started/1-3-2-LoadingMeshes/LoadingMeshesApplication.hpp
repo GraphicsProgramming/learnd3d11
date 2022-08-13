@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Application.hpp>
 #include "Definitions.hpp"
+#include <Application.hpp>
 
-#include <d3d11_2.h>
 #include <DirectXMath.h>
+#include <d3d11_2.h>
 
-#include <string>
 #include <memory>
+#include <string>
 
 class Pipeline;
 class PipelineFactory;

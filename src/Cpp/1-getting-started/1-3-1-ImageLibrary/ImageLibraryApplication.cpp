@@ -7,9 +7,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <DirectXMath.h>
+#include <d3dcompiler.h>
 
 #include <DirectXTex.h>
 
@@ -21,8 +21,8 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-template<UINT TDebugNameLength>
-inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
+template <UINT TDebugNameLength>
+inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char (&debugName)[TDebugNameLength])
 {
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
@@ -73,16 +73,16 @@ bool ImageLibraryApplication::Initialize()
 
     WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        deviceFlags,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &deviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            deviceFlags,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &_device,
+            nullptr,
+            &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
@@ -116,12 +116,12 @@ bool ImageLibraryApplication::Initialize()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+            _device.Get(),
+            glfwGetWin32Window(GetWindow()),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
         return false;
@@ -152,11 +152,10 @@ bool ImageLibraryApplication::Load()
         static_cast<float>(GetWindowWidth()),
         static_cast<float>(GetWindowHeight()));
 
-    constexpr VertexPositionColorUv vertices[] =
-    {
-        { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }, Uv{ 0.5f, 0.0f } },
-        { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f }, Uv{ 1.0f, 1.0f } },
-        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }, Uv{ 0.0f, 1.0f } },
+    constexpr VertexPositionColorUv vertices[] = {
+        {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }, Uv{ 0.5f, 0.0f }},
+        { Position{ 0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f }, Uv{ 1.0f, 1.0f }},
+        {Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }, Uv{ 0.0f, 1.0f }},
     };
     D3D11_BUFFER_DESC bufferInfo = {};
     bufferInfo.ByteWidth = sizeof(vertices);
@@ -167,9 +166,9 @@ bool ImageLibraryApplication::Load()
     resourceData.pSysMem = vertices;
 
     if (FAILED(_device->CreateBuffer(
-        &bufferInfo,
-        &resourceData,
-        &_triangleVertices)))
+            &bufferInfo,
+            &resourceData,
+            &_triangleVertices)))
     {
         std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
@@ -185,11 +184,11 @@ bool ImageLibraryApplication::Load()
 
     WRL::ComPtr<ID3D11Resource> texture = nullptr;
     if (FAILED(DirectX::CreateTexture(
-        _device.Get(),
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &texture)))
+            _device.Get(),
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &texture)))
     {
         std::cout << "DXTEX: Failed to create texture out of image\n";
         scratchImage.Release();
@@ -197,11 +196,11 @@ bool ImageLibraryApplication::Load()
     }
 
     if (FAILED(DirectX::CreateShaderResourceView(
-        _device.Get(),
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &_textureSrv)))
+            _device.Get(),
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &_textureSrv)))
     {
         std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
         scratchImage.Release();
@@ -230,17 +229,17 @@ bool ImageLibraryApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
     if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
@@ -264,11 +263,11 @@ void ImageLibraryApplication::OnResize(
     DestroySwapchainResources();
 
     if (FAILED(_swapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
