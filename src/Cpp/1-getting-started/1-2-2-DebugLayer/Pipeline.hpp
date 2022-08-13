@@ -12,7 +12,6 @@ public:
     friend class PipelineFactory;
     friend class DeviceContext;
 
-
     void SetViewport(
         float left,
         float top,

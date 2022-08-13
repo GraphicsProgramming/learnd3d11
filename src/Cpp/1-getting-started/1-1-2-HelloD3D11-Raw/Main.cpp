@@ -29,17 +29,17 @@ bool CreateSwapchainResources()
 {
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(g_SwapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
     if (FAILED(g_Device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &g_RenderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &g_RenderTarget)))
     {
         std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
@@ -65,11 +65,11 @@ void HandleResize(
 
     DestroySwapchainResources();
     if (FAILED(g_SwapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
         return;
@@ -123,16 +123,16 @@ int main()
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &g_Device,
-        nullptr,
-        &g_DeviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            0,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &g_Device,
+            nullptr,
+            &g_DeviceContext)))
     {
         std::cout << "D3D11: Failed to create device and device context\n";
         return false;
@@ -154,12 +154,12 @@ int main()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(g_DxgiFactory->CreateSwapChainForHwnd(
-        g_Device.Get(),
-        glfwGetWin32Window(window),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &g_SwapChain)))
+            g_Device.Get(),
+            glfwGetWin32Window(window),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &g_SwapChain)))
     {
         std::cout << "DXGI: Failed to create swapchain\n";
         return false;

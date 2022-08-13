@@ -1,7 +1,7 @@
 #pragma once
 
-#include <dxgi1_3.h>
 #include <d3d11.h>
+#include <dxgi1_3.h>
 #include <wrl.h>
 
 #include <Application.hpp>
@@ -10,6 +10,7 @@ class HelloTriangleApplication final : public Application
 {
     template <typename T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 public:
     HelloTriangleApplication(const std::string& title);
     ~HelloTriangleApplication() override;

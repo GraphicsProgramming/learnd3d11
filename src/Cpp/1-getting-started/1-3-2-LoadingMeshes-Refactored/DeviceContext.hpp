@@ -25,7 +25,7 @@ public:
         ID3D11Buffer* indexBuffer,
         uint32_t indexOffset);
     void UpdateSubresource(ID3D11Buffer* buffer, const void* data) const;
-    
+
     void Draw() const;
     void DrawIndexed() const;
     void Flush() const;

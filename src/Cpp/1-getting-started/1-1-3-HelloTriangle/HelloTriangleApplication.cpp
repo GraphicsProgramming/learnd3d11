@@ -4,9 +4,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <DirectXMath.h>
+#include <d3dcompiler.h>
 
 #include <iostream>
 
@@ -62,16 +62,16 @@ bool HelloTriangleApplication::Initialize()
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &_deviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            0,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &_device,
+            nullptr,
+            &_deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
@@ -93,12 +93,12 @@ bool HelloTriangleApplication::Initialize()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+            _device.Get(),
+            glfwGetWin32Window(GetWindow()),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
         return false;
@@ -124,43 +124,44 @@ bool HelloTriangleApplication::Load()
         return false;
     }
 
+    // clang-format off
     // ReSharper disable once CppTooWideScopeInitStatement
-    constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
-    {
+    constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] = {
         {
             "POSITION",
             0,
             DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
             0,
             offsetof(VertexPositionColor, position),
-            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0
+            D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
+            0
         },
         {
             "COLOR",
             0,
             DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,
             0,
-            offsetof(VertexPositionColor, color),
+            offsetof(VertexPositionColor,    color),
             D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,
             0
         },
     };
+    // clang-format on
     if (FAILED(_device->CreateInputLayout(
-        vertexInputLayoutInfo,
-        _countof(vertexInputLayoutInfo),
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        &_vertexLayout)))
+            vertexInputLayoutInfo,
+            _countof(vertexInputLayoutInfo),
+            vertexShaderBlob->GetBufferPointer(),
+            vertexShaderBlob->GetBufferSize(),
+            &_vertexLayout)))
     {
         std::cout << "D3D11: Failed to create default vertex input layout\n";
         return false;
     }
 
-    constexpr VertexPositionColor vertices[] =
-    {
-        { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
-        { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f } },
-        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f } },
+    constexpr VertexPositionColor vertices[] = {
+        {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }},
+        { Position{ 0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f }},
+        {Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }},
     };
     D3D11_BUFFER_DESC bufferInfo = {};
     bufferInfo.ByteWidth = sizeof(vertices);
@@ -171,9 +172,9 @@ bool HelloTriangleApplication::Load()
     resourceData.pSysMem = vertices;
 
     if (FAILED(_device->CreateBuffer(
-        &bufferInfo,
-        &resourceData,
-        &_triangleVertices)))
+            &bufferInfo,
+            &resourceData,
+            &_triangleVertices)))
     {
         std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
@@ -181,7 +182,6 @@ bool HelloTriangleApplication::Load()
 
     return true;
 }
-
 
 bool HelloTriangleApplication::CompileShader(
     const std::wstring& fileName,
@@ -194,15 +194,15 @@ bool HelloTriangleApplication::CompileShader(
     ComPtr<ID3DBlob> tempShaderBlob = nullptr;
     ComPtr<ID3DBlob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
-        fileName.data(),
-        nullptr,
-        D3D_COMPILE_STANDARD_FILE_INCLUDE,
-        entryPoint.data(),
-        profile.data(),
-        compileFlags,
-        0,
-        &tempShaderBlob,
-        &errorBlob)))
+            fileName.data(),
+            nullptr,
+            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            entryPoint.data(),
+            profile.data(),
+            compileFlags,
+            0,
+            &tempShaderBlob,
+            &errorBlob)))
     {
         std::cout << "D3D11: Failed to read shader from file\n";
         if (errorBlob != nullptr)
@@ -228,10 +228,10 @@ HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::C
 
     ComPtr<ID3D11VertexShader> vertexShader;
     if (FAILED(_device->CreateVertexShader(
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        nullptr,
-        &vertexShader)))
+            vertexShaderBlob->GetBufferPointer(),
+            vertexShaderBlob->GetBufferSize(),
+            nullptr,
+            &vertexShader)))
     {
         std::cout << "D3D11: Failed to compile vertex shader\n";
         return nullptr;
@@ -250,10 +250,10 @@ HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::Cr
 
     ComPtr<ID3D11PixelShader> pixelShader;
     if (FAILED(_device->CreatePixelShader(
-        pixelShaderBlob->GetBufferPointer(),
-        pixelShaderBlob->GetBufferSize(),
-        nullptr,
-        &pixelShader)))
+            pixelShaderBlob->GetBufferPointer(),
+            pixelShaderBlob->GetBufferSize(),
+            nullptr,
+            &pixelShader)))
     {
         std::cout << "D3D11: Failed to compile pixel shader\n";
         return nullptr;
@@ -262,22 +262,21 @@ HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::Cr
     return pixelShader;
 }
 
-
 bool HelloTriangleApplication::CreateSwapchainResources()
 {
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
     if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
@@ -301,11 +300,11 @@ void HelloTriangleApplication::OnResize(
     DestroySwapchainResources();
 
     if (FAILED(_swapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
         return;

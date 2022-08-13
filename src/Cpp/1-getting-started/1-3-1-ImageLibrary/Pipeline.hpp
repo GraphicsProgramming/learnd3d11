@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ResourceDescriptor.hpp"
 #include "Definitions.hpp"
+#include "ResourceDescriptor.hpp"
 
 #include <d3d11_2.h>
 
-#include <unordered_map>
 #include <cstdint>
+#include <unordered_map>
 
 class Pipeline
 {

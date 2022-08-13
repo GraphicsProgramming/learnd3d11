@@ -30,13 +30,13 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
     {
         switch (descriptor.Type)
         {
-            case ResourceType::Sampler:
-                _deviceContext->PSSetSamplers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
-                break;
+        case ResourceType::Sampler:
+            _deviceContext->PSSetSamplers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
+            break;
 
-            case ResourceType::Texture:
-                _deviceContext->PSSetShaderResources(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
-                break;
+        case ResourceType::Texture:
+            _deviceContext->PSSetShaderResources(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
+            break;
         }
     }
 

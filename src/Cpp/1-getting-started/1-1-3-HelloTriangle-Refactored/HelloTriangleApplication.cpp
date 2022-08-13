@@ -7,11 +7,11 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <dxgi1_2.h>
+#include <DirectXColors.h>
+#include <DirectXMath.h>
 #include <d3d11_2.h>
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
-#include <DirectXColors.h>
+#include <dxgi1_2.h>
 
 #include <iostream>
 
@@ -58,16 +58,16 @@ bool HelloTriangleApplication::Initialize()
 
     WRL::ComPtr<ID3D11DeviceContext> deviceContext;
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &deviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            0,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &_device,
+            nullptr,
+            &deviceContext)))
     {
         std::cout << "D3D11: Failed to create Device and Device Context\n";
         return false;
@@ -91,12 +91,12 @@ bool HelloTriangleApplication::Initialize()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+            _device.Get(),
+            glfwGetWin32Window(GetWindow()),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &_swapChain)))
     {
         std::cout << "DXGI: Failed to create SwapChain\n";
         return false;
@@ -127,11 +127,10 @@ bool HelloTriangleApplication::Load()
         static_cast<float>(GetWindowWidth()),
         static_cast<float>(GetWindowHeight()));
 
-    constexpr VertexPositionColor vertices[] =
-    {
-        { Position{  0.0f,  0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f } },
-        { Position{  0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f } },
-        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f } },
+    constexpr VertexPositionColor vertices[] = {
+        {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }},
+        { Position{ 0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f }},
+        {Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }},
     };
     D3D11_BUFFER_DESC bufferInfo = {};
     bufferInfo.ByteWidth = sizeof(vertices);
@@ -142,9 +141,9 @@ bool HelloTriangleApplication::Load()
     resourceData.pSysMem = vertices;
 
     if (FAILED(_device->CreateBuffer(
-        &bufferInfo,
-        &resourceData,
-        &_triangleVertices)))
+            &bufferInfo,
+            &resourceData,
+            &_triangleVertices)))
     {
         std::cout << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
@@ -157,17 +156,17 @@ bool HelloTriangleApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
     if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
@@ -191,11 +190,11 @@ void HelloTriangleApplication::OnResize(
     DestroySwapchainResources();
 
     if (FAILED(_swapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
         return;

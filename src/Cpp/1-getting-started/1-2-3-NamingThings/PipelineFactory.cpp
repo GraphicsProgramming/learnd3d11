@@ -9,7 +9,8 @@ size_t PipelineFactory::GetLayoutByteSize(const VertexType vertexType)
 {
     switch (vertexType)
     {
-        case VertexType::PositionColor: return sizeof(VertexPositionColor);
+    case VertexType::PositionColor:
+        return sizeof(VertexPositionColor);
     }
     return 0;
 }
@@ -18,6 +19,7 @@ PipelineFactory::PipelineFactory(const WRL::ComPtr<ID3D11Device>& device)
 {
     _device = device;
 
+    // clang-format off
     _layoutMap[VertexType::PositionColor] =
     {
         {
@@ -41,6 +43,7 @@ PipelineFactory::PipelineFactory(const WRL::ComPtr<ID3D11Device>& device)
             },
         }
     };
+    // clang-format on
 }
 
 bool PipelineFactory::CreatePipeline(
@@ -71,15 +74,15 @@ bool PipelineFactory::CompileShader(
     WRL::ComPtr<ID3DBlob> tempShaderBlob = nullptr;
     WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
     if (FAILED(D3DCompileFromFile(
-        filePath.data(),
-        nullptr,
-        D3D_COMPILE_STANDARD_FILE_INCLUDE,
-        entryPoint.data(),
-        profile.data(),
-        compileFlags,
-        0,
-        &tempShaderBlob,
-        &errorBlob)))
+            filePath.data(),
+            nullptr,
+            D3D_COMPILE_STANDARD_FILE_INCLUDE,
+            entryPoint.data(),
+            profile.data(),
+            compileFlags,
+            0,
+            &tempShaderBlob,
+            &errorBlob)))
     {
         std::cout << "D3D11: Failed to read shader from file\n";
         if (errorBlob != nullptr)
@@ -105,10 +108,10 @@ WRL::ComPtr<ID3D11VertexShader> PipelineFactory::CreateVertexShader(
 
     WRL::ComPtr<ID3D11VertexShader> vertexShader;
     if (FAILED(_device->CreateVertexShader(
-        vertexShaderBlob->GetBufferPointer(),
-        vertexShaderBlob->GetBufferSize(),
-        nullptr,
-        &vertexShader)))
+            vertexShaderBlob->GetBufferPointer(),
+            vertexShaderBlob->GetBufferSize(),
+            nullptr,
+            &vertexShader)))
     {
         std::cout << "D3D11: Failed to compile vertex shader\n";
         return nullptr;
@@ -127,10 +130,10 @@ WRL::ComPtr<ID3D11PixelShader> PipelineFactory::CreatePixelShader(const std::wst
 
     WRL::ComPtr<ID3D11PixelShader> pixelShader;
     if (FAILED(_device->CreatePixelShader(
-        pixelShaderBlob->GetBufferPointer(),
-        pixelShaderBlob->GetBufferSize(),
-        nullptr,
-        &pixelShader)))
+            pixelShaderBlob->GetBufferPointer(),
+            pixelShaderBlob->GetBufferSize(),
+            nullptr,
+            &pixelShader)))
     {
         std::cout << "D3D11: Failed to compile pixel shader\n";
         return nullptr;
@@ -146,11 +149,11 @@ bool PipelineFactory::CreateInputLayout(
 {
     const std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc = _layoutMap[layoutInfo];
     if (FAILED(_device->CreateInputLayout(
-        inputLayoutDesc.data(),
-        static_cast<uint32_t>(inputLayoutDesc.size()),
-        vertexBlob->GetBufferPointer(),
-        vertexBlob->GetBufferSize(),
-        &inputLayout)))
+            inputLayoutDesc.data(),
+            static_cast<uint32_t>(inputLayoutDesc.size()),
+            vertexBlob->GetBufferPointer(),
+            vertexBlob->GetBufferSize(),
+            &inputLayout)))
     {
         std::cout << "D3D11: Failed to create the input layout";
         return false;

@@ -4,8 +4,8 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <d3dcompiler.h>
 
 #include <iostream>
 
@@ -48,16 +48,16 @@ bool HelloD3D11Application::Initialize()
     constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &_deviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            0,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &_device,
+            nullptr,
+            &_deviceContext)))
     {
         std::cout << "D3D11: Failed to create device and device Context\n";
         return false;
@@ -79,12 +79,12 @@ bool HelloD3D11Application::Initialize()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+            _device.Get(),
+            glfwGetWin32Window(GetWindow()),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &_swapChain)))
     {
         std::cout << "DXGI: Failed to create swapchain\n";
         return false;
@@ -103,22 +103,21 @@ bool HelloD3D11Application::Load()
     return true;
 }
 
-
 bool HelloD3D11Application::CreateSwapchainResources()
 {
     ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get back buffer from the swapchain\n";
         return false;
     }
 
     if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
@@ -142,11 +141,11 @@ void HelloD3D11Application::OnResize(
     DestroySwapchainResources();
 
     if (FAILED(_swapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
