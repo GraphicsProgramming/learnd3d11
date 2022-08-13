@@ -24,6 +24,7 @@ To draw most of the things throughout this series we'll mostly need these stages
 The Vertex and Pixel shaders are fully programmable and we'll write a very basic program for them.
 
 The other two stages are not programmable but they are fairly easy to understand and configure:
+
 - the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive topology of our choice, which in our case is a form of triangles, and sending this processed output to the Vertex Shader to process. 
 - The **Output Merger** is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
 
@@ -409,14 +410,9 @@ struct VertexPositionColor
 };
 ```
 
+The type aliases (`using Position` and `using Color`) help us make this code more readable to easily guess what is what type. The first field is our position vector and the second field is our color vector — notice it is exactly like our `VSInput`.
+
 Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. 
-You can think of each element in this array as describing
-one field in the `VSInput`.
-
-The type aliases (`using Position` & `Color`) help us make this code more readable to easily guess what is what type. The first field is our position vector and the second field is our color vector — notice it is exactly like our `VSInput`.
-
-Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`.
-
 
 ```cpp
 constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
@@ -451,15 +447,6 @@ to a GPU to read in the **vertex shader** we need to specify to the GPU how 1 ve
 of data will be formatted for when we later load many vertices onto the GPU to render
 a triangle.
 
-
-**Now let's make sense of why we have the following layout:**
-(we will refer to 1 element of D3D11_INPUT_ELEMENT_DESC as a field)
-
-D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] is an array since when we pass data 
-to a GPU to read in the **vertex shader** we need to specify to the GPU how 1 vertex 
-of data will be formatted for when we later load many vertices onto the GPU to render
-a triangle.
-
 You can think of each element in this array as describing one element in `VSInput` 
 
 - `POSITION` being a float3 (12 bytes) that is the first element means that the GPU expects the first 0-12 bytes of every vertex to be a `float3` filled with position data.
@@ -484,61 +471,9 @@ Now let's make sense of what each field specifically means; let's go over one by
 
 - `Format`: the format of this field, basically how many components there are and what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 bytes wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`.
 - `InputSlot`: we'll see about this later.
-- `AlignedByteOffset`: the offset of this field, in bytes; this is our first field so there is no offset, but the `COLOR` one for example, will have an offset of 12 bytes.
-- `InputSlotClass`: The rate of input either per-vertex or per-instance, we don't care about instances right now so we'll set this to PER_VERTEX.
-- `InstanceDataStepRate`: if `InputSlotClass` was PER_INSTANCE, this would mean how many instances should be drawn with the same data; this is 0 since we don't care about this.
-
-**Now lets explain what makes up a Input Layout Description**
-
-```c++
-    {
-        LPCSTR SemanticName,
-        UINT SemanticIndex,
-        DXGI_FORMAT Format,
-        UINT InputSlot,
-        UINT AlignedByteOffset,
-        D3D11_INPUT_CLASSIFICATION InputSlotClass,
-        UINT InstanceDataStepRate
-    } 
-```
-
-- `SemanticName`: Tells the GPU to expect this field to map to the same 
-   `SemanticName` variable in the **vertex shader's** input struct (`VSInput` in 
-   this case) —
-    in the vertex shader input struct declaration, `float3 position: 
-    THIS_PART_IS_THE_SEMANTIC_NAME` is where you assign a semantic name on the GPU 
-    side of things
-
-- `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to 
-`POSITION0`, where the number at the end is our index, so we'll just pass in 0.
-    this allows us to do things such as have 4 elements named `POSITION`, with a 
-    semantic index of 0, 1, 2, 3 — being convenient for the programmer to not have to 
-    type `POSITION0` `POSITION1` `POSITION2` `POSITION3`
-
-- `Format`: the format of this field, basically how many components there are and 
-what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 bytes 
-wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`. We made a 
-`float3` to map to `VSInput` and the types inside the HLSL struct
-
-- `InputSlot`: we'll see about this later since right now it has no use, but for now 
-all you need to know is that a GPU cannot store an infinite amount of Input Layouts, 
-instead you specify here what 'slot' this input layout occupy's in memory that stores 
-input layouts.
-
-- `AlignedByteOffset`: the offset of where this field starts in the memory of 1 
-vertex in bytes. For example with `vertexInputLayoutInfo`, since we want `COLOR` 
-after `POSITION` which is a `float3` (12 bytes) —  we tell D3D11 that we want a 12 
-byte offset to put `COLOR` immediately after `POSITION` in memory. `POSITION` on the 
-other hand needs no offset and is the first element (offset is 0).
-    `offsetof(VertexPositionColor, color)` is a preprocessor that calcualtes the 
-    offset for us of an element using a struct and the desiered element name as input 
-    — this case we inputted the struct `VertexPositionColor` and get the offset of 
-    the element `color`. This is why we did not need to type out `12` or `0` in the 
-    `AlignedByteOffset` ourselves.
-
+- `AlignedByteOffset`: the offset of this field, in bytes; for our first field so there is no offset since it is the first element, but the `COLOR` field, we will have an offset of 12 bytes since it has before it the `POSITION` field which is 12 bytes big.
 - `InputSlotClass`: The rate of input is either per-vertex or per-instance, we don't 
 use instances right now (we will later), so we'll set this to PER_VERTEX.
-
 - `InstanceDataStepRate`: if `InputSlotClass` was PER_INSTANCE, this would mean how 
 many instances should be drawn with the same data until we move to the next set of 
 data; this is 0 since we don't care about this.
