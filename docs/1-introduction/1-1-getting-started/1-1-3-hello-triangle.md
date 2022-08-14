@@ -393,11 +393,11 @@ The vertex shader expects per vertex: 2 vectors of 3 (4 byte) components.
 
 We should then create an input layout exactly with this format:
 
-First of all, creating a `struct` in our C++ source with the same memory organization as our `VSInput` will make our life easier when imagining how 1 vertex will fit on the GPU.
+First of all, creating a `struct` in our C++ source with the same field layout as our `VSInput` will make our life easier when imagining how 1 vertex will fit on the GPU one after each other.
 
-To do this we'll use DirectXMath which has types that map perfectly to HLSL, both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3` 
+To do this we'll use `DirectXMath` which has types that map perfectly to HLSL, both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3` 
 
-*`float[3]` also is the same as `float3` — but lacks premade optimizations for SMID for use with `DirectXMath` functions if you do math on the CPU!*
+*`float[3]` also is the same as `float3` — but lacks pre-made optimizations for SMID for use with `DirectXMath` functions if you do math on the CPU!*
 
 ```cpp
 using Position = DirectX::XMFLOAT3;
