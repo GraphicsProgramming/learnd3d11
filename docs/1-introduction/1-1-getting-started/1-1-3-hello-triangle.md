@@ -18,15 +18,25 @@ All the steps in the graphics pipeline go from top to bottom and are shown below
 
 ![](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
 
-As you can see, each stage in the pipeline takes in the previous stage's output as the input, the rectangle blocks are pipeline stages that are not programmable but are configurable, while the rounded rectangle blocks are stages that are fully programmable.
-To draw most of the things throughout this series we'll mostly need these stages: Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
+As you can see, each stage in the pipeline takes in the previous stage's output 
+as the input, the rectangle blocks are pipeline stages that are not programmable 
+but are configurable, while the rounded rectangle blocks are stages that are fully programmable.
+To draw most of the things throughout this series we'll mostly need these stages: 
+Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
 
-The Vertex and Pixel shaders are fully programmable and we'll write a very basic program for them.
+The Vertex and Pixel shaders are fully programmable and we'll write a very basic 
+program for them.
 
-The other two stages are not programmable but they are fairly easy to understand and configure:
+The other two stages are not programmable but they are fairly easy to understand 
+and configure:
 
-- the **Input Assembler** is responsible for processing the vertices in an eventual vertex buffer into the primitive topology of our choice, which in our case is a form of triangles, and sending this processed output to the Vertex Shader to process. 
-- The **Output Merger** is responsible for combining the values written by the pixel shader, may that be depth, color or other things, into the one or more render targets that we provide to the OM, we only have one render target for now.
+- the **Input Assembler** is responsible for processing the vertices in an eventual 
+vertex buffer into the primitive topology of our choice, which in our case is a form 
+of triangles, and sending this processed output to the Vertex Shader to process. 
+- The **Output Merger** is responsible for combining the values written by the 
+pixel shader, may that be depth, color or other things, into the one or more render 
+targets that we provide to the OM, we only have one 
+render target for now.
 
 The **Vertex Shader** is the stage where our vertices are processed however 
 we want, although we don't do much processing here, and in the end they're 
@@ -377,7 +387,11 @@ input layout.
 We have successfully compiled our shaders now, we need one last thing, an **Input Layout**.
 An input layout, is basically the format we want to lay our vertices in our buffers.
 
-Since all our vertices we want to give to the GPU must be tightly packed in the same buffer, the Input Assembler needs a way to make sense of our data, this is exactly what an input layout is for - it tells the GPU exactly how the memory in the buffer will be layed out, and how it should be mapped to our expected vertex shader, vertex layout (`VSInput` in our case)
+Since all our vertices we want to give to the GPU must be tightly packed in the 
+same buffer, the Input Assembler needs a way to make sense of our data, this is 
+exactly what an input layout is for - it tells the GPU exactly how the memory in 
+the buffer will be layed out, and how it should be mapped to our expected vertex 
+shader, vertex layout (`VSInput` in our case)
 
 Let's see what input we expect in the vertex shader again:
 
@@ -393,11 +407,15 @@ The vertex shader expects per vertex: 2 vectors of 3 (4 byte) components.
 
 We should then create an input layout exactly with this format:
 
-First of all, creating a `struct` in our C++ source with the same field layout as our `VSInput` will make our life easier when imagining how 1 vertex will fit on the GPU one after each other.
+First of all, creating a `struct` in our C++ source with the same field layout 
+as our `VSInput` will make our life easier when imagining how 1 vertex will fit 
+on the GPU one after each other.
 
-To do this we'll use `DirectXMath` which has types that map perfectly to HLSL, both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3` 
+To do this we'll use `DirectXMath` which has types that map perfectly to HLSL, 
+both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3` 
 
-*`float[3]` also is the same as `float3` — but lacks pre-made optimizations for SMID for use with `DirectXMath` functions if you do math on the CPU!*
+*`float[3]` also is the same as `float3` — but lacks pre-made optimizations for 
+SMID for use with `DirectXMath` functions if you do math on the CPU!*
 
 ```cpp
 using Position = DirectX::XMFLOAT3;
@@ -410,7 +428,9 @@ struct VertexPositionColor
 };
 ```
 
-The type aliases (`using Position` and `using Color`) help us make this code more readable to easily guess what is what type. The first field is our position vector and the second field is our color vector — notice it is exactly like our `VSInput`.
+The type aliases (`using Position` and `using Color`) help us make this code more 
+readable to easily guess what is what type. The first field is our position vector 
+and the second field is our color vector — notice it is exactly like our `VSInput`.
 
 Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. 
 
@@ -449,8 +469,11 @@ a triangle.
 
 You can think of each element in this array as describing one element in `VSInput` 
 
-- `POSITION` being a float3 (12 bytes) that is the first element means that the GPU expects the first 0-12 bytes of every vertex to be a `float3` filled with position data.
-- `COLOR` being a float3 (12 bytes) that is the second element (after the 12 byte `POSITION` element) means that the GPU expects the next 12 bytes after `POSITION` (bytes 13-24) to be a `float3` filled with color data.
+- `POSITION` being a float3 (12 bytes) that is the first element means that the GPU 
+expects the first 0-12 bytes of every vertex to be a `float3` filled with position data.
+- `COLOR` being a float3 (12 bytes) that is the second element (after the 12 byte 
+`POSITION` element) means that the GPU expects the next 12 bytes after `POSITION` 
+(bytes 13-24) to be a `float3` filled with color data.
 
 Now let's make sense of what each field specifically means; let's go over one by one in order:
 
@@ -464,14 +487,20 @@ Now let's make sense of what each field specifically means; let's go over one by
         `InstanceDataStepRate`
     },
 
-- `SemanticName`: let's us refer to a particular field name (the string) after the colon in HLSL (recall `POSITION` inside `float3 position: POSITION`)
-- `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to `POSITION0`, where the number at the end is our semantic index, so we'll just pass in 0. 
+- `SemanticName`: let's us refer to a particular field name (the string) after the 
+colon in HLSL (recall `POSITION` inside `float3 position: POSITION`)
+- `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to `POSITION0`,
+where the number at the end is our semantic index, so we'll just pass in 0. 
     
     *`POSITION1` in HLSL would have a semantic index of 1, etc.*
 
-- `Format`: the format of this field, basically how many components there are and what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 bytes wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`.
+- `Format`: the format of this field, basically how many components there are and 
+what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 
+bytes wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`.
 - `InputSlot`: we'll see about this later.
-- `AlignedByteOffset`: the offset of this field, in bytes; for our first field so there is no offset since it is the first element, but the `COLOR` field, we will have an offset of 12 bytes since it has before it the `POSITION` field which is 12 bytes big.
+- `AlignedByteOffset`: the offset of this field, in bytes; for our first field so 
+there is no offset since it is the first element, but the `COLOR` field, we will 
+have an offset of 12 bytes since it has before it the `POSITION` field which is 12 bytes big.
 - `InputSlotClass`: The rate of input is either per-vertex or per-instance, we don't 
 use instances right now (we will later), so we'll set this to PER_VERTEX.
 - `InstanceDataStepRate`: if `InputSlotClass` was PER_INSTANCE, this would mean how 
