@@ -32,7 +32,8 @@ and configure:
 
 - the **Input Assembler** is responsible for processing the vertices in an eventual 
 vertex buffer into the primitive topology of our choice, which in our case is a form 
-of triangles, and sending this processed output to the Vertex Shader to process. 
+of triangles, and sending this processed output to be processed again - but this time 
+by our Vertex Shader. 
 - The **Output Merger** is responsible for combining the values written by the 
 pixel shader, may that be depth, color or other things, into the one or more render 
 targets that we provide to the OM, we only have one 
@@ -42,18 +43,21 @@ The **Vertex Shader** is the stage where our vertices are processed however
 we want, although we don't do much processing here, and in the end they're 
 transformed to [screen-space coordinates](link to the coordinate system chapter?)
 
-The vertices are usually read from a **Vertex Buffer** which are laid out in 
-a particular way. The vertex shader will be run however many times we tell 
+The vertices are **usually** read from a **Vertex Buffer** — *usually* since there are no
+hard rules in programming — we can always be inventive to create or read data differently on the fly!
+This all works since the vertex shader will be run however many times we tell 
 it to run, which is specified in the first parameter of `ID3D11DeviceContext::Draw()` 
 (more on this later), for instance if we call `Draw(3, 0)`, the vertex shader will 
 run 3 times.
 
-Since we only want to draw a triangle, we don't need to do much processing, 
-we can just provide the input vertices as the output.
+An example of unique methods to acquire vertex data is with how the vertex buffer can be omitted,
+if we want to draw a full screen triangle by just hardcoding  vertices in our vertex shader — removing 
+the need of a vertex buffer.
 
-The vertex buffer can be omitted, for example if we want to draw a full screen 
-triangle, instead of creating a vertex buffer, for simplicity we can just hardcode 
-the vertices in the vertex shader without having to bind a vertex buffer.
+Since we only want to draw a triangle, we don't need to do much processing in our
+vertex shader code, we can just provide the input vertices as the output.
+
+
 
 Let's look at our basic vertex shader for this section:
 
@@ -85,8 +89,7 @@ First off, we define 2 types, `VSInput` and `VSOutput` which represent the
 vertex shader's input and output.
 
 The input is 2, `float3` (vector of 3 float components), the first is the 
-"position" field, which are coordinates ranging from [-1.0, 1.0], if the values 
-are outside this range they are clipped, and we won't see them on screen.
+"position" field.
 
 The second is the "color" field, which we also pass as the output of this stage 
 onto the pixel shader.
@@ -103,6 +106,11 @@ These are used to pass data between shader stages.
 Then we have our `VSOutput`, which has our vertices in the first field `position` 
 and our color in the second field `color`.
 
+if the `SV_Position` values are tried to be given a position outside the range of 
+[-1.0, 1.0] they are clipped and we won't see them on screen. Due to this we need
+to create our own math to transform any coordinates we have to a normalized [-1.0, 1.0]
+This is going to be explored later in more depth.
+
 Finally, we have our main function, which takes in a single parameter which is 
 our input in the form of `VSInput`, and returns our output in the form of a `VSOutput`.
  Since we don't do any processing, we simply make a new instance of `VSOutput`, 
@@ -111,7 +119,12 @@ our input in the form of `VSInput`, and returns our output in the form of a `VSO
 ### Pixel Shader
 
 The **Pixel Shader** is the stage where we give the pixels on our render target 
-color, it is invoked for each pixel that is covered by a triangle.
+color, it is invoked for each pixel that is covered by a triangle or pixels
+in the same group (named a tile) of a pixel covered by a triangle.
+[x][ ]  
+[ ][ ]
+in the above example above x denotes a triangle that covers a pixel - these 4 box's are a tile. 
+4 pixels will render in this scenario since 1 pixel in the tile is covered by a triangle
 
 We use this stage to apply most of our shading techniques, from basic lighting, 
 to textures and shadows, all the way to physically based rendering.
@@ -145,7 +158,7 @@ PSOutput Main(PSInput input)
 
 Here as well we have an input `PSInput`, and an output `PSOutput`.
 
-Since there aren't any other shaders in between the VS and the PS, the VS's 
+Since we have not setup any other shaders in between the VS and the PS, the VS's 
 output is the PS's input, the naming might be a bit confusing but that's the 
 gist of it, PSInput should match the VSOutput in vertex shader, this isn't 
 entirely required but not doing so is only advisable if you really know what 
@@ -162,8 +175,7 @@ the `0` after `SV_Target` is the index of our render target, in our case,
 we have only one, so we write `SV_Target0` or `SV_Target`.
 
 `D3D11` lets us write up to 8 render targets simultaneously from the same pixel 
-shader, those come in handy when implementing more advanced shading techniques, 
-for example a popular technique that uses 4 or more
+shader, those come in handy when implementing more advanced shading techniques.
 
 And lastly, our `Main` function, following the same pattern as in the VS, we have
  one parameter, the input, and one return value, the output, again we create an 
