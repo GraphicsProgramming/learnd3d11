@@ -17,3 +17,9 @@ The learnd3d11 tutorial makes heavy use of ComPtr, but odin does not have bindin
 As a result, the developer will need to do some additional bookkeeping with certain elements of dxgi and d3d.
 The first place this is necessary is 1-1-3. When `CreateSwapchainResources` is called, the backbuffer it creates
 must be `Release`-d before the function exits, otherwise resizing the window will fail and crash the program.
+
+
+## TODO
+[] Odin currently doesn't have a binding for DirectXTex, nor an image loader for .dds files.
+	[] Implement bindings / Wait for someone else to develop and publish bindings
+	[] Use DirectXTex bindings, or continue with whatever was used in the meantime.

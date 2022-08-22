@@ -1,17 +1,16 @@
-struct PSInput
+struct VSOutput
 {
     float4 position: SV_Position;
     float3 color: COLOR0;
+    float2 uv: TEXCOORD0;
 };
 
-struct PSOutput
-{
-    float4 color: SV_Target0;
-};
+sampler LinearSampler: register(s0);
 
-PSOutput Main(PSInput input)
+Texture2D Texture: register(t0);
+
+float4 Main(VSOutput input): SV_Target
 {
-    PSOutput output = (PSOutput)0;
-    output.color = float4(input.color, 1.0);
-    return output;
+    float4 texel = Texture.Sample(LinearSampler, input.uv);
+    return float4(input.color, 0.5f) * texel;
 }

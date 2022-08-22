@@ -17,6 +17,7 @@ Pipeline :: struct {
 	vertex_shader : ^d3d.IVertexShader,
 	pixel_shader : ^d3d.IPixelShader,
 	input_layout : ^d3d.IInputLayout,
+	resources : map[ResourceDescriptor]^d3d.IDeviceChild, 
 	primitive_topology : d3d.PRIMITIVE_TOPOLOGY,
 	vertex_size : u32,
 	viewport : d3d.VIEWPORT,
@@ -28,8 +29,14 @@ input_layout_map := map[VertexType][]d3d.INPUT_ELEMENT_DESC {
 		{ "POSITION", 0, .R32G32B32_FLOAT, 0, 0, .VERTEX_DATA, 0 },
 		{ "COLOR", 0, .R32G32B32_FLOAT, 0, d3d.APPEND_ALIGNED_ELEMENT, .VERTEX_DATA, 0 },
 	},
+	.PositionColorUv = {
+		{ "POSITION", 0, .R32G32B32_FLOAT, 0, 0, .VERTEX_DATA, 0 },
+		{ "COLOR", 0, .R32G32B32_FLOAT, 0, d3d.APPEND_ALIGNED_ELEMENT, .VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, .R32G32_FLOAT, 0, d3d.APPEND_ALIGNED_ELEMENT, .VERTEX_DATA, 0 },
+	},
 }
 
+@(private)
 CreatePipeline :: proc (device : ^d3d.IDevice, settings : PipelineDescriptor) -> (pipeline : Pipeline, ok : b32) {
 	vertex_shader_blob : ^d3d.IBlob
 	pipeline.vertex_shader, vertex_shader_blob = CreateVertexShader(device, settings.vertex_file_path)
@@ -45,6 +52,7 @@ CreatePipeline :: proc (device : ^d3d.IDevice, settings : PipelineDescriptor) ->
 	return pipeline, true
 }
 
+@(private)
 SetViewport :: proc (pipeline : ^Pipeline, x : f32, y : f32, width : f32, height : f32) {
 	using pipeline.viewport
 	TopLeftX = x
@@ -53,6 +61,26 @@ SetViewport :: proc (pipeline : ^Pipeline, x : f32, y : f32, width : f32, height
 	Height = height
 	MinDepth = 0.0
 	MaxDepth = 1.0
+}
+
+@(private)
+BindTexture :: proc (pipeline : ^Pipeline, slot_index : u32, texture : ^d3d.IShaderResourceView) {
+	resource_desc := (ResourceDescriptor) {
+		slot_index = slot_index,
+		resource_type = .Texture,
+	}
+	
+	pipeline.resources[resource_desc] = (^d3d.IDeviceChild)(texture)
+}
+
+@(private)
+BindSampler :: proc (pipeline : ^Pipeline, slot_index : u32, sampler : ^d3d.ISamplerState) {
+	resource_desc := (ResourceDescriptor) {
+		slot_index = slot_index,
+		resource_type = .Sampler,
+	}
+
+	pipeline.resources[resource_desc] = (^d3d.IDeviceChild)(sampler)
 }
 
 @(private="file")
@@ -71,6 +99,8 @@ GetLayoutByteSize :: proc (vertex_type : VertexType) -> (byte_size : u32) {
 	switch vertex_type {
 		case .PositionColor:
 			byte_size = size_of(VertexPositionColor)
+		case .PositionColorUv:
+			byte_size = size_of(VertexPositionColorUv)
 	}
 	return
 }
