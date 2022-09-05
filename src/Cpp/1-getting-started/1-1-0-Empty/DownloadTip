@@ -1,0 +1,12 @@
+Don't want the entire solution?
+
+I found this link:
+https://download-directory.github.io/
+
+Take the link of the folder (https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-0-Empty)
+and drop it in there for a quick DL.
+
+Found from:
+https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo
+
+Use 7 Zip to "Extract Files..." and make a subfolder. Contents are no placed in a subfolder & will spill where the folder is if you "Extract here"
