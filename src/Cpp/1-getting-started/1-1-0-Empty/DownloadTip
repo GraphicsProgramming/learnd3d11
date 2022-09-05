@@ -1,12 +1,16 @@
-Don't want the entire solution?
+1. Download the entire solution. (trust me)
+2. Open the .sln file in the /src folder.
+3. Right click the project in your solution explorer that you want to use. NOT the entire solution. Pick one project.
+4. Select properties. 
+5. Go to Configuration Properties -> General
+6. Set "Windows SDK Version" to a version you have. Mine is "10.0.17763.0"
+7. Set Platform Toolset. Mine is "Visual Studio 20178 (v141)
 
-I found this link:
-https://download-directory.github.io/
 
-Take the link of the folder (https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-0-Empty)
-and drop it in there for a quick DL.
 
-Found from:
-https://stackoverflow.com/questions/7106012/download-a-single-folder-or-directory-from-a-github-repo
 
-Use 7 Zip to "Extract Files..." and make a subfolder. Contents are no placed in a subfolder & will spill where the folder is if you "Extract here"
+
+
+
+Don't want the entire solution? 
+Sorry, but the configuration is in the SLN and depends on other files in the repository. 
