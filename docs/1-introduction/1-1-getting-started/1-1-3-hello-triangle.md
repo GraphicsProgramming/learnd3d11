@@ -21,7 +21,8 @@ All the steps in the graphics pipeline go from top to bottom and are shown below
 As you can see, each stage in the pipeline takes in the previous stage's output 
 as the input, the rectangle blocks are pipeline stages 
 that are not programmable but are configurable, while
-the rounded rectangle blocks are stages that are fully programmable. To draw most of the things throughout this series we will mostly need these stages: 
+the rounded rectangle blocks are stages that are fully programmable. 
+To draw most of the things throughout this series we will mostly need these stages: 
 Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
 
 The Vertex and Pixel shaders are fully programmable and we will write a very basic 
@@ -45,15 +46,19 @@ render target for now.
 The **Vertex Shader** is the stage where our vertices are 
 processed however we want
 
-The vertices are **usually** read from a **Vertex Buffer** — *usually* since there are no
-hard rules in programming — we can always be inventive to create or read data differently on the fly!
+The vertices are **usually** read from a **Vertex Buffer** — *usually* 
+since there are no
+hard rules in programming — we can always be inventive to create or 
+read data differently on the fly!
 This all works since the vertex shader will be run however many times we tell 
 it to run, which is specified in the first parameter of `ID3D11DeviceContext::Draw()` 
 (more on this later), for instance if we call `Draw(3, 0)`, the vertex shader will 
 run 3 times.
 
-An example of unique methods to acquire vertex data is with how the vertex buffer can be omitted,
-if we want to draw a full screen triangle by just hardcoding  vertices in our vertex shader — removing 
+An example of unique methods to acquire vertex data is with how the 
+vertex buffer can be omitted,
+if we want to draw a full screen triangle by just hardcoding  vertices 
+in our vertex shader — removing 
 the need of a vertex buffer.
 
 Since we only want to draw a triangle, we do not need to do much processing in our
@@ -298,7 +303,8 @@ it requires quite a lot of parameters so let's go over them one by one in order:
 - `pInclude`: optional, a pointer to a `ID3DInclude` object, it is useful to 
    specify how to handle `#include` directives in shaders. It is common to 
    just use `D3D_COMPILE_STANDARD_FILE_INCLUDE`, which is the default handler.
-- `pEntrypoint`: a string containing the name of the main function in the shader - Defaults to `main` if NULL
+- `pEntrypoint`: a string containing the name of the main function in the shader - 
+Defaults to `main` if NULL
 - `pTarget`: a string containing the Shader Model version to use for this shader.
 - `Flags1`: the flags that changes how to compile our shaders, for example we pass
   `D3DCOMPILE_ENABLE_STRICTNESS` which makes the compiler stricter in judging our
@@ -309,8 +315,9 @@ it requires quite a lot of parameters so let's go over them one by one in order:
 - `ppErrorMsgs`: optional, output, a pointer to a `ID3DBlob*`, this is where the D3D
    compiler will store our errors, `nullptr` if everything went fine.
 
-Then we do our usual checking, if there were errors, leave the output blob as is and
-print the error message contained in the blob. Otherwise, move the blob to our output parameter.
+Then we do our usual checking, if there were errors, leave the output blob 
+as is and print the error message contained in the blob. Otherwise, move 
+the blob to our output parameter.
 
 Now let's see `CreateVertexShader` and `CreatePixelShader`:
 
@@ -409,8 +416,9 @@ input layout.
 
 ### Input Layouts
 
-We have successfully compiled our shaders now, we need one last thing, an **Input Layout**.
-An input layout, is basically the format we want to lay our vertices in our buffers.
+We have successfully compiled our shaders now, we need one last thing, 
+an **Input Layout**. An input layout, is basically the format we want 
+to lay our vertices in our buffers.
 
 Since all our vertices we want to give to the GPU must be tightly packed in the 
 same buffer, the Input Assembler needs a way to make sense of our data, this is 
@@ -438,9 +446,11 @@ as our `VSInput` will make our life easier when imagining how 1 vertex will fit
 on the GPU one after each other.
 
 To do this we will use `DirectXMath` which has types that map perfectly to HLSL, 
-both of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3` 
+both of our inputs are `float3` in HLSL, which means that this translates 
+to `DirectX::XMFLOAT3` 
 
-*`DirectX::XMFLOAT3` wraps 3 floats like an array, it is a class designed to work with `DirectXMath`*
+*`DirectX::XMFLOAT3` wraps 3 floats like an array, it is a class designed to work 
+with `DirectXMath`*
 
 
 ```cpp
@@ -520,7 +530,8 @@ positions here since the type is `FLOAT`
 - `InputSlotClass`: The rate of input is either per-vertex or per-instance, we do not 
 use instances right now since we are only drawing a triangle
 so we will set this to PER_VERTEX, and explain PER_INSTANCE in later lessons.
-- `InstanceDataStepRate`: this will be explained with PER_INSTANCE in later lessons, so for now this value is 0
+- `InstanceDataStepRate`: this will be explained with PER_INSTANCE in later lessons,
+ so for now this value is 0
 
 
 Each element being sent to the GPU needs to be described on how they are laid out, 
@@ -530,7 +541,8 @@ You can think of each element in this array as describing one element in `VSInpu
 
 - `POSITION` is the first element (offset of 0).
 `POSITION` is also a float3 (4+4+4 = 12 bytes).
-Therefore the GPU expects the first 12 bytes of every vertex to be a float3 filled with `POSITION` data.
+Therefore the GPU expects the first 12 bytes of every vertex to be a float3 filled 
+with `POSITION` data.
 - `COLOR` is after `POSITION`, meaning COLOR has an offset of 12 bytes.
 because `COLOR` is also a float3, it is also 12 bytes.
 
@@ -556,7 +568,8 @@ As usual, we follow the same pattern, we pass in our `vertexInputLayoutInfo` tha
 just created and its size, we also need to pass our vertex blob pointer and size, and 
 finally our output parameter which is our input layout.
 
-Now all we have to do is create a vertex buffer (do not worry it's really easy) and issue our first `Draw` command!
+Now all we have to do is create a vertex buffer (do not worry it's really easy) and 
+issue our first `Draw` command!
 
 
 !!! error
