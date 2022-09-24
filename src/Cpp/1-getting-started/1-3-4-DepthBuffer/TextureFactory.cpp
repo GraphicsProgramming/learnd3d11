@@ -23,11 +23,11 @@ bool TextureFactory::CreateShaderResourceViewFromFile(
 
     WRL::ComPtr<ID3D11Resource> texture = nullptr;
     if (FAILED(DirectX::CreateTexture(
-        _device.Get(),
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &texture)))
+            _device.Get(),
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &texture)))
     {
         std::cout << "DXTEX: Failed to create texture out of image\n";
         scratchImage.Release();
@@ -35,11 +35,11 @@ bool TextureFactory::CreateShaderResourceViewFromFile(
     }
 
     if (FAILED(DirectX::CreateShaderResourceView(
-        _device.Get(),
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &shaderResourceView)))
+            _device.Get(),
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &shaderResourceView)))
     {
         std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
         scratchImage.Release();

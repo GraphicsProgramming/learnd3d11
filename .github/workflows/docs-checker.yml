@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Make sure git is installed
-        run: sudo apt-get update && apt-get install git -y && git --version
+        run: sudo apt-get update && sudo apt-get install git -y && git --version
         # "https://google.com/serch"
 
         # The first grep filters out everything that has a link in it. The second filters anything
@@ -21,4 +21,4 @@ jobs:
       - name: Get changed file names of files changed in PR
         run: git diff -U0 ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -P "^(?!.*(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])).*" | grep -P "^\+{1}(?!\+)" > diff_files.txt
       - name: Count line lengths in diff_files.txt
-        run: "awk -F: 'BEGIN { if(length>100) { err = 1; exit; } } END {exit err}' diff_files.txt"
+        run: "awk -F: '{ if(length>100) { err = 1; exit err; } }' diff_files.txt"

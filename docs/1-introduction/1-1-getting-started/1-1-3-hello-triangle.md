@@ -19,9 +19,9 @@ All the steps in the graphics pipeline go from top to bottom and are shown below
 ![](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
 
 As you can see, each stage in the pipeline takes in the previous stage's output 
-as the input, the rectangle blocks are pipeline stages that are not programmable 
-but are configurable, while the rounded rectangle blocks are stages that are fully programmable.
-To draw most of the things throughout this series we will mostly need these stages: 
+as the input, the rectangle blocks are pipeline stages 
+that are not programmable but are configurable, while
+the rounded rectangle blocks are stages that are fully programmable. To draw most of the things throughout this series we will mostly need these stages: 
 Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
 
 The Vertex and Pixel shaders are fully programmable and we will write a very basic 
@@ -58,8 +58,6 @@ the need of a vertex buffer.
 
 Since we only want to draw a triangle, we do not need to do much processing in our
 vertex shader code, we can just provide the input vertices as the output.
-
-
 
 Let's look at our basic vertex shader for this section:
 
@@ -114,8 +112,10 @@ Then we have our `VSOutput`, which has our vertices in the first field `position
 and our color in the second field `color`.
 
 if the `SV_Position` values are tried to be given a position outside the range of 
-[-1.0, 1.0] they are clipped and we will not see them on screen. Due to this we need
-to create our own math to transform any coordinates we have to a normalized [-1.0, 1.0]
+[-1.0, 1.0] they are clipped and we will not see them on 
+screen. Due to this we need
+to create our own math to transform any coordinates we 
+have to a normalized [-1.0, 1.0]
 This is going to be explored later in more depth
 under the name of Normalized Device Coordinates (NDC).
 
@@ -123,8 +123,9 @@ Finally, we have our main function, which in our case
 takes in a single parameter which is 
 our input in the form of a `VSInput` struct, and returns 
 our output in the form of a `VSOutput`.
- Since we do not do any processing, we simply make a new instance of `VSOutput`, 
- initialize it all to 0 and forward our input position and color to the output.
+ Since we do not do any processing, we simply make a new 
+ instance of `VSOutput`,  initialize it all to 0 and 
+ forward our input position and color to the output.
 
 ### Pixel Shader
 
@@ -191,9 +192,11 @@ Following the same pattern as in the VS we have already:
  we initialize `PSOutput` and set everything to 0 to then 
  write the color we got from the input to our output.
 
+
 ## Compiling shaders
 
 Now that we wrote our shader code and saved it somewhere, we have to feed this 
+
 to the GPU, to do that we will use our D3DCompiler to compile!
 
 First, we will declare some functions that will help us compile our shaders more quickly.
@@ -233,6 +236,7 @@ Then:
 `CreateVertexShader`: This function helps us create specifically a 
 `ID3D11VertexShader`, it only requires the shader path and a 
 [`ID3DBlob`](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ff728743(v=vs.85)).
+
 We need to pass a blob ourselves because we will need the VS's blob later.
 
 `CreatePixelShader`: It does the same thing that `CreateVertexShader` 
@@ -283,7 +287,7 @@ bool HelloTriangleApplication::CompileShader(
 }
 ```
 
-We start by creating two `ID3DBlob`s, we will need a temporary blob, where we will 
+We start by creating two `ID3DBlob`s, we will need a temporary blob, where we will
 load our shader file and an error blob, which will contain our error messages, if any.
 
 Then we call for [`D3DCompileFromFile`](https://docs.microsoft.com/en-us/windows/win32/api/d3dcompiler/nf-d3dcompiler-d3dcompilefromfile), 
@@ -377,7 +381,7 @@ HelloTriangleApplication::CreatePixelShader(const std::wstring_view fileName) co
 ```
 
 Pretty much the same thing as `CreateVertexShader`, the only thing that changes is
-the `profile` parameter, from `"vs_5_0"` to `"ps_5_0"`, since we are not compiling a 
+the `profile` parameter from `"vs_5_0"` to `"ps_5_0"`, since we are not compiling a 
 vertex shader now, we have to change this to the "Pixel Shader Model 5.0".
 
 After all of this, we can now call these functions, in 
@@ -416,6 +420,7 @@ shader, vertex layout (`VSInput` in our case)
 
 Let's see what input we expect in the vertex shader again:
 
+
 ```hlsl
 struct VSInput
 {
@@ -437,6 +442,7 @@ both of our inputs are `float3` in HLSL, which means that this translates to `Di
 
 *`DirectX::XMFLOAT3` wraps 3 floats like an array, it is a class designed to work with `DirectXMath`*
 
+
 ```cpp
 using Position = DirectX::XMFLOAT3;
 using Color = DirectX::XMFLOAT3;
@@ -448,11 +454,13 @@ struct VertexPositionColor
 };
 ```
 
+
 The type aliases (`using Position` and `using Color`) help us make this code more 
 readable to easily guess what is what type. The first field is our position vector 
 and the second field is our color vector — notice it is exactly like our `VSInput`.
 
-Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. 
+Now we can create our **Input Layout Description** using 
+an array of `D3D11_INPUT_ELEMENT_DESC`. 
 
 ```cpp
 constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
@@ -528,7 +536,6 @@ because `COLOR` is also a float3, it is also 12 bytes.
 
 Therefore the GPU expects after the `POSITION` data, 12 bytes of `float3` `COLOR` data.
 
-
 Hopefully it makes a bit more sense now, all we have to do is create the input layout 
 using this data:
 
@@ -550,6 +557,7 @@ just created and its size, we also need to pass our vertex blob pointer and size
 finally our output parameter which is our input layout.
 
 Now all we have to do is create a vertex buffer (do not worry it's really easy) and issue our first `Draw` command!
+
 
 !!! error
     Image showing stride and offset?
@@ -573,10 +581,13 @@ constexpr VertexPositionColor vertices[] =
 };
 ```
 
-There we go, remember, the position coordinates we have to give to the vertex shader 
-must be in range [-1.0, 1.0] by the time the vertex shader stage ends, otherwise we will not be able to see that vertex. We are 
-storing these coordinates that form a triangle here, we are also storing a color for 
-each vertex, since they will be interpolated by our pixel shader.
+Remember, the position coordinates we have to give to the vertex shader 
+must be in range [-1.0, 1.0] by the time the vertex shader 
+stage ends, otherwise we will not be able to see that 
+vertex - because of this we supply vertices as [-1.0, 1.0]. 
+
+We are storing coordinates that form our triangle 
+here: a Position and Color component per vertex
 
 If you want you can try to visualize the triangle, take a piece of paper, draw a 
 **Cartesian Plane**, draw 3 points and connect the dots with these coordinates.
@@ -696,6 +707,7 @@ _deviceContext->OMSetRenderTargets(
 
 As you can see, we go through the pipeline in an orderly fashion, and although we 
 do not use all the stages, we can see the top-to-bottom execution of the stages, IA 
+
 (Input Assembler) -> VS (Vertex Shader) -> RS (Rasterizer Stage) -> PS (Pixel Shader) 
 -> OM (Output Merger).
 

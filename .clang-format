@@ -1,0 +1,39 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+Standard: c++17
+
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+AlignOperands: AlignAfterOperator
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+    AfterClass: true
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: true
+    AfterUnion: true
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: BeforeColon
+Cpp11BracedListStyle: false
+ColumnLimit: 0
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ContinuationIndentWidth: 4
+IndentWidth: 4
+InsertTrailingCommas: Wrapped
+PointerAlignment: Left
+SpaceAfterTemplateKeyword: true
+SpaceBeforeParens: ControlStatements
+SpacesInLineCommentPrefix:
+    Minimum: 1
+    Maximum: 4
+SortIncludes: true
+TabWidth: 8
+UseTab: Never

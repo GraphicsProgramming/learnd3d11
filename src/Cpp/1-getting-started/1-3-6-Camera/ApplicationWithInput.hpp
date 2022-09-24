@@ -2,9 +2,9 @@
 
 #include <DirectXMath.h>
 
+#include <array>
 #include <cstdint>
 #include <memory>
-#include <array>
 
 #include <Application.hpp>
 

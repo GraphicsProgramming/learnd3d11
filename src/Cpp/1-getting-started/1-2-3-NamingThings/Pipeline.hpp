@@ -26,4 +26,3 @@ private:
     uint32_t _vertexSize = 0;
     D3D11_VIEWPORT _viewport = {};
 };
-

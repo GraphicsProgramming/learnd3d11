@@ -13,6 +13,7 @@ public:
     virtual ~Application();
 
     void Run();
+
 protected:
     static void HandleResize(
         GLFWwindow* window,

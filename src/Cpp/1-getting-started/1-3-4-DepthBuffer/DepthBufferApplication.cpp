@@ -1,9 +1,9 @@
 #include "DepthBufferApplication.hpp"
 #include "DeviceContext.hpp"
-#include "PipelineFactory.hpp"
-#include "Pipeline.hpp"
-#include "TextureFactory.hpp"
 #include "ModelFactory.hpp"
+#include "Pipeline.hpp"
+#include "PipelineFactory.hpp"
+#include "TextureFactory.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -11,9 +11,9 @@
 
 #include <d3dcompiler.h>
 
-#include <imgui/imgui.h>
 #include <imgui/backend/imgui_impl_dx11.h>
 #include <imgui/backend/imgui_impl_glfw.h>
+#include <imgui/imgui.h>
 
 #include <iostream>
 
@@ -23,8 +23,8 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-template<UINT TDebugNameLength>
-inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
+template <UINT TDebugNameLength>
+inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char (&debugName)[TDebugNameLength])
 {
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
@@ -94,16 +94,16 @@ bool DepthBufferApplication::Initialize()
 
     WRL::ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
     if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        deviceFlags,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &deviceContext)))
+            nullptr,
+            D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            deviceFlags,
+            &deviceFeatureLevel,
+            1,
+            D3D11_SDK_VERSION,
+            &_device,
+            nullptr,
+            &deviceContext)))
     {
         std::cout << "D3D11: Failed to create device and device context\n";
         return false;
@@ -139,12 +139,12 @@ bool DepthBufferApplication::Initialize()
     swapChainFullscreenDescriptor.Windowed = true;
 
     if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+            _device.Get(),
+            glfwGetWin32Window(GetWindow()),
+            &swapChainDescriptor,
+            &swapChainFullscreenDescriptor,
+            nullptr,
+            &_swapChain)))
     {
         std::cout << "DXGI: Failed to create swapchain\n";
         return false;
@@ -198,11 +198,11 @@ bool DepthBufferApplication::Load()
     _pipeline->BindSampler(0, _linearSamplerState.Get());
 
     if (!_modelFactory->LoadModel(
-        "Assets/Models/SM_Good_Froge.fbx",
-        _modelVertices,
-        &_modelVertexCount,
-        _modelIndices,
-        &_modelIndexCount))
+            "Assets/Models/SM_Good_Froge.fbx",
+            _modelVertices,
+            &_modelVertexCount,
+            _modelIndices,
+            &_modelIndexCount))
     {
         return false;
     }
@@ -250,17 +250,17 @@ bool DepthBufferApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
-        0,
-        IID_PPV_ARGS(&backBuffer))))
+            0,
+            IID_PPV_ARGS(&backBuffer))))
     {
         std::cout << "D3D11: Failed to get back buffer from the swapchain\n";
         return false;
     }
 
     if (FAILED(_device->CreateRenderTargetView(
-        backBuffer.Get(),
-        nullptr,
-        &_renderTarget)))
+            backBuffer.Get(),
+            nullptr,
+            &_renderTarget)))
     {
         std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
@@ -280,18 +280,18 @@ bool DepthBufferApplication::CreateSwapchainResources()
     depthStencilBufferDescriptor.SampleDesc.Quality = 0;
     depthStencilBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
     if (FAILED(_device->CreateTexture2D(
-        &depthStencilBufferDescriptor,
-        nullptr,
-        &depthBuffer)))
+            &depthStencilBufferDescriptor,
+            nullptr,
+            &depthBuffer)))
     {
         std::cout << "D3D11: Failed to create depth buffer\n";
         return false;
     }
 
     if (FAILED(_device->CreateDepthStencilView(
-        depthBuffer.Get(),
-        nullptr,
-        &_depthStencilView)))
+            depthBuffer.Get(),
+            nullptr,
+            &_depthStencilView)))
     {
         std::cout << "D3D11: Failed to create shader resource view from back buffer\n";
         return false;
@@ -316,11 +316,11 @@ void DepthBufferApplication::OnResize(
     DestroySwapchainResources();
 
     if (FAILED(_swapChain->ResizeBuffers(
-        0,
-        width,
-        height,
-        DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
-        0)))
+            0,
+            width,
+            height,
+            DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+            0)))
     {
         std::cout << "D3D11: Failed to recreate swapchain buffers\n";
         return;
@@ -408,23 +408,32 @@ void DepthBufferApplication::RenderUi()
 
         switch (_selectedDepthFunction)
         {
-        case 0: _pipeline->SetDepthStencilState(_depthDisabledDepthStencilState.Get());
+        case 0:
+            _pipeline->SetDepthStencilState(_depthDisabledDepthStencilState.Get());
             break;
-        case 1: _pipeline->SetDepthStencilState(_depthEnabledLessDepthStencilState.Get());
+        case 1:
+            _pipeline->SetDepthStencilState(_depthEnabledLessDepthStencilState.Get());
             break;
-        case 2: _pipeline->SetDepthStencilState(_depthEnabledLessEqualDepthStencilState.Get());
+        case 2:
+            _pipeline->SetDepthStencilState(_depthEnabledLessEqualDepthStencilState.Get());
             break;
-        case 3: _pipeline->SetDepthStencilState(_depthEnabledGreaterDepthStencilState.Get());
+        case 3:
+            _pipeline->SetDepthStencilState(_depthEnabledGreaterDepthStencilState.Get());
             break;
-        case 4: _pipeline->SetDepthStencilState(_depthEnabledGreaterEqualDepthStencilState.Get());
+        case 4:
+            _pipeline->SetDepthStencilState(_depthEnabledGreaterEqualDepthStencilState.Get());
             break;
-        case 5: _pipeline->SetDepthStencilState(_depthEnabledEqualDepthStencilState.Get());
+        case 5:
+            _pipeline->SetDepthStencilState(_depthEnabledEqualDepthStencilState.Get());
             break;
-        case 6: _pipeline->SetDepthStencilState(_depthEnabledNotEqualDepthStencilState.Get());
+        case 6:
+            _pipeline->SetDepthStencilState(_depthEnabledNotEqualDepthStencilState.Get());
             break;
-        case 7: _pipeline->SetDepthStencilState(_depthEnabledAlwaysDepthStencilState.Get());
+        case 7:
+            _pipeline->SetDepthStencilState(_depthEnabledAlwaysDepthStencilState.Get());
             break;
-        case 8: _pipeline->SetDepthStencilState(_depthEnabledNeverDepthStencilState.Get());
+        case 8:
+            _pipeline->SetDepthStencilState(_depthEnabledNeverDepthStencilState.Get());
             break;
         }
 
