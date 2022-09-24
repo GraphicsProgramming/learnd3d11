@@ -4,7 +4,7 @@ In the last chapter we initialized core components of `D3D11` and DXGI such as
 the Device and the SwapChain, but simply clearing the Window with 
 some color is pretty boring.
 
-This time we'll be drawing our first triangle with a nice froge-like color.
+This time we will be drawing our first triangle with a nice froge-like color.
 
 ## The Pipeline
 
@@ -19,44 +19,50 @@ All the steps in the graphics pipeline go from top to bottom and are shown below
 ![](https://docs.microsoft.com/en-us/windows/win32/direct3d11/images/d3d11-pipeline-stages.jpg)
 
 As you can see, each stage in the pipeline takes in the previous stage's output 
-as the input, the rectangle blocks are pipeline stages that are not programmable 
-but are configurable, while the rounded rectangle blocks are stages that are 
-fully programmable.
-To draw most of the things throughout this series we'll mostly need these stages:
- Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
+as the input, the rectangle blocks are pipeline stages 
+that are not programmable but are configurable, while
+the rounded rectangle blocks are stages that are fully programmable. 
+To draw most of the things throughout this series we will mostly need these stages: 
+Input Assembler, Vertex Shader and the Pixel Shader, Output Merger.
 
-The Vertex and Pixel shaders are fully programmable, and we'll write a very 
-basic program for them.
+The Vertex and Pixel shaders are fully programmable and we will write a very basic 
+program for them.
 
-The other two stages are not programmable, but they are 
-fairly easy to understand and configure, 
-the **Input Assembler** is responsible for processing 
-the vertices in an eventual vertex buffer into the primitive 
-of our choice, which is of course, triangles in our case, and sending 
-this processed output to the Vertex Shader. The **Output Merger** 
-instead is responsible for combining the values written by the 
-pixel shader, may that be depth, color or other things, 
-into the one or more render targets that we provide to the OM, 
-we only have one render target for now.
+The other two stages are not programmable but they are fairly easy to understand 
+and configure:
 
-### Vertex Shader
+- the **Input Assembler** is responsible for processing the vertices in an eventual 
+vertex buffer into the primitive topology of our choice, which in our case is a form 
+of triangles, and sending this processed output to be processed again - but this time 
+by our Vertex Shader. 
 
-The **Vertex Shader** is the stage where our vertices are processed however 
-we want, although we don't do much processing here, and in the end they're 
-transformed to [screen-space coordinates](link to the coordinate system chapter?)
+- The **Output Merger** is responsible for combining the values written by the 
+pixel shader, may that be depth, color or other things, into the one or more render 
+targets that we provide to the OM, we only have one 
+render target for now.
 
-The vertices are usually read from a **Vertex Buffer** which are laid out in 
-a particular way. The vertex shader will be run however many times we tell 
+
+## Vertex Shader
+The **Vertex Shader** is the stage where our vertices are 
+processed however we want
+
+The vertices are **usually** read from a **Vertex Buffer** — *usually* 
+since there are no
+hard rules in programming — we can always be inventive to create or 
+read data differently on the fly!
+This all works since the vertex shader will be run however many times we tell 
 it to run, which is specified in the first parameter of `ID3D11DeviceContext::Draw()` 
 (more on this later), for instance if we call `Draw(3, 0)`, the vertex shader will 
 run 3 times.
 
-Since we only want to draw a triangle, we don't need to do much processing, 
-we can just provide the input vertices as the output.
+An example of unique methods to acquire vertex data is with how the 
+vertex buffer can be omitted,
+if we want to draw a full screen triangle by just hardcoding  vertices 
+in our vertex shader — removing 
+the need of a vertex buffer.
 
-The vertex buffer can be omitted, for example if we want to draw a full screen 
-triangle, instead of creating a vertex buffer, for simplicity we can just hardcode 
-the vertices in the vertex shader without having to bind a vertex buffer.
+Since we only want to draw a triangle, we do not need to do much processing in our
+vertex shader code, we can just provide the input vertices as the output.
 
 Let's look at our basic vertex shader for this section:
 
@@ -87,12 +93,16 @@ VSOutput Main(VSInput input)
 First off, we define 2 types, `VSInput` and `VSOutput` which represent the 
 vertex shader's input and output.
 
-The input is 2, `float3` (vector of 3 float components), the first is the 
-"position" field, which are coordinates ranging from [-1.0, 1.0], if the values 
-are outside this range they are clipped, and we won't see them on screen.
+There are two inputs, both of them are a float3. 
+float3 is a type that holds 3 floating point numbers.
 
-The second is the "color" field, which we also pass as the output of this stage 
-onto the pixel shader.
+The first input is the position field (x y z as the 3
+floats)
+the second one is the color field (r g b as the 3
+floats).
+
+We will send both of these over to the output of this 
+stage, onto the pixel shader.
 
 Notice how all our fields have a colon and some identifier attached to them, 
 these are "semantics". Semantics that are preceded by `SV` are called 
@@ -106,21 +116,34 @@ These are used to pass data between shader stages.
 Then we have our `VSOutput`, which has our vertices in the first field `position` 
 and our color in the second field `color`.
 
-Finally, we have our main function, which takes in a single parameter which is 
-our input in the form of `VSInput`, and returns our output in the form of a `VSOutput`.
- Since we don't do any processing, we simply make a new instance of `VSOutput`, 
- initialize it all to 0 and forward our input position and color to the output.
+if the `SV_Position` values are tried to be given a position outside the range of 
+[-1.0, 1.0] they are clipped and we will not see them on 
+screen. Due to this we need
+to create our own math to transform any coordinates we 
+have to a normalized [-1.0, 1.0]
+This is going to be explored later in more depth
+under the name of Normalized Device Coordinates (NDC).
+
+Finally, we have our main function, which in our case 
+takes in a single parameter which is 
+our input in the form of a `VSInput` struct, and returns 
+our output in the form of a `VSOutput`.
+ Since we do not do any processing, we simply make a new 
+ instance of `VSOutput`,  initialize it all to 0 and 
+ forward our input position and color to the output.
 
 ### Pixel Shader
 
-The **Pixel Shader** is the stage where we give the pixels on our render target 
-color, it is invoked for each pixel that is covered by a triangle.
+The **Pixel Shader** is the stage (by default) where we set the pixels 
+on our render target, it is invoked for each pixel that is 
+covered by a triangle formed by previous shader(s)
 
-We use this stage to apply most of our shading techniques, from basic lighting, 
-to textures and shadows, all the way to physically based rendering.
+We use this (Pixel Shader) stage generally to apply most 
+of our shading techniques, from anything such as basic 
+lighting, to textures, *and more*.
 
-Since we did not specify any shader between the VS and the PS, our input here is 
-the output of the VS, and the output is one or more render targets.
+Since we did not specify any shader between the VS and the 
+PS, our input here is the output of the VS
 
 Let's look at our Pixel Shader now:
 
@@ -148,14 +171,15 @@ PSOutput Main(PSInput input)
 
 Here as well we have an input `PSInput`, and an output `PSOutput`.
 
-Since there aren't any other shaders in between the VS and the PS, the VS's 
+Since we have not setup any other shaders in between the VS and the PS, the VS's 
 output is the PS's input, the naming might be a bit confusing but that's the 
 gist of it, PSInput should match the VSOutput in vertex shader, this isn't 
 entirely required but not doing so is only advisable if you really know what 
 you are doing.
 
+
 Next we have our output, `D3D11` gives us the possibility to write to multiple 
-render targets, but we are not doing that, so we'll just be writing a `float4` 
+render targets, but we are not doing that, so we will just be writing a `float4` 
 as our output, which is an RGBA color.
 
 Notice how we have another semantic string attached to the `color` field, 
@@ -164,18 +188,21 @@ the `0` after `SV_Target` is the index of our render target, in our case,
 we have only one, so we write `SV_Target0` or `SV_Target`.
 
 `D3D11` lets us write up to 8 render targets simultaneously from the same pixel 
-shader, those come in handy when implementing more advanced shading techniques, 
-for example a popular technique that uses 4 or more
+shader, those come in handy when implementing more advanced shading techniques.
 
-And lastly, our `Main` function, following the same pattern as in the VS, we have
- one parameter, the input, and one return value, the output, again we create an 
- instance of `PSOutput`, initialize everything to 0, and write the color we got 
- from the input, to our output.
+And lastly, our `Main` function. 
+Following the same pattern as in the VS we have already:
+ one input (`VSInput`) and output parameter (`PSOutput`).
+ 
+ we initialize `PSOutput` and set everything to 0 to then 
+ write the color we got from the input to our output.
+
 
 ## Compiling shaders
 
 Now that we wrote our shader code and saved it somewhere, we have to feed this 
-to the GPU, to do that we'll have our D3DCompiler get to work.
+
+to the GPU, to do that we will use our D3DCompiler to compile!
 
 First, we will declare some functions that will help us compile our shaders more quickly.
 
@@ -214,11 +241,11 @@ Then:
 `CreateVertexShader`: This function helps us create specifically a 
 `ID3D11VertexShader`, it only requires the shader path and a 
 [`ID3DBlob`](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ff728743(v=vs.85)).
-We need to pass a blob ourselves because we'll need the VS's blob later.
 
+We need to pass a blob ourselves because we will need the VS's blob later.
 
 `CreatePixelShader`: It does the same thing that `CreateVertexShader` 
-does, except we don't need to pass a `ID3DBlob` here.
+does, except we do not need to pass a `ID3DBlob` here.
 
 Now that we know how our new members look, we will see how we implemented them.
 
@@ -265,7 +292,7 @@ bool HelloTriangleApplication::CompileShader(
 }
 ```
 
-We start by creating two `ID3DBlob`s, we will need a temporary blob, where we'll 
+We start by creating two `ID3DBlob`s, we will need a temporary blob, where we will
 load our shader file and an error blob, which will contain our error messages, if any.
 
 Then we call for [`D3DCompileFromFile`](https://docs.microsoft.com/en-us/windows/win32/api/d3dcompiler/nf-d3dcompiler-d3dcompilefromfile), 
@@ -276,7 +303,8 @@ it requires quite a lot of parameters so let's go over them one by one in order:
 - `pInclude`: optional, a pointer to a `ID3DInclude` object, it is useful to 
    specify how to handle `#include` directives in shaders. It is common to 
    just use `D3D_COMPILE_STANDARD_FILE_INCLUDE`, which is the default handler.
-- `pEntrypoint`: a string containing the name of the main function in the shader.
+- `pEntrypoint`: a string containing the name of the main function in the shader - 
+Defaults to `main` if NULL
 - `pTarget`: a string containing the Shader Model version to use for this shader.
 - `Flags1`: the flags that changes how to compile our shaders, for example we pass
   `D3DCOMPILE_ENABLE_STRICTNESS` which makes the compiler stricter in judging our
@@ -287,8 +315,9 @@ it requires quite a lot of parameters so let's go over them one by one in order:
 - `ppErrorMsgs`: optional, output, a pointer to a `ID3DBlob*`, this is where the D3D
    compiler will store our errors, `nullptr` if everything went fine.
 
-Then we do our usual checking, if there were errors, leave the output blob as is and
-print the error message contained in the blob. Otherwise, move the blob to our output parameter.
+Then we do our usual checking, if there were errors, leave the output blob 
+as is and print the error message contained in the blob. Otherwise, move 
+the blob to our output parameter.
 
 Now let's see `CreateVertexShader` and `CreatePixelShader`:
 
@@ -359,7 +388,7 @@ HelloTriangleApplication::CreatePixelShader(const std::wstring_view fileName) co
 ```
 
 Pretty much the same thing as `CreateVertexShader`, the only thing that changes is
-the `profile` parameter, from `"vs_5_0"` to `"ps_5_0"`, since we're not compiling a 
+the `profile` parameter from `"vs_5_0"` to `"ps_5_0"`, since we are not compiling a 
 vertex shader now, we have to change this to the "Pixel Shader Model 5.0".
 
 After all of this, we can now call these functions, in 
@@ -387,14 +416,18 @@ input layout.
 
 ### Input Layouts
 
-We have successfully compiled our shaders now, we need one last thing, an **Input Layout**.
-An input layout, is basically the format we want to lay our vertices in our buffers.
+We have successfully compiled our shaders now, we need one last thing, 
+an **Input Layout**. An input layout, is basically the format we want 
+to lay our vertices in our buffers.
 
-Since all our vertices we want to give to the GPU must be tightly packed in the same 
-buffer, the Input Assembler needs a way to make sense of our data, this is exactly 
-what an input layout is for.
+Since all our vertices we want to give to the GPU must be tightly packed in the 
+same buffer, the Input Assembler needs a way to make sense of our data, this is 
+exactly what an input layout is for - it tells the GPU exactly how the memory in 
+the buffer will be organized, and how it should be mapped to our expected vertex 
+shader, vertex layout (`VSInput` in our case)
 
-Let's see what input we expect in the vertex shader:
+Let's see what input we expect in the vertex shader again:
+
 
 ```hlsl
 struct VSInput
@@ -404,14 +437,21 @@ struct VSInput
 };
 ```
 
-The vertex shader expects 2 vectors of 3 components each, for each vertex. We should 
-then create an input layout exactly with this format.
+The vertex shader expects per vertex: two vectors of 3 (4 byte) components. 
 
-First, creating a `struct` in our C++ source with that maps to our `VSInput` as 
-closely as possible will make our life easier.
+We should then create an input layout exactly with this format:
 
-To do this we'll use DirectXMath which has types that map perfectly to HLSL, both
-of our inputs are `float3` in HLSL, which means that this translates to `DirectX::XMFLOAT3`.
+First of all, creating a `struct` in our C++ source with the same field layout 
+as our `VSInput` will make our life easier when imagining how 1 vertex will fit 
+on the GPU one after each other.
+
+To do this we will use `DirectXMath` which has types that map perfectly to HLSL, 
+both of our inputs are `float3` in HLSL, which means that this translates 
+to `DirectX::XMFLOAT3` 
+
+*`DirectX::XMFLOAT3` wraps 3 floats like an array, it is a class designed to work 
+with `DirectXMath`*
+
 
 ```cpp
 using Position = DirectX::XMFLOAT3;
@@ -424,13 +464,13 @@ struct VertexPositionColor
 };
 ```
 
-The type aliases help us make this more readable and more easily guess what is 
-what, so obviously the first field is our position vector and the second field 
-is our color vector.
 
-Now we can create our **Input Layout Description** using an array of `D3D11_INPUT_ELEMENT_DESC`. 
-You can think of each element in this array as describing
-one field in the `VSInput`.
+The type aliases (`using Position` and `using Color`) help us make this code more 
+readable to easily guess what is what type. The first field is our position vector 
+and the second field is our color vector — notice it is exactly like our `VSInput`.
+
+Now we can create our **Input Layout Description** using 
+an array of `D3D11_INPUT_ELEMENT_DESC`. 
 
 ```cpp
 constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
@@ -460,65 +500,53 @@ constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] =
 **Now let's make sense of why we have the following layout:**
 (we will refer to 1 element of D3D11_INPUT_ELEMENT_DESC as a field)
 
-D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] is an array since when we pass data 
-to a GPU to read in the **vertex shader** we need to specify to the GPU how 1 vertex 
-of data will be formatted for when we later load many vertices onto the GPU to render
-a triangle.
-
-**Now lets explain what makes up a Input Layout Description**
-
-```c++
     {
-        LPCSTR SemanticName,
-        UINT SemanticIndex,
-        DXGI_FORMAT Format,
-        UINT InputSlot,
-        UINT AlignedByteOffset,
-        D3D11_INPUT_CLASSIFICATION InputSlotClass,
-        UINT InstanceDataStepRate
-    } 
-```
+        `SemanticName`,
+        `SemanticIndex`,
+        `Format`,
+        `InputSlot`,
+        `AlignedByteOffset`,
+        `InputSlotClass`,
+        `InstanceDataStepRate`
+    },
 
-- `SemanticName`: Tells the GPU to expect this field to map to the same 
-   `SemanticName` variable in the **vertex shader's** input struct (`VSInput` in 
-   this case) —
-    in the vertex shader input struct declaration, `float3 position: 
-    THIS_PART_IS_THE_SEMANTIC_NAME` is where you assign a semantic name on the GPU 
-    side of things
+- `SemanticName`: let's us refer to a particular field name (the string) after the 
+colon in HLSL (recall `POSITION` inside `float3 position: POSITION`)
 
-- `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to 
-`POSITION0`, where the number at the end is our index, so we'll just pass in 0.
-    this allows us to do things such as have 4 elements named `POSITION`, with a 
-    semantic index of 0, 1, 2, 3 — being convenient for the programmer to not have to 
-    type `POSITION0` `POSITION1` `POSITION2` `POSITION3`
+- `SemanticIndex`: the index of each semantic, `POSITION` is equivalent to `POSITION0`,
+where the number at the end is our semantic index, so we will just pass in 0. 
+    
+    *`POSITION1` in HLSL would have a semantic index of 1, etc.*
 
 - `Format`: the format of this field, basically how many components there are and 
-what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 bytes 
-wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`. We made a 
-`float3` to map to `VSInput` and the types inside the HLSL struct
+what type they are, a `float3` in HLSL is a vector of 3 floats, each float is 4 
+bytes wide (or 32 bits), so the format here is `DXGI_FORMAT_R32G32B32_FLOAT`.
+DXGI_FORMAT chose R32 G32 B32 as an arbitrary component 
+name, this has nothing to do with colors, we can store 
+positions here since the type is `FLOAT`
 
-- `InputSlot`: we'll see about this later since right now it has no use, but for now 
-all you need to know is that a GPU cannot store an infinite amount of Input Layouts, 
-instead you specify here what 'slot' this input layout occupy's in memory that stores 
-input layouts.
+- `InputSlot`: we will see about this later.
+- `AlignedByteOffset`: the offset of this field, in bytes
+- `InputSlotClass`: The rate of input is either per-vertex or per-instance, we do not 
+use instances right now since we are only drawing a triangle
+so we will set this to PER_VERTEX, and explain PER_INSTANCE in later lessons.
+- `InstanceDataStepRate`: this will be explained with PER_INSTANCE in later lessons,
+ so for now this value is 0
 
-- `AlignedByteOffset`: the offset of where this field starts in the memory of 1 
-vertex in bytes. For example with `vertexInputLayoutInfo`, since we want `COLOR` 
-after `POSITION` which is a `float3` (12 bytes) —  we tell D3D11 that we want a 12 
-byte offset to put `COLOR` immediately after `POSITION` in memory. `POSITION` on the 
-other hand needs no offset and is the first element (offset is 0).
-    `offsetof(VertexPositionColor, color)` is a preprocessor that calcualtes the 
-    offset for us of an element using a struct and the desiered element name as input 
-    — this case we inputted the struct `VertexPositionColor` and get the offset of 
-    the element `color`. This is why we did not need to type out `12` or `0` in the 
-    `AlignedByteOffset` ourselves.
 
-- `InputSlotClass`: The rate of input is either per-vertex or per-instance, we don't 
-use instances right now (we will later), so we'll set this to PER_VERTEX.
+Each element being sent to the GPU needs to be described on how they are laid out, 
+therefore we have D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] to describe the data layout.
 
-- `InstanceDataStepRate`: if `InputSlotClass` was PER_INSTANCE, this would mean how 
-many instances should be drawn with the same data until we move to the next set of 
-data; this is 0 since we don't care about this.
+You can think of each element in this array as describing one element in `VSInput` 
+
+- `POSITION` is the first element (offset of 0).
+`POSITION` is also a float3 (4+4+4 = 12 bytes).
+Therefore the GPU expects the first 12 bytes of every vertex to be a float3 filled 
+with `POSITION` data.
+- `COLOR` is after `POSITION`, meaning COLOR has an offset of 12 bytes.
+because `COLOR` is also a float3, it is also 12 bytes.
+
+Therefore the GPU expects after the `POSITION` data, 12 bytes of `float3` `COLOR` data.
 
 Hopefully it makes a bit more sense now, all we have to do is create the input layout 
 using this data:
@@ -540,8 +568,9 @@ As usual, we follow the same pattern, we pass in our `vertexInputLayoutInfo` tha
 just created and its size, we also need to pass our vertex blob pointer and size, and 
 finally our output parameter which is our input layout.
 
-Now all we have to do is create a vertex buffer (don't worry it's really easy) and 
+Now all we have to do is create a vertex buffer (do not worry it's really easy) and 
 issue our first `Draw` command!
+
 
 !!! error
     Image showing stride and offset?
@@ -565,10 +594,13 @@ constexpr VertexPositionColor vertices[] =
 };
 ```
 
-There we go, remember, the position coordinates we have to give to the vertex shader 
-must be in range [-1.0, 1.0], otherwise we won't be able to see that vertex. We are 
-storing these coordinates that form a triangle here, we're also storing a color for 
-each vertex, since they will be interpolated by our pixel shader.
+Remember, the position coordinates we have to give to the vertex shader 
+must be in range [-1.0, 1.0] by the time the vertex shader 
+stage ends, otherwise we will not be able to see that 
+vertex - because of this we supply vertices as [-1.0, 1.0]. 
+
+We are storing coordinates that form our triangle 
+here: a Position and Color component per vertex
 
 If you want you can try to visualize the triangle, take a piece of paper, draw a 
 **Cartesian Plane**, draw 3 points and connect the dots with these coordinates.
@@ -595,7 +627,8 @@ if (FAILED(_device->CreateBuffer(
 
 We begin by filling a `bufferInfo` descriptor for our buffer, we specify how many 
 bytes we want, since this buffer will never change, for the `Usage` we specify: 
-`D3D11_USAGE_IMMUTABLE`, this lets `D3D11` put this data a close as possible to the 
+`D3D11_USAGE_IMMUTABLE` (the buffer is unmodifiable), this 
+lets `D3D11` put this data as close as possible to the 
 GPU, finally we specify how we want to use this buffer, we want this to be a vertex 
 buffer, so for the `BindFlags` we give: `D3D11_BIND_VERTEX_BUFFER`.
 
@@ -686,7 +719,8 @@ _deviceContext->OMSetRenderTargets(
 ```
 
 As you can see, we go through the pipeline in an orderly fashion, and although we 
-don't use all the stages, we can see the top-to-bottom execution of the stages, IA 
+do not use all the stages, we can see the top-to-bottom execution of the stages, IA 
+
 (Input Assembler) -> VS (Vertex Shader) -> RS (Rasterizer Stage) -> PS (Pixel Shader) 
 -> OM (Output Merger).
 
