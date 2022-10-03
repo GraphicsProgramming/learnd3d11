@@ -11,6 +11,7 @@ Texture2D Texture: register(t0);
 
 float4 Main(VSOutput input): SV_Target
 {
+    input.uv.y = -input.uv.y;
     float4 texel = Texture.Sample(LinearSampler, input.uv);
     return float4(input.color, 0.5f) * texel;
 }

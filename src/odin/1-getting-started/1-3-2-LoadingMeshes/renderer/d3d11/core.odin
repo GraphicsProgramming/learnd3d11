@@ -38,6 +38,8 @@ Renderer :: struct {
 
 
 	// for testing
+	modifier : f32,
+	pos : linalg.Vector3f32,
 	angle : f32,
 }
 
@@ -248,17 +250,34 @@ OnResize :: proc (app : ^framework.Application, using renderer : ^Renderer, new_
 }
 
 Update :: proc (app : ^framework.Application, using renderer : ^Renderer) {
-	eye_pos : linalg.Vector3f32 = { 0.0, 0.0, 10.0 }
+	eye_pos : linalg.Vector3f32 = { 0.0, 0.0, -10.0 }
 	focus_point : linalg.Vector3f32 = { 0.0, 0.0, 0.0 }
 	up_direction : linalg.Vector3f32 = { 0.0, 1.0, 0.0 }
 
 	view_matrix = linalg.matrix4_look_at_f32(eye_pos, focus_point, up_direction)
 	UpdateSubResource(&device_context, constant_buffers[ConstantBufferType.PerFrame], &view_matrix)
 
-	angle += 90.0 * (1000.0 / 60000.0)
+	// scale
+	unit_scale : linalg.Vector3f32 = {1, 1, 1}
+	scale_matrix := linalg.matrix4_scale_f32(unit_scale)
+	
+	// rotate
+	angle += 90.0 * (1.0 / 60.0)
 	rotation_axis := up_direction
+	rot_matrix := linalg.matrix4_rotate_f32(math.to_radians_f32(angle), rotation_axis)
+	
+	// translate
+	if modifier == 0 {
+		modifier = 1
+	}
+	if math.abs(pos.x) > 5 {
+		modifier *= -1
+	}
+	pos.x += modifier * (1.0 / 60.0)
+	translate_matrix := linalg.matrix4_translate_f32(pos)
 
-	world_matrix = linalg.matrix4_rotate_f32(math.to_radians_f32(angle), rotation_axis)
+	world_matrix = translate_matrix * rot_matrix * scale_matrix
+
 	UpdateSubResource(&device_context, constant_buffers[ConstantBufferType.PerObject], &world_matrix)
 }
 
@@ -332,8 +351,6 @@ LoadModel :: proc(device : ^d3d.IDevice, file_path : string) -> (vertex_buffer :
 		BindFlags = .VERTEX_BUFFER,
 	}
 
-	fmt.printf("DEBUG: ByteWidth = size_of(VertexPositionColorUv) * len(vertices), value : %v\n", size_of(VertexPositionColorUv) * len(vertices))
-
 	vertex_buffer_data : d3d.SUBRESOURCE_DATA = {
 		pSysMem = &vertices[0],
 	}
@@ -345,15 +362,11 @@ LoadModel :: proc(device : ^d3d.IDevice, file_path : string) -> (vertex_buffer :
 	}
 	vertex_count = u32(len(vertices))
 
-	fmt.printf("DEBUG: vertex_count = u32(len(vertices)), %v\n", vertex_count)
-
 	index_buffer_desc : d3d.BUFFER_DESC = {
 		ByteWidth = size_of(u32) * len(indices),
 		Usage = .IMMUTABLE,
 		BindFlags = .INDEX_BUFFER,
 	}
-
-	fmt.printf("DEBUG: ByteWidth = size_of(u32) * len(indices), value : %v\n", size_of(u32) * len(indices))
 
 	index_buffer_data : d3d.SUBRESOURCE_DATA = {
 		pSysMem = &indices[0],
@@ -365,8 +378,6 @@ LoadModel :: proc(device : ^d3d.IDevice, file_path : string) -> (vertex_buffer :
 		return nil, 0, nil, 0
 	}
 	index_count = u32(len(indices))
-
-	fmt.printf("DEBUG: index_count = u32(len(indices)), value: %v\n", index_count)
 
 	return
 }
