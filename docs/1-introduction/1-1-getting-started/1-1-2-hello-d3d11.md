@@ -125,14 +125,14 @@ void HelloD3D11Application::Render()
 }
 ```
 
-`HellD3D11Application.hpp`
+HelloD3D11Application.hpp
 ```cpp
 #include <d3d11.h>
 #include <dxgi1_3.h>
 #include <wrl.h>
 ```
 
-`HellD3D11Application.cpp`
+HelloD3D11Application.cpp
 ```cpp
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
