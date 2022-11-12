@@ -234,16 +234,16 @@ DXGI 1.0 up to 1.6 More information can be found [here](https://docs.microsoft.c
 ```cpp
 constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 if (FAILED(D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        &deviceFeatureLevel,
-        1,
-        D3D11_SDK_VERSION,
-        &_device,
-        nullptr,
-        &_deviceContext)))
+    nullptr,
+    D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+    nullptr,
+    0,
+    &deviceFeatureLevel,
+    1,
+    D3D11_SDK_VERSION,
+    &_device,
+    nullptr,
+    &_deviceContext)))
 {
     std::cout << "D3D11: Failed to create device and device Context\n";
     return false;
@@ -274,12 +274,12 @@ DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
 swapChainFullscreenDescriptor.Windowed = true;
 
 if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-        _device.Get(),
-        glfwGetWin32Window(GetWindow()),
-        &swapChainDescriptor,
-        &swapChainFullscreenDescriptor,
-        nullptr,
-        &_swapChain)))
+    _device.Get(),
+    glfwGetWin32Window(GetWindow()),
+    &swapChainDescriptor,
+    &swapChainFullscreenDescriptor,
+    nullptr,
+    &_swapChain)))
 {
     std::cout << "DXGI: Failed to create swapchain\n";
     return false;
