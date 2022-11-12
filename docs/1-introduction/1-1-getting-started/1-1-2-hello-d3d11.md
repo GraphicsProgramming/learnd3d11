@@ -7,38 +7,44 @@ for an application with a window through GLFW. The implementation for `Main.cpp`
 
 If you are looking at the source code for this chapter, you will also notice that `Application.cpp`
 and `Application.hpp` do not exist anymore, as we have moved both of these files into a separate
-`Framework` project to ease development between chapters. This `Framework` project will include
+`Framework` project that creates a static lib, to ease development between chapters. This `Framework` project will include
 code that is shared between all chapters, so it might include a lot of other files which are not
-used or are not relevant within some chapters. Please note that the code for already existing files
+used or are not relevant within some chapters.
+
+The `Framework` project can be found [here](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/Framework).
+
+Please note that the code for already existing files
 is also subject to change to accommodate newer chapters and their needs.
 
 However, let's start by breaking down the relevant bits and pieces by showing you how the new
 class, which derives from `Application` will look like.
 
-## HelloD3D11.hpp
+## HelloD3D11Application.hpp
 
 ```cpp
-#include <d3d11_2.h>
+#pragma once
+
+#include <d3d11.h>
+#include <dxgi1_3.h>
 #include <wrl.h>
 
-#include "Application.hpp"
-
-#include <string_view>
+#include <Application.hpp>
 
 class HelloD3D11Application final : public Application
 {
     template <typename T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 public:
-    HelloD3D11Application(const std::string_view title);
+    HelloD3D11Application(const std::string& title);
     ~HelloD3D11Application() override;
 
 protected:
     bool Initialize() override;
     bool Load() override;
     void OnResize(
-        const int32_t width,
-        const int32_t height) override;
+        int32_t width,
+        int32_t height) override;
     void Update() override;
     void Render() override;
 
@@ -54,19 +60,19 @@ private:
 };
 ```
 
-## HelloD3D11.cpp
+## HelloD3D11Application.cpp
 
 And the implementation side
 
 ```cpp
-#include "HelloD3D11.hpp"
+#include "HelloD3D11Application.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <d3dcompiler.h>
 
 #include <iostream>
 
@@ -87,6 +93,7 @@ HelloD3D11Application::~HelloD3D11Application()
 
 bool HelloD3D11Application::Initialize()
 {
+    return true;
 }
 
 bool HelloD3D11Application::Load()
@@ -96,6 +103,7 @@ bool HelloD3D11Application::Load()
 
 bool HelloD3D11Application::CreateSwapchainResources()
 {
+    return true;
 }
 
 void HelloD3D11Application::DestroySwapchainResources()
@@ -117,6 +125,14 @@ void HelloD3D11Application::Render()
 }
 ```
 
+`HellD3D11Application.hpp`
+```cpp
+#include <d3d11.h>
+#include <dxgi1_3.h>
+#include <wrl.h>
+```
+
+`HellD3D11Application.cpp`
 ```cpp
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -129,7 +145,7 @@ void HelloD3D11Application::Render()
 We need to include the following headers, here's what each of these headers includes:
 
 - `d3d11.h`: The core of D3D11, it contains all the ID3D11XXX types and most of the enums we will be using with D3D11
-- `dxgi.h`: The core of DXGI, it contains all the IDXGIXXX types and additional enums that are required for DXGI structures
+- `dxgi1_3.h`: The core of DXGI, it contains all the IDXGIXXX types and additional enums that are required for DXGI structures
 - `d3dcompiler.h`: Contains all the functions necessary to compiler our HLSL shaders into bytecode that will be fed into the GPU
 - `DirectXMath.h`: DirectX's own math library, it contains all the types and math functions we will be using throughout the series
 - `wrl.h`: Is used for `Microsoft::WRL::ComPtr<T>`, to manage COM resources automatically.
@@ -142,14 +158,7 @@ We need to include the following headers, here's what each of these headers incl
 #pragma comment(lib, "dxguid.lib")
 ```
 
-Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma comment(lib, "PATH_TO_LIB")` in `HelloD3D11.cpp` right below the includes to link these libraries. 
-
-```cpp
-template <typename T>
-using ComPtr = Microsoft::WRL::ComPtr<T>;
-```
-
-Since the namespace name for ComPtr<T> is quite long, we are making a type alias like this.
+Of course just including the headers isn't enough, we must also link against D3D11 & friends to be able to actually use the stuff declared in the headers, put these `#pragma comment(lib, "PATH_TO_LIB")` in `HelloD3D11Application.cpp` right below the includes to link these libraries. 
 
 ```cpp
 ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
@@ -181,9 +190,7 @@ if (!Application::Initialize())
     return false;
 }
 
-if (FAILED(CreateDXGIFactory2(
-    0,
-    IID_PPV_ARGS(&_dxgiFactory))))
+if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
 {
     std::cout << "DXGI: Unable to create DXGIFactory\n";
     return false;
@@ -196,10 +203,9 @@ The first part calls the parent class, where `GLFW` is initialized and setup.
 ```cpp
 #define IID_PPV_ARGS(ppType) __uuidof(**(ppType)), IID_PPV_ARGS_Helper(ppType)
 ```
-Which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This functionally means that for functions that have a parameter setup as `REFIID` and functionally after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of use — this can be seen with the used `CreateDXGIFactory2` method where the second last and last parameter are a `REFIID` and `void**`:
+Which means that typing `IID_PPV_ARGS(&_dxgiFactory)` it is expanded by the compiler into `__uuidof(**(&_dxgiFactory)), IID_PPV_ARGS_Helper(_dxgiFactory)`. This functionally means that for functions that have a parameter setup as `REFIID` and functionally after a `[out] void**` parameter, this macro will expand the `IID_PPV_ARGS(ppType)` expression into these parameters for ease of use — this can be seen with the used `CreateDXGIFactory1` method where the parameters are a `REFIID` and `void**`:
 ```cpp
-HRESULT CreateDXGIFactory2(
-        UINT   Flags,
+HRESULT CreateDXGIFactory1(
         REFIID riid,
   [out] void   **ppFactory
 );
@@ -220,27 +226,26 @@ What the parts of the `IID_PPV_ARGS(ppType)` macro are:
 
     https://docs.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi
 
-[`CreateDXGIFactory2`](https://docs.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-createdxgifactory2) is the entry point to create a factory for us, a `IDXGIFactory2` to be precise.
+[`CreateDXGIFactory1`](https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-createdxgifactory1) is the entry point to create a factory for us, a `IDXGIFactory1` to be precise.
 There are various implementations of it, depending on what version you aim for, you get additional functionality.
 
-DXGI 1.0 up to 1.6 More information can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/_direct3ddxgi/) We will stick with `IDXGIFactory2` for now.
+DXGI 1.0 up to 1.6 More information can be found [here](https://docs.microsoft.com/en-us/windows/win32/api/_direct3ddxgi/) We will stick with `IDXGIFactory1` for now.
 
 ```cpp
 constexpr D3D_FEATURE_LEVEL deviceFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-constexpr UINT deviceFlags = D3D11_CREATE_DEVICE_FLAG::D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 if (FAILED(D3D11CreateDevice(
-    nullptr,
-    D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-    nullptr,
-    deviceFlags,
-    &deviceFeatureLevel,
-    1,
-    D3D11_SDK_VERSION,
-    &_device,
-    nullptr,
-    &_deviceContext)))
+        nullptr,
+        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        0,
+        &deviceFeatureLevel,
+        1,
+        D3D11_SDK_VERSION,
+        &_device,
+        nullptr,
+        &_deviceContext)))
 {
-    std::cout << "D3D11: Failed to create Device and Device Context\n";
+    std::cout << "D3D11: Failed to create device and device Context\n";
     return false;
 }
 ```
@@ -262,20 +267,21 @@ swapChainDescriptor.SampleDesc.Quality = 0;
 swapChainDescriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 swapChainDescriptor.BufferCount = 2;
 swapChainDescriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+swapChainDescriptor.Scaling = DXGI_SCALING::DXGI_SCALING_STRETCH;
 swapChainDescriptor.Flags = {};
 
 DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDescriptor = {};
 swapChainFullscreenDescriptor.Windowed = true;
 
 if (FAILED(_dxgiFactory->CreateSwapChainForHwnd(
-    _device.Get(),
-    glfwGetWin32Window(GetWindow()),
-    &swapChainDescriptor,
-    &swapChainFullscreenDescriptor,
-    nullptr,
-    &_swapChain)))
+        _device.Get(),
+        glfwGetWin32Window(GetWindow()),
+        &swapChainDescriptor,
+        &swapChainFullscreenDescriptor,
+        nullptr,
+        &_swapChain)))
 {
-    std::cout << "DXGI: Failed to create SwapChain\n";
+    std::cout << "DXGI: Failed to create swapchain\n";
     return false;
 }
 ```
@@ -284,9 +290,9 @@ After we successfully create device and device context, the next step is to crea
 
 The majority of values should make some sense without explanation, like width and height, and whether we want it to support a windowed window or not.
 
-`BufferUsage` tells the swapchain's buffers their usage, something we render to, and can present. The format here is in BGRA order, like the device creation flag we specified earlier, if you remember.
+`BufferUsage` tells the swapchain's buffers their usage, something we render to, and can present.
 
-`Scaling` tells DXGI to scale the buffer's contents to fit the presentation's target size.
+`Scaling` tells DXGI how to scale the buffer's contents to fit the presentation's target size.
 
 `BufferCount` is 2, because we want double buffering. Double buffering is an age-old technique to avoid presenting an image that is being used by the GPU, instead we work on the "back buffer", while the GPU is happy presenting the "front buffer", then, as soon as we are done with the back buffer, we swap front and back, and begin working on the former front buffer present that one and render to the other one again in the meantime. That process is supposed to reduce flicker or tearing.
 
@@ -379,8 +385,8 @@ void HelloD3D11Application::Render()
     D3D11_VIEWPORT viewport = {};
     viewport.TopLeftX = 0;
     viewport.TopLeftY = 0;
-    viewport.Width = GetWindowWidth();
-    viewport.Height = GetWindowHeight();
+    viewport.Width = static_cast<float>(GetWindowWidth());
+    viewport.Height = static_cast<float>(GetWindowHeight());
     viewport.MinDepth = 0.0f;
     viewport.MaxDepth = 1.0f;
 
@@ -468,8 +474,8 @@ void Application::HandleResize(
     const int32_t width,
     const int32_t height)
 {
-    Application& application = *static_cast<Application*>(glfwGetWindowUserPointer(window));
-    application.OnResize(width, height);
+    Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    application->OnResize(width, height);
 }
 
 GLFWwindow* Application::GetWindow() const
