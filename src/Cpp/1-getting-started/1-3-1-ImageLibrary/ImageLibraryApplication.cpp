@@ -12,6 +12,7 @@
 #include <d3dcompiler.h>
 
 #include <DirectXTex.h>
+#include <FreeImage.h>
 
 #include <iostream>
 
@@ -20,6 +21,12 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
+
+#if defined(_DEBUG)
+#pragma comment(lib, "FreeImageLibd.lib")
+#else
+#pragma comment(lib, "FreeImageLib.lib")
+#endif
 
 template <UINT TDebugNameLength>
 inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char (&debugName)[TDebugNameLength])
@@ -133,7 +140,159 @@ bool ImageLibraryApplication::Initialize()
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
 
+    FreeImage_Initialise();
     return true;
+}
+
+WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* device, const std::wstring& pathToDDS)
+{
+    DirectX::TexMetadata metaData = {};
+    DirectX::ScratchImage scratchImage;
+    if (FAILED(DirectX::LoadFromDDSFile(pathToDDS.c_str(), DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
+    {
+        std::cout << "DXTEX: Failed to load image\n";
+        return nullptr;
+    }
+
+    WRL::ComPtr<ID3D11Resource> texture = nullptr;
+    if (FAILED(DirectX::CreateTexture(
+            device,
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &texture)))
+    {
+        std::cout << "DXTEX: Failed to create texture out of image\n";
+        scratchImage.Release();
+        return nullptr;
+    }
+
+    ID3D11ShaderResourceView* srv = nullptr;
+
+    if (FAILED(DirectX::CreateShaderResourceView(
+            device,
+            scratchImage.GetImages(),
+            scratchImage.GetImageCount(),
+            metaData,
+            &srv)))
+    {
+        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
+        scratchImage.Release();
+        return nullptr;
+    }
+
+    return srv;
+}
+
+
+WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, const std::wstring& pathToTexture)
+{
+    FIBITMAP* image = nullptr; 
+    //Open our file
+    HANDLE file = CreateFileW(pathToTexture.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, 0);
+
+    size_t fileSize = GetFileSize(file, nullptr);
+    //Create our data buffer and read in the entire file
+    {
+        std::vector<BYTE> fileDataRaw(fileSize);
+        if (!ReadFile(file, fileDataRaw.data(), fileDataRaw.size(), nullptr, nullptr))
+        {
+            CloseHandle(file);
+            return nullptr;
+        }
+
+        //Close our file handle as we don't need it anymore
+        CloseHandle(file);
+
+        FIMEMORY* memHandle = FreeImage_OpenMemory(fileDataRaw.data(), fileDataRaw.size());
+        FREE_IMAGE_FORMAT imageFormat = FreeImage_GetFileTypeFromMemory(memHandle);
+        if (imageFormat == FIF_UNKNOWN)
+        {
+            FreeImage_CloseMemory(memHandle);
+            std::cout << "CreateTextureView: Unsupported texture format from file: '" << pathToTexture.c_str() << "'\n";
+            return nullptr;
+        }
+        image = FreeImage_LoadFromMemory(imageFormat, memHandle);
+
+        //We no longer need the original data
+        FreeImage_CloseMemory(memHandle);
+
+    } //local scope cleans up fileDataRaw
+
+    //Flip the image vertically so this matches up with what DirectXTex loads
+    FreeImage_FlipVertical(image);
+
+    uint32_t textureWidth = FreeImage_GetWidth(image);
+    uint32_t textureHeight = FreeImage_GetHeight(image);
+    uint32_t textureBPP = FreeImage_GetBPP(image);
+
+    D3D11_TEXTURE2D_DESC textureDesc{};
+    D3D11_SUBRESOURCE_DATA initialData{};
+    WRL::ComPtr<ID3D11Texture2D> texture = nullptr;
+
+    DXGI_FORMAT textureFormat;
+    switch (textureBPP)
+    {
+    case 8:
+        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8_UNORM;
+        break;
+    case 16:
+        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8_UNORM;
+        break;
+    case 24:
+        //D3D11 does not support 24 bit formats for textures, we'll need to convert
+        {
+            textureBPP = 32;
+            FIBITMAP* newImage = FreeImage_ConvertTo32Bits(image);
+            FreeImage_Unload(image);
+            image = newImage;
+            textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+        }
+        break;
+    case 32:
+        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+        break;
+    default:
+        {
+            //we could try to handle some weird bitcount, but these will probably be HDR or some antique format, just exit instead..
+            std::cout << "CreateTextureView: Texture has nontrivial bits per pixel ( " << textureBPP << " ), file: '" << pathToTexture.c_str() << "'\n";
+            return nullptr;
+        }
+        break;
+    }
+    textureDesc.Format = textureFormat;
+    textureDesc.ArraySize = 1;
+    textureDesc.MipLevels = 1;
+    textureDesc.Height = textureHeight;
+    textureDesc.Width = textureWidth;
+    textureDesc.SampleDesc.Count = 1;
+    textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    //populate initial data
+    initialData.pSysMem = FreeImage_GetBits(image);
+    initialData.SysMemPitch = (textureBPP / 8) * textureWidth;
+
+    if (FAILED(device->CreateTexture2D(&textureDesc, &initialData, texture.GetAddressOf())))
+    {
+        FreeImage_Unload(image);
+        return nullptr;
+    }
+    FreeImage_Unload(image);
+
+    ID3D11ShaderResourceView* srv = nullptr;
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Format = textureDesc.Format;
+    srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+
+    if (FAILED(device->CreateShaderResourceView(texture.Get(), &srvDesc, &srv)))
+    {
+        std::cout << "CreateTextureView: Failed to create SRV from texture: " << pathToTexture.c_str() << "\n";
+        return nullptr;
+    }
+
+    return srv;
 }
 
 bool ImageLibraryApplication::Load()
@@ -176,37 +335,14 @@ bool ImageLibraryApplication::Load()
         return false;
     }
 
-    DirectX::TexMetadata metaData = {};
-    DirectX::ScratchImage scratchImage;
-    if (FAILED(DirectX::LoadFromDDSFile(L"Assets/Textures/T_Froge.dds", DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
-    {
-        std::cout << "DXTEX: Failed to load image\n";
-        return false;
-    }
+    _fallbackTextureSrv = CreateTextureView(_device.Get(), L"Assets/Textures/default.png");
+    assert(_fallbackTextureSrv != nullptr); //as a fallback resource, this "needs" to exist
 
-    WRL::ComPtr<ID3D11Resource> texture = nullptr;
-    if (FAILED(DirectX::CreateTexture(
-            _device.Get(),
-            scratchImage.GetImages(),
-            scratchImage.GetImageCount(),
-            metaData,
-            &texture)))
+    _textureSrv = CreateTextureViewFromDDS(_device.Get(), L"Assets/Textures/T_Froge.dds");
+    if (_textureSrv == nullptr)
     {
-        std::cout << "DXTEX: Failed to create texture out of image\n";
-        scratchImage.Release();
-        return false;
-    }
-
-    if (FAILED(DirectX::CreateShaderResourceView(
-            _device.Get(),
-            scratchImage.GetImages(),
-            scratchImage.GetImageCount(),
-            metaData,
-            &_textureSrv)))
-    {
-        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
-        scratchImage.Release();
-        return false;
+        //this is "fine", we can use our fallback!
+        _textureSrv = _fallbackTextureSrv;
     }
 
     _pipeline->BindTexture(0, _textureSrv.Get());

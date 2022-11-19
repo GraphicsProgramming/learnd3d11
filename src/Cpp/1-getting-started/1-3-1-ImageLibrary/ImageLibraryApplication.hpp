@@ -43,4 +43,5 @@ private:
 
     WRL::ComPtr<ID3D11SamplerState> _linearSamplerState = nullptr;
     WRL::ComPtr<ID3D11ShaderResourceView> _textureSrv = nullptr;
+    WRL::ComPtr<ID3D11ShaderResourceView> _fallbackTextureSrv = nullptr;
 };
