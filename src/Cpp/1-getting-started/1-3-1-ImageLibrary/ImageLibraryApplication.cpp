@@ -88,11 +88,13 @@ bool ImageLibraryApplication::Initialize()
         return false;
     }
 
+#if !defined(NDEBUG)
     if (FAILED(_device.As(&_debug)))
     {
         std::cout << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
+#endif
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
