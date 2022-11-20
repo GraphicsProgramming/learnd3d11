@@ -1,4 +1,4 @@
-#include "ImageLibraryApplication.hpp"
+#include "TexturingApplication.hpp"
 #include "DeviceContext.hpp"
 #include "Pipeline.hpp"
 #include "PipelineFactory.hpp"
@@ -34,12 +34,12 @@ inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const ch
     deviceResource->SetPrivateData(WKPDID_D3DDebugObjectName, TDebugNameLength - 1, debugName);
 }
 
-ImageLibraryApplication::ImageLibraryApplication(const std::string& title)
+TexturingApplication::TexturingApplication(const std::string& title)
     : Application(title)
 {
 }
 
-ImageLibraryApplication::~ImageLibraryApplication()
+TexturingApplication::~TexturingApplication()
 {
     _deviceContext->Flush();
     _textureSrv.Reset();
@@ -57,7 +57,7 @@ ImageLibraryApplication::~ImageLibraryApplication()
     _device.Reset();
 }
 
-bool ImageLibraryApplication::Initialize()
+bool TexturingApplication::Initialize()
 {
     // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
@@ -226,8 +226,8 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
     uint32_t textureHeight = FreeImage_GetHeight(image);
     uint32_t textureBPP = FreeImage_GetBPP(image);
 
-    D3D11_TEXTURE2D_DESC textureDesc{};
-    D3D11_SUBRESOURCE_DATA initialData{};
+    D3D11_TEXTURE2D_DESC textureDesc = {};
+    D3D11_SUBRESOURCE_DATA initialData = {};
     WRL::ComPtr<ID3D11Texture2D> texture = nullptr;
 
     DXGI_FORMAT textureFormat;
@@ -281,7 +281,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
     FreeImage_Unload(image);
 
     ID3D11ShaderResourceView* srv = nullptr;
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     srvDesc.Format = textureDesc.Format;
     srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
@@ -295,7 +295,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
     return srv;
 }
 
-bool ImageLibraryApplication::Load()
+bool TexturingApplication::Load()
 {
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
@@ -363,7 +363,7 @@ bool ImageLibraryApplication::Load()
     return true;
 }
 
-bool ImageLibraryApplication::CreateSwapchainResources()
+bool TexturingApplication::CreateSwapchainResources()
 {
     WRL::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
     if (FAILED(_swapChain->GetBuffer(
@@ -386,12 +386,12 @@ bool ImageLibraryApplication::CreateSwapchainResources()
     return true;
 }
 
-void ImageLibraryApplication::DestroySwapchainResources()
+void TexturingApplication::DestroySwapchainResources()
 {
     _renderTarget.Reset();
 }
 
-void ImageLibraryApplication::OnResize(
+void TexturingApplication::OnResize(
     const int32_t width,
     const int32_t height)
 {
@@ -414,12 +414,12 @@ void ImageLibraryApplication::OnResize(
     CreateSwapchainResources();
 }
 
-void ImageLibraryApplication::Update()
+void TexturingApplication::Update()
 {
     Application::Update();
 }
 
-void ImageLibraryApplication::Render()
+void TexturingApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     constexpr uint32_t vertexOffset = 0;

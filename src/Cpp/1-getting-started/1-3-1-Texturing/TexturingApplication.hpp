@@ -11,11 +11,11 @@ class DeviceContext;
 class Pipeline;
 class PipelineFactory;
 
-class ImageLibraryApplication final : public Application
+class TexturingApplication final : public Application
 {
 public:
-    ImageLibraryApplication(const std::string& title);
-    ~ImageLibraryApplication() override;
+    TexturingApplication(const std::string& title);
+    ~TexturingApplication() override;
 
 protected:
     bool Initialize() override;
