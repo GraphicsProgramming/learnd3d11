@@ -14,7 +14,7 @@ how coordinate systems work and how we can make use of them.
 
 At the end we will also be able to roam around freely by using a camera.
 
-[Loading Images](1-3-1-image-library.md)
+[Loading Images](1-3-1-texturing.md)
 
 [Loading Meshes](1-3-2-loading-meshes.md)
 
@@ -28,4 +28,4 @@ At the end we will also be able to roam around freely by using a camera.
 
 [Camera](1-3-7-camera.md)
 
-[Next chapter](./1-3-1-image-library.md)
+[Next chapter](./1-3-1-texturing.md)

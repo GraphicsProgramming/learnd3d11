@@ -51,7 +51,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-2-3-NamingThings", "Cpp\1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Models", "3-Models", "{125F76A8-AE74-44AE-B471-BE7C09EB5EB4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-1-ImageLibrary", "Cpp\1-getting-started\1-3-1-ImageLibrary\1-3-1-ImageLibrary.vcxproj", "{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-1-Texturing", "Cpp\1-getting-started\1-3-1-Texturing\1-3-1-Texturing.vcxproj", "{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
