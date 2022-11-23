@@ -59,13 +59,11 @@ TexturingApplication::~TexturingApplication()
 
 bool TexturingApplication::Initialize()
 {
-    // This section initializes GLFW and creates a Window
     if (!Application::Initialize())
     {
         return false;
     }
 
-    // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
         std::cout << "DXGI: Failed to create factory\n";
@@ -188,11 +186,12 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* dev
 WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, const std::wstring& pathToTexture)
 {
     FIBITMAP* image = nullptr; 
-    //Open our file
+    //Win32 methods of opening files is called "CreateFile" counterintuitively, we make sure to tell it to only to read pre-existing files
     HANDLE file = CreateFileW(pathToTexture.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, 0);
 
     size_t fileSize = GetFileSize(file, nullptr);
-    //Create our data buffer and read in the entire file
+
+    //We open a new local scope here so we don't keep the vector in memory for the entire function call, we can get rid of the memory it holds earlier this way
     {
         std::vector<BYTE> fileDataRaw(fileSize);
         if (!ReadFile(file, fileDataRaw.data(), fileDataRaw.size(), nullptr, nullptr))
@@ -217,7 +216,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
         //We no longer need the original data
         FreeImage_CloseMemory(memHandle);
 
-    } //local scope cleans up fileDataRaw
+    } //ending the local scope cleans up fileDataRaw
 
     //Flip the image vertically so this matches up with what DirectXTex loads
     FreeImage_FlipVertical(image);
