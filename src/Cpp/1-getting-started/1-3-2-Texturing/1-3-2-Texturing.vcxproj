@@ -13,9 +13,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{C1C659F7-25F7-463E-BC25-83DCD748044E}</ProjectGuid>
+    <ProjectGuid>{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}</ProjectGuid>
     <RootNamespace>My13HelloTriangle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>1-3-2-Texturing</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -47,15 +48,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -64,19 +65,19 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/D FREEIMAGE_LIB %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>msvcrt</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
-mkdir $(OutDir)Assets\Models\
+      <Command>mkdir $(OutDir)Assets\Models\
 mkdir $(OutDir)Assets\Shaders\
 mkdir $(OutDir)Assets\Textures\
-xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)Assets\Models\
+xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
 xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)Assets\Shaders\
 xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     </PostBuildEvent>
@@ -90,20 +91,20 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/D FREEIMAGE_LIB %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
-mkdir $(OutDir)Assets\Models\
+      <Command>mkdir $(OutDir)Assets\Models\
 mkdir $(OutDir)Assets\Shaders\
 mkdir $(OutDir)Assets\Textures\
-xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)Assets\Models\
+xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
 xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)Assets\Shaders\
 xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     </PostBuildEvent>
@@ -111,34 +112,32 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
   <ItemGroup>
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="LoadingMeshesApplication.cpp" />
+    <ClCompile Include="TexturingApplication.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
-    <ClCompile Include="TextureFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
-    <ClInclude Include="LoadingMeshesApplication.hpp" />
+    <ClInclude Include="TexturingApplication.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />
     <ClInclude Include="ResourceDescriptor.hpp" />
-    <ClInclude Include="TextureFactory.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Textures\T_Good_Froge.dds" />
+    <Image Include="Assets\Textures\T_Froge.dds" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="Assets\Shaders\Main.vs.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

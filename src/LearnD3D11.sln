@@ -51,12 +51,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-2-3-NamingThings", "Cpp\1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Models", "3-Models", "{125F76A8-AE74-44AE-B471-BE7C09EB5EB4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-1-Texturing", "Cpp\1-getting-started\1-3-1-Texturing\1-3-1-Texturing.vcxproj", "{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-Texturing", "Cpp\1-getting-started\1-3-2-Texturing\1-3-2-Texturing.vcxproj", "{FAFF4FF7-7CB0-475D-AC8E-59156B3BC8B4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-LoadingMeshes", "Cpp\1-getting-started\1-3-2-LoadingMeshes\1-3-2-LoadingMeshes.vcxproj", "{C1C659F7-25F7-463E-BC25-83DCD748044E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-6-Models", "Cpp\1-getting-started\1-3-6-Models\1-3-6-Models.vcxproj", "{C1C659F7-25F7-463E-BC25-83DCD748044E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
@@ -66,12 +66,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-1-3-HelloTriangle-Refacto
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-2-LoadingMeshes-Refactored", "Cpp\1-getting-started\1-3-2-LoadingMeshes-Refactored\1-3-2-LoadingMeshes-Refactored.vcxproj", "{1B3547F4-344F-41FC-8AB0-312AF6E01A96}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-6-Models-Refactored", "Cpp\1-getting-started\1-3-6-Models-Refactored\1-3-6-Models-Refactored.vcxproj", "{1B3547F4-344F-41FC-8AB0-312AF6E01A96}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-3-DearImGui", "Cpp\1-getting-started\1-3-3-DearImGui\1-3-3-DearImGui.vcxproj", "{0989B526-EC66-4C1C-8121-4B9AC53E2C83}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-7-DearImGui", "Cpp\1-getting-started\1-3-7-DearImGui\1-3-7-DearImGui.vcxproj", "{0989B526-EC66-4C1C-8121-4B9AC53E2C83}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
@@ -81,7 +81,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-4-DepthBuffer", "Cpp\1-
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-5-RasterizerState", "Cpp\1-getting-started\1-3-5-RasterizerState\1-3-5-RasterizerState.vcxproj", "{1B35D552-7FE9-43AD-B0BC-7375D96034A5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-3-1-RasterizerState", "Cpp\1-getting-started\1-3-1-RasterizerState\1-3-1-RasterizerState.vcxproj", "{1B35D552-7FE9-43AD-B0BC-7375D96034A5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3B1AE74-436A-44B7-AD17-A0D19168773C} = {A3B1AE74-436A-44B7-AD17-A0D19168773C}
 	EndProjectSection
