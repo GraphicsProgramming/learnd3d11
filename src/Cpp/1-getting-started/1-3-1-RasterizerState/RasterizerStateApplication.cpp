@@ -1,19 +1,13 @@
 #include "RasterizerStateApplication.hpp"
 #include "DeviceContext.hpp"
-#include "ModelFactory.hpp"
 #include "Pipeline.hpp"
 #include "PipelineFactory.hpp"
-#include "TextureFactory.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
 #include <d3dcompiler.h>
-
-#include <imgui/backend/imgui_impl_dx11.h>
-#include <imgui/backend/imgui_impl_glfw.h>
-#include <imgui/imgui.h>
 
 #include <iostream>
 
@@ -37,15 +31,6 @@ RasterizerStateApplication::RasterizerStateApplication(const std::string& title)
 RasterizerStateApplication::~RasterizerStateApplication()
 {
     _deviceContext->Flush();
-    _depthDisabledDepthStencilState.Reset();
-    _depthEnabledLessDepthStencilState.Reset();
-    _depthEnabledLessEqualDepthStencilState.Reset();
-    _depthEnabledAlwaysDepthStencilState.Reset();
-    _depthEnabledNeverDepthStencilState.Reset();
-    _depthEnabledEqualDepthStencilState.Reset();
-    _depthEnabledNotEqualDepthStencilState.Reset();
-    _depthEnabledGreaterDepthStencilState.Reset();
-    _depthEnabledGreaterEqualDepthStencilState.Reset();
 
     _wireFrameCullBackRasterizerState.Reset();
     _wireFrameCullFrontRasterizerState.Reset();
@@ -55,16 +40,8 @@ RasterizerStateApplication::~RasterizerStateApplication()
     _solidFrameCullFrontRasterizerState.Reset();
     _solidFrameCullNoneRasterizerState.Reset();
 
-    _depthStencilView.Reset();
-    _constantBuffers[ConstantBufferType::PerApplication].Reset();
-    _constantBuffers[ConstantBufferType::PerFrame].Reset();
-    _constantBuffers[ConstantBufferType::PerObject].Reset();
-    _textureSrv.Reset();
     _pipeline.reset();
     _pipelineFactory.reset();
-    _modelVertices.Reset();
-    _modelIndices.Reset();
-    _modelFactory.reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
@@ -74,9 +51,6 @@ RasterizerStateApplication::~RasterizerStateApplication()
     _debug.Reset();
 #endif
     _device.Reset();
-
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext(_imGuiContext);
 }
 
 bool RasterizerStateApplication::Initialize()
@@ -123,7 +97,6 @@ bool RasterizerStateApplication::Initialize()
         return false;
     }
 
-    InitializeImGui();
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
@@ -161,8 +134,36 @@ bool RasterizerStateApplication::Initialize()
     CreateSwapchainResources();
 
     _pipelineFactory = std::make_unique<PipelineFactory>(_device);
-    _textureFactory = std::make_unique<TextureFactory>(_device);
-    _modelFactory = std::make_unique<ModelFactory>(_device);
+
+
+    D3D11_BUFFER_DESC triangleBufferDesc{};
+    triangleBufferDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+    triangleBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    triangleBufferDesc.ByteWidth = sizeof(VertexPositionColor) * 3;
+    float xPos = -1.0f;
+    float yPos = 1.0f;
+    for (int i = 0; i < _triangleVertices.size(); i++)
+    {
+        VertexPositionColor vertices[] =
+        {
+            VertexPositionColor{Position{xPos + 0.5f, yPos - 0.25f, 1.0f}, Color{ 1.0f, 0.0f, 0.0f} },
+            VertexPositionColor{Position{xPos + 0.33f, yPos - 0.5f, 1.0f}, Color{ 0.0f, 1.0f, 0.0f} },
+            VertexPositionColor{Position{xPos + 0.66f, yPos - 0.5f, 1.0f}, Color{ 0.0f, 0.0f, 1.0f} },
+        };
+
+        D3D11_SUBRESOURCE_DATA sd{};
+        sd.pSysMem = vertices;
+        sd.SysMemPitch = sizeof(vertices) * 3;
+        _device->CreateBuffer(&triangleBufferDesc, &sd, &_triangleVertices[i]);
+
+        xPos += 0.5f;
+        if (i == 2)
+        {
+            yPos -= 1.0f;
+            xPos = -1.0f;
+        }
+    }
+
 
     return true;
 }
@@ -172,7 +173,7 @@ bool RasterizerStateApplication::Load()
     PipelineDescriptor pipelineDescriptor = {};
     pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
     pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineDescriptor.VertexType = VertexType::PositionColorUv;
+    pipelineDescriptor.VertexType = VertexType::PositionColor;
     if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
         std::cout << "PipelineFactory: Failed to create pipeline\n";
@@ -184,72 +185,6 @@ bool RasterizerStateApplication::Load()
         0.0f,
         static_cast<float>(GetWindowWidth()),
         static_cast<float>(GetWindowHeight()));
-
-    if (!_textureFactory->CreateShaderResourceViewFromFile(L"Assets/Textures/T_Good_Froge.dds", _textureSrv))
-    {
-        return false;
-    }
-
-    _pipeline->BindTexture(0, _textureSrv.Get());
-
-    D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
-    linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
-    {
-        std::cout << "D3D11: Failed to create linear sampler state\n";
-        return false;
-    }
-
-    _pipeline->BindSampler(0, _linearSamplerState.Get());
-
-    if (!_modelFactory->LoadModel(
-            "Assets/Models/SM_Good_Froge.fbx",
-            _modelVertices,
-            &_modelVertexCount,
-            _modelIndices,
-            &_modelIndexCount))
-    {
-        return false;
-    }
-
-    const D3D11_BUFFER_DESC constantBufferDescriptor = CD3D11_BUFFER_DESC(
-        sizeof(DirectX::XMMATRIX),
-        D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER);
-
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerApplication])))
-    {
-        std::cout << "D3D11: Failed to create constant buffer PerApplication\n";
-        return false;
-    }
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
-    {
-        std::cout << "D3D11: Failed to create constant buffer PerFrame\n";
-        return false;
-    }
-    if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
-    {
-        std::cout << "D3D11: Failed to create constant buffer PerObject\n";
-        return false;
-    }
-
-    _pipeline->BindVertexStageConstantBuffer(0, _constantBuffers[ConstantBufferType::PerApplication].Get());
-    _pipeline->BindVertexStageConstantBuffer(1, _constantBuffers[ConstantBufferType::PerFrame].Get());
-    _pipeline->BindVertexStageConstantBuffer(2, _constantBuffers[ConstantBufferType::PerObject].Get());
-
-    _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
-        DirectX::XMConvertToRadians(45.0f),
-        GetWindowWidth() / static_cast<float>(GetWindowHeight()),
-        0.1f,
-        512.0f);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
-
-    if (!CreateDepthStencilStates())
-    {
-        return false;
-    }
 
     if (!CreateRasterizerStates())
     {
@@ -279,43 +214,11 @@ bool RasterizerStateApplication::CreateSwapchainResources()
         return false;
     }
 
-    WRL::ComPtr<ID3D11Texture2D> depthBuffer = nullptr;
-
-    D3D11_TEXTURE2D_DESC depthStencilBufferDescriptor = {};
-    depthStencilBufferDescriptor.ArraySize = 1;
-    depthStencilBufferDescriptor.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
-    depthStencilBufferDescriptor.CPUAccessFlags = 0;
-    depthStencilBufferDescriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilBufferDescriptor.Width = GetWindowWidth();
-    depthStencilBufferDescriptor.Height = GetWindowHeight();
-    depthStencilBufferDescriptor.MipLevels = 1;
-    depthStencilBufferDescriptor.SampleDesc.Count = 1;
-    depthStencilBufferDescriptor.SampleDesc.Quality = 0;
-    depthStencilBufferDescriptor.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
-    if (FAILED(_device->CreateTexture2D(
-            &depthStencilBufferDescriptor,
-            nullptr,
-            &depthBuffer)))
-    {
-        std::cout << "D3D11: Failed to create depth buffer\n";
-        return false;
-    }
-
-    if (FAILED(_device->CreateDepthStencilView(
-            depthBuffer.Get(),
-            nullptr,
-            &_depthStencilView)))
-    {
-        std::cout << "D3D11: Failed to create shader resource view from back buffer\n";
-        return false;
-    }
-
     return true;
 }
 
 void RasterizerStateApplication::DestroySwapchainResources()
 {
-    _depthStencilView.Reset();
     _renderTarget.Reset();
 }
 
@@ -340,44 +243,11 @@ void RasterizerStateApplication::OnResize(
     }
 
     CreateSwapchainResources();
-
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(
-        static_cast<float>(GetWindowWidth()),
-        static_cast<float>(GetWindowHeight()));
-
-    _projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(
-        DirectX::XMConvertToRadians(45.0f),
-        GetWindowWidth() / static_cast<float>(GetWindowHeight()),
-        0.1f,
-        512.0);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerApplication].Get(), &_projectionMatrix);
 }
 
 void RasterizerStateApplication::Update()
 {
     Application::Update();
-
-    const auto eyePosition = DirectX::XMVectorSet(0.0f, 50.0f, 200.0f, 1.0f);
-    const auto focusPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-    const auto upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-    _viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
-    _deviceContext->UpdateSubresource(_constantBuffers[PerFrame].Get(), &_viewMatrix);
-
-    static float angle = 0.0f;
-    if (_toggledRotation)
-    {
-        angle += 90.0f * (10.0f / 60000.0f);
-    }
-    else
-    {
-        angle -= 90.0f * (10.0f / 60000.0f);
-    }
-
-    const auto rotationAxis = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-    _worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
-    _deviceContext->UpdateSubresource(_constantBuffers[PerObject].Get(), &_worldMatrix);
 }
 
 void RasterizerStateApplication::Render()
@@ -386,197 +256,39 @@ void RasterizerStateApplication::Render()
 
     _deviceContext->Clear(
         _renderTarget.Get(),
-        clearColor,
-        _depthStencilView.Get(),
-        1.0f);
+        clearColor);
+
+    _pipeline->SetRasterizerState(_solidFrameCullNoneRasterizerState.Get());
     _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_modelVertices.Get(), 0);
-    _deviceContext->SetIndexBuffer(_modelIndices.Get(), 0);
+    _deviceContext->SetVertexBuffer(_triangleVertices[0].Get(), 0);
+    _deviceContext->Draw();
 
-    _deviceContext->DrawIndexed();
+    _pipeline->SetRasterizerState(_solidFrameCullFrontRasterizerState.Get());
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices[1].Get(), 0);
+    _deviceContext->Draw();
 
-    RenderUi();
+    _pipeline->SetRasterizerState(_solidFrameCullBackRasterizerState.Get());
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices[2].Get(), 0);
+    _deviceContext->Draw();
+
+    _pipeline->SetRasterizerState(_wireFrameCullNoneRasterizerState.Get());
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices[3].Get(), 0);
+    _deviceContext->Draw();
+
+    _pipeline->SetRasterizerState(_wireFrameCullFrontRasterizerState.Get());
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices[4].Get(), 0);
+    _deviceContext->Draw();
+
+    _pipeline->SetRasterizerState(_wireFrameCullBackRasterizerState.Get());
+    _deviceContext->SetPipeline(_pipeline.get());
+    _deviceContext->SetVertexBuffer(_triangleVertices[5].Get(), 0);
+    _deviceContext->Draw();
+
     _swapChain->Present(1, 0);
-}
-
-void RasterizerStateApplication::RenderUi()
-{
-    ImGui_ImplDX11_NewFrame();
-    ImGui::NewFrame();
-
-    if (ImGui::Begin("Hello Froge"))
-    {
-        ImGui::Checkbox("Toggle Rotation", &_toggledRotation);
-
-        ImGui::TextUnformatted("Depth State");
-        ImGui::RadioButton("Disabled", &_selectedDepthFunction, 0);
-        ImGui::RadioButton("Less", &_selectedDepthFunction, 1);
-        ImGui::RadioButton("LessEqual", &_selectedDepthFunction, 2);
-        ImGui::RadioButton("Greater", &_selectedDepthFunction, 3);
-        ImGui::RadioButton("GreaterEqual", &_selectedDepthFunction, 4);
-        ImGui::RadioButton("Equal", &_selectedDepthFunction, 5);
-        ImGui::RadioButton("NotEqual", &_selectedDepthFunction, 6);
-        ImGui::RadioButton("Always", &_selectedDepthFunction, 7);
-        ImGui::RadioButton("Never", &_selectedDepthFunction, 8);
-
-        switch (_selectedDepthFunction)
-        {
-        case 0:
-            _pipeline->SetDepthStencilState(_depthDisabledDepthStencilState.Get());
-            break;
-        case 1:
-            _pipeline->SetDepthStencilState(_depthEnabledLessDepthStencilState.Get());
-            break;
-        case 2:
-            _pipeline->SetDepthStencilState(_depthEnabledLessEqualDepthStencilState.Get());
-            break;
-        case 3:
-            _pipeline->SetDepthStencilState(_depthEnabledGreaterDepthStencilState.Get());
-            break;
-        case 4:
-            _pipeline->SetDepthStencilState(_depthEnabledGreaterEqualDepthStencilState.Get());
-            break;
-        case 5:
-            _pipeline->SetDepthStencilState(_depthEnabledEqualDepthStencilState.Get());
-            break;
-        case 6:
-            _pipeline->SetDepthStencilState(_depthEnabledNotEqualDepthStencilState.Get());
-            break;
-        case 7:
-            _pipeline->SetDepthStencilState(_depthEnabledAlwaysDepthStencilState.Get());
-            break;
-        case 8:
-            _pipeline->SetDepthStencilState(_depthEnabledNeverDepthStencilState.Get());
-            break;
-        }
-
-        ImGui::TextUnformatted("Rasterizer State");
-        ImGui::Checkbox("Wireframe", &_isWireframe);
-        ImGui::TextUnformatted("Cull");
-        ImGui::RadioButton("Front", &_selectedRasterizerState, 10);
-        ImGui::RadioButton("Back", &_selectedRasterizerState, 11);
-        ImGui::RadioButton("None", &_selectedRasterizerState, 12);
-
-        if (_isWireframe)
-        {
-            switch (_selectedRasterizerState)
-            {
-            case 10:
-                _pipeline->SetRasterizerState(_wireFrameCullFrontRasterizerState.Get());
-                break;
-            case 11:
-                _pipeline->SetRasterizerState(_wireFrameCullBackRasterizerState.Get());
-                break;
-            case 12:
-                _pipeline->SetRasterizerState(_wireFrameCullNoneRasterizerState.Get());
-                break;
-            }
-        }
-        else
-        {
-            switch (_selectedRasterizerState)
-            {
-            case 10:
-                _pipeline->SetRasterizerState(_solidFrameCullFrontRasterizerState.Get());
-                break;
-            case 11:
-                _pipeline->SetRasterizerState(_solidFrameCullBackRasterizerState.Get());
-                break;
-            case 12:
-                _pipeline->SetRasterizerState(_solidFrameCullNoneRasterizerState.Get());
-                break;
-            }
-        }
-
-        ImGui::End();
-    }
-
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
-void RasterizerStateApplication::InitializeImGui()
-{
-    _imGuiContext = ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(
-        static_cast<float>(GetWindowWidth()),
-        static_cast<float>(GetWindowHeight()));
-
-    ImGui_ImplGlfw_InitForOther(GetWindow(), true);
-}
-
-bool RasterizerStateApplication::CreateDepthStencilStates()
-{
-    D3D11_DEPTH_STENCIL_DESC depthStencilDescriptor = {};
-    depthStencilDescriptor.DepthEnable = false;
-    depthStencilDescriptor.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
-    depthStencilDescriptor.StencilEnable = false;
-
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthDisabledDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create disabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthEnable = true;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessEqualDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledAlwaysDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNeverDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER_EQUAL;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterEqualDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledEqualDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
-    if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNotEqualDepthStencilState)))
-    {
-        std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-        return false;
-    }
-
-    return true;
 }
 
 bool RasterizerStateApplication::CreateRasterizerStates()
@@ -585,7 +297,7 @@ bool RasterizerStateApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.AntialiasedLineEnable = false;
     rasterizerStateDescriptor.DepthBias = 0;
     rasterizerStateDescriptor.DepthBiasClamp = 0.0f;
-    rasterizerStateDescriptor.DepthClipEnable = true;
+    rasterizerStateDescriptor.DepthClipEnable = false;
     rasterizerStateDescriptor.FrontCounterClockwise = false;
     rasterizerStateDescriptor.MultisampleEnable = false;
     rasterizerStateDescriptor.ScissorEnable = false;

@@ -19,9 +19,7 @@ public:
 
     void Clear(
         ID3D11RenderTargetView* renderTarget,
-        float clearColor[4],
-        ID3D11DepthStencilView* depthStencilView,
-        float clearDepth) const;
+        float clearColor[4]) const;
     void SetPipeline(const Pipeline* pipeline);
     void SetVertexBuffer(
         ID3D11Buffer* vertexBuffer,

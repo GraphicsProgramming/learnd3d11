@@ -10,9 +10,7 @@ Let's step into the few variables we can control in D3D11.
 The first one is the FillMode, this only has two options and simply tells the rasterizer whether to completely fill a triangle, or to only show its edges (or as is more commonly known as "to display a wireframe"). 
 That's right, we don't need a fancy shader or render the geometry in lines in order to display a wireframe, it's a built-in feature of the rasterizer, one mostly used for debugging or special kinds of visualisation.
 
-!!! error 
-	Show screenshot of triangle in wireframe mode / filled mode
-
+![](../../images/1-3-1-fillmode.png)
 
 The CullMode is a bit more useful, this controls when we cull certain triangles, and has three options, `Front`, `Back` and `None`. For most purposes we generally set this to `Back`, so what does this actually do?
 
@@ -22,9 +20,6 @@ As was said before, generally we're not concerned with triangles that are facing
 Think of foliage or tree leaves for example, it's way more helpful to only place a single plane of geometry and render it from both sides than to duplicate all the geometry resulting in the GPU having to do a lot more work.
 
 Some shadowing techniques may also rely on Frontface culling in order to get better results, but we won't go into detail about that here now. 
-
-!!! error 
-	Show screenshot of triangle in both front/backface culled (one will be empty)
 
 Simple to explain, but perhaps a bit harder to understands is the "Vertex Winding Order" which is controlled by our input geometry as well as the rasteriser state.
 
@@ -48,6 +43,11 @@ For completeness-sake, the following is a "counter-clockwise triangle".
  /______\ 
 1        2 
 ```
+
+How it looks to have our triangle in `Front` and `Back` cull-modes.
+![](../../images/1-3-1-cullmode.png)
+
+(Yes, the "missing" triangle is the expected result here, it's being culled after all!)
 
 
 The last few variables we can control require some knowledge on topics we'll cover in later chapters, for now the only important one that is set to `true` by default is:

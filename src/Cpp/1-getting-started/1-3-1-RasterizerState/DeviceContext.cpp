@@ -1,7 +1,6 @@
 #include "DeviceContext.hpp"
 #include "Pipeline.hpp"
 
-#include <imgui/backend/imgui_impl_dx11.h>
 #include <utility>
 
 DeviceContext::DeviceContext(
@@ -12,32 +11,22 @@ DeviceContext::DeviceContext(
     _activePipeline = nullptr;
     _drawVertices = 0;
     _drawIndices = 0;
-    ImGui_ImplDX11_Init(device.Get(), _deviceContext.Get());
 }
 
 DeviceContext::~DeviceContext()
 {
-    ImGui_ImplDX11_Shutdown();
+
 }
 
 void DeviceContext::Clear(
     ID3D11RenderTargetView* renderTarget,
-    float clearColor[4],
-    ID3D11DepthStencilView* depthStencilView,
-    float clearDepth) const
+    float clearColor[4]) const
 {
     _deviceContext->ClearRenderTargetView(
         renderTarget,
         clearColor);
-    if (depthStencilView != nullptr)
-    {
-        _deviceContext->ClearDepthStencilView(
-            depthStencilView,
-            D3D11_CLEAR_FLAG::D3D11_CLEAR_DEPTH,
-            clearDepth,
-            0);
-    }
-    _deviceContext->OMSetRenderTargets(1, &renderTarget, depthStencilView);
+
+    _deviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
 }
 
 void DeviceContext::SetPipeline(const Pipeline* pipeline)
@@ -48,33 +37,6 @@ void DeviceContext::SetPipeline(const Pipeline* pipeline)
     _deviceContext->VSSetShader(pipeline->_vertexShader.Get(), nullptr, 0);
     _deviceContext->PSSetShader(pipeline->_pixelShader.Get(), nullptr, 0);
 
-    for (auto [descriptor, resource] : pipeline->_resources)
-    {
-        switch (descriptor.Type)
-        {
-        case ResourceType::Sampler:
-            _deviceContext->PSSetSamplers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11SamplerState**>(&resource));
-            break;
-
-        case ResourceType::Texture:
-            _deviceContext->PSSetShaderResources(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11ShaderResourceView**>(&resource));
-            break;
-
-        case ResourceType::Buffer:
-            switch (descriptor.Stage)
-            {
-            case ResourceStage::VertexStage:
-                _deviceContext->VSSetConstantBuffers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
-                break;
-            case ResourceStage::PixelStage:
-                _deviceContext->PSSetConstantBuffers(descriptor.SlotIndex, 1, reinterpret_cast<ID3D11Buffer**>(&resource));
-                break;
-            }
-            break;
-        }
-    }
-
-    _deviceContext->OMSetDepthStencilState(pipeline->_depthStencilState.Get(), 0);
     _deviceContext->RSSetViewports(1, &pipeline->_viewport);
     _deviceContext->RSSetState(pipeline->_rasterizerState.Get());
 }

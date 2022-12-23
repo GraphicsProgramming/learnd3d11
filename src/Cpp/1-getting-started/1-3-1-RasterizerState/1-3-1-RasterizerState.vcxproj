@@ -47,16 +47,16 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)Cpp\Framework\</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)..\lib\FreeImage\include\;$(SolutionDir)..\lib\DirectXTex\include\;$(SolutionDir)..\lib\assimp\include\;$(SolutionDir)..\lib\imgui\include\;$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(SolutionDir)..\lib\DirectXTex\lib\$(Configuration)\;$(SolutionDir)..\lib\FreeImage\lib\;$(SolutionDir)..\lib\assimp\lib\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(SolutionDir)Cpp\Framework\</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -70,7 +70,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>msvcrt</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
@@ -98,7 +98,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Framework.lib;assimp.lib;FreeImage.lib;DirectXTex.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -113,30 +113,19 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\backend\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\backend\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RasterizerStateApplication.cpp" />
-    <ClCompile Include="ModelFactory.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineFactory.cpp" />
-    <ClCompile Include="TextureFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="RasterizerStateApplication.hpp" />
-    <ClInclude Include="ModelFactory.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PipelineFactory.hpp" />
     <ClInclude Include="ResourceDescriptor.hpp" />
-    <ClInclude Include="TextureFactory.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
