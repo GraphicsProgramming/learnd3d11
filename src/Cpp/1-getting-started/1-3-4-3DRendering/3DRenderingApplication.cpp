@@ -9,9 +9,6 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 
-#include <DirectXTex.h>
-#include <FreeImage.h>
-
 #include <iostream>
 
 #pragma comment(lib, "d3d11.lib")
@@ -20,11 +17,6 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-#if defined(_DEBUG)
-#pragma comment(lib, "FreeImageLibd.lib")
-#else
-#pragma comment(lib, "FreeImageLib.lib")
-#endif
 
 template <UINT TDebugNameLength>
 inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
@@ -135,168 +127,9 @@ bool Rendering3DApplication::Initialize()
     CreateSwapchainResources();
 
     CreateConstantBuffers();
-
-    FreeImage_Initialise();
     return true;
 }
 
-WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* device, const std::wstring& pathToDDS)
-{
-    DirectX::TexMetadata metaData = {};
-    DirectX::ScratchImage scratchImage;
-    if (FAILED(DirectX::LoadFromDDSFile(pathToDDS.c_str(), DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
-    {
-        std::cout << "DXTEX: Failed to load image\n";
-        return nullptr;
-    }
-
-    WRL::ComPtr<ID3D11Resource> texture = nullptr;
-    if (FAILED(DirectX::CreateTexture(
-        device,
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &texture)))
-    {
-        std::cout << "DXTEX: Failed to create texture out of image\n";
-        scratchImage.Release();
-        return nullptr;
-    }
-
-    ID3D11ShaderResourceView* srv = nullptr;
-
-    if (FAILED(DirectX::CreateShaderResourceView(
-        device,
-        scratchImage.GetImages(),
-        scratchImage.GetImageCount(),
-        metaData,
-        &srv)))
-    {
-        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
-        scratchImage.Release();
-        return nullptr;
-    }
-
-    return srv;
-}
-
-
-WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, const std::wstring& pathToTexture)
-{
-    FIBITMAP* image = nullptr;
-    //Win32 methods of opening files is called "CreateFile" counterintuitively, we make sure to tell it to only to read pre-existing files
-    HANDLE file = CreateFileW(pathToTexture.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, 0);
-
-    //If the file didn't exist we'll get an invalid handle
-    if (file == INVALID_HANDLE_VALUE)
-    {
-        return nullptr;
-    }
-
-    size_t fileSize = GetFileSize(file, nullptr);
-
-    //We open a new local scope here so we don't keep the vector in memory for the entire function call, we can get rid of the memory it holds earlier this way
-    {
-        std::vector<BYTE> fileDataRaw(fileSize);
-        if (!ReadFile(file, fileDataRaw.data(), fileDataRaw.size(), nullptr, nullptr))
-        {
-            CloseHandle(file);
-            return nullptr;
-        }
-
-        //Close our file handle as we don't need it anymore
-        CloseHandle(file);
-
-        FIMEMORY* memHandle = FreeImage_OpenMemory(fileDataRaw.data(), fileDataRaw.size());
-        FREE_IMAGE_FORMAT imageFormat = FreeImage_GetFileTypeFromMemory(memHandle);
-        if (imageFormat == FIF_UNKNOWN)
-        {
-            FreeImage_CloseMemory(memHandle);
-            std::cout << "CreateTextureView: Unsupported texture format from file: '" << pathToTexture.c_str() << "'\n";
-            return nullptr;
-        }
-        image = FreeImage_LoadFromMemory(imageFormat, memHandle);
-
-        //We no longer need the original data
-        FreeImage_CloseMemory(memHandle);
-
-    } //ending the local scope cleans up fileDataRaw
-
-    //Flip the image vertically so this matches up with what DirectXTex loads
-    FreeImage_FlipVertical(image);
-
-    uint32_t textureWidth = FreeImage_GetWidth(image);
-    uint32_t textureHeight = FreeImage_GetHeight(image);
-    uint32_t textureBPP = FreeImage_GetBPP(image);
-
-    D3D11_TEXTURE2D_DESC textureDesc = {};
-    D3D11_SUBRESOURCE_DATA initialData = {};
-    WRL::ComPtr<ID3D11Texture2D> texture = nullptr;
-
-    DXGI_FORMAT textureFormat;
-    switch (textureBPP)
-    {
-    case 8:
-        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8_UNORM;
-        break;
-    case 16:
-        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8_UNORM;
-        break;
-    case 24:
-        //D3D11 does not support 24 bit formats for textures, we'll need to convert
-    {
-        textureBPP = 32;
-        FIBITMAP* newImage = FreeImage_ConvertTo32Bits(image);
-        FreeImage_Unload(image);
-        image = newImage;
-        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
-    }
-    break;
-    case 32:
-        textureFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
-        break;
-    default:
-    {
-        //we could try to handle some weird bitcount, but these will probably be HDR or some antique format, just exit instead..
-        std::cout << "CreateTextureView: Texture has nontrivial bits per pixel ( " << textureBPP << " ), file: '" << pathToTexture.c_str() << "'\n";
-        return nullptr;
-    }
-    break;
-    }
-    textureDesc.Format = textureFormat;
-    textureDesc.ArraySize = 1;
-    textureDesc.MipLevels = 1;
-    textureDesc.Height = textureHeight;
-    textureDesc.Width = textureWidth;
-    textureDesc.SampleDesc.Count = 1;
-    textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-    //populate initial data
-    initialData.pSysMem = FreeImage_GetBits(image);
-    initialData.SysMemPitch = (textureBPP / 8) * textureWidth;
-
-    if (FAILED(device->CreateTexture2D(&textureDesc, &initialData, texture.GetAddressOf())))
-    {
-        FreeImage_Unload(image);
-        return nullptr;
-    }
-    FreeImage_Unload(image);
-
-    ID3D11ShaderResourceView* srv = nullptr;
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Format = textureDesc.Format;
-    srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
-
-    if (FAILED(device->CreateShaderResourceView(texture.Get(), &srvDesc, &srv)))
-    {
-        std::cout << "CreateTextureView: Failed to create SRV from texture: " << pathToTexture.c_str() << "\n";
-        return nullptr;
-    }
-
-    return srv;
-}
 
 void Rendering3DApplication::CreateConstantBuffers()
 {
@@ -323,43 +156,43 @@ bool Rendering3DApplication::Load()
 
     constexpr VertexPositionColorUv vertices[] = {
         //Front 
-        {Position{ -0.5f,  -0.5f, 0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.5f, 0.0f }},
-        {Position{  0.5f,  -0.5f, 0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 1.0f, 1.0f }},
-        {Position{ -0.5f,  0.5f, 0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.0f, 1.0f }},
-        {Position{  0.5f,  0.5f, 0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.0f, 1.0f }},
+        {Position{ -0.5f,  -0.5f, 0.5f }, Color{ 1.0f, 0.0f, 0.0f}, Uv{ 0.0f, 1.0f }},
+        {Position{  0.5f,  -0.5f, 0.5f }, Color{ 0.0f, 1.0f, 0.0f}, Uv{ 1.0f, 1.0f }},
+        {Position{ -0.5f,   0.5f, 0.5f }, Color{ 0.0f, 0.0f, 1.0f}, Uv{ 0.0f, 0.0f }},
+        {Position{  0.5f,   0.5f, 0.5f }, Color{ 1.0f, 1.0f, 0.0f}, Uv{ 1.0f, 0.0f }},
 
         //Back
-        {Position{ -0.5f,  -0.5f, -0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.5f, 0.0f }},
-        {Position{  0.5f,  -0.5f, -0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 1.0f, 1.0f }},
-        {Position{ -0.5f,  0.5f, -0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.0f, 1.0f }},
-        {Position{  0.5f,   0.5f, -0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 0.0f, 1.0f }},
+        {Position{ -0.5f,  -0.5f, -0.5f }, Color{ 0.0f, 1.0f, 1.0f}, Uv{ 0.0f, 1.0f }},
+        {Position{  0.5f,  -0.5f, -0.5f }, Color{ 1.0f, 0.0f, 1.0f}, Uv{ 1.0f, 1.0f }},
+        {Position{ -0.5f,   0.5f, -0.5f }, Color{ 0.0f, 0.0f, 0.0f}, Uv{ 0.0f, 0.0f }},
+        {Position{  0.5f,   0.5f, -0.5f }, Color{ 1.0f, 1.0f, 1.0f}, Uv{ 1.0f, 0.0f }},
     };
 
     constexpr uint32_t indices[] =
     {
         //Top
-        2, 6, 7,
+        7, 6, 2,
         2, 3, 7,
 
         //Bottom
         0, 4, 5,
-        0, 1, 5,
+        5, 1, 0,
 
         //Left
         0, 2, 6,
-        0, 4, 6,
+        6, 4, 0,
 
         //Right
-        1, 3, 7,
+        7, 3, 1,
         1, 5, 7,
 
         //Front
-        0, 2, 3,
+        3, 2, 0,
         0, 1, 3,
 
         //Back
         4, 6, 7,
-        4, 5, 7
+        7, 5, 4
 
     };
 
@@ -390,28 +223,6 @@ bool Rendering3DApplication::Load()
         &_cubeIndices)))
     {
         std::cout << "D3D11: Failed to create cube index buffer\n";
-        return false;
-    }
-
-    _fallbackTextureSrv = CreateTextureView(_device.Get(), L"Assets/Textures/default.png");
-    assert(_fallbackTextureSrv != nullptr); //as a fallback resource, this "needs" to exist
-
-    _textureSrv = CreateTextureViewFromDDS(_device.Get(), L"Assets/Textures/T_Froge.dds");
-    if (_textureSrv == nullptr)
-    {
-        //this is "fine", we can use our fallback!
-        _textureSrv = _fallbackTextureSrv;
-    }
-
-
-    D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
-    linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-    linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-    if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
-    {
-        std::cout << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -483,7 +294,7 @@ void Rendering3DApplication::Update()
 
     static float _yRotation = 0.0f;
     static float _scale = 1.0f;
-    static XMFLOAT3 _cameraPosition = { 0.0f, 0.0f, -1.0f };
+    static XMFLOAT3 _cameraPosition = { 0.0f, 0.0f, -5.0f };
 
 
     _yRotation += _deltaTime;
@@ -493,7 +304,7 @@ void Rendering3DApplication::Update()
     XMVECTOR camPos = XMLoadFloat3(&_cameraPosition);
 
     XMMATRIX view = XMMatrixLookAtLH(camPos, g_XMZero, { 0,1,0,1 });
-    XMMATRIX proj = XMMatrixPerspectiveFovLH(90.0f * 0.0174533f,
+    XMMATRIX proj = XMMatrixPerspectiveFovLH(75.0f * 0.0174533f,
                                             static_cast<float>(_width) / static_cast<float>(_height),
                                             0.1f,
                                             100.0f);
@@ -506,7 +317,7 @@ void Rendering3DApplication::Update()
     //This will define our 3D object
     XMMATRIX translation = XMMatrixTranslation(0, 0, 0);
     XMMATRIX scaling = XMMatrixScaling(_scale, _scale, _scale);
-    XMMATRIX rotation = XMMatrixRotationRollPitchYaw(0, _yRotation, 0);
+    XMMATRIX rotation = XMMatrixRotationRollPitchYaw(_yRotation, _yRotation / 2.0f, 0);
 
     //Now we create our model matrix
     XMMATRIX modelMatrix = XMMatrixMultiply(translation, XMMatrixMultiply(scaling, rotation));
@@ -568,10 +379,6 @@ void Rendering3DApplication::Render()
 
     _deviceContext->RSSetViewports(1, &viewport);
     _deviceContext->RSSetState(_rasterState.Get());
-
-
-    _deviceContext->PSSetShaderResources(0, 1, _textureSrv.GetAddressOf());
-    _deviceContext->PSSetSamplers(0, 1, _linearSamplerState.GetAddressOf());
 
     ID3D11Buffer* constantBuffers[2] =
     {
