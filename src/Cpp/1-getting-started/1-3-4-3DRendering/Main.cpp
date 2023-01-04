@@ -1,8 +1,8 @@
-#include "DepthBufferApplication.hpp"
+#include "3DRenderingApplication.hpp"
 
 int main()
 {
-    DepthBufferApplication app{ "LearnD3D11 - Depth Buffer" };
+    Rendering3DApplication app{ "LearnD3D11 - 3D Rendering" };
     app.Run();
     return 0;
 }

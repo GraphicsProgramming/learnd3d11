@@ -10,16 +10,9 @@ enum class ResourceType : uint32_t
     Buffer
 };
 
-enum class ResourceStage : uint32_t
-{
-    VertexStage,
-    PixelStage
-};
-
 struct ResourceDescriptor
 {
     ResourceType Type;
-    ResourceStage Stage;
     uint32_t SlotIndex;
 };
 

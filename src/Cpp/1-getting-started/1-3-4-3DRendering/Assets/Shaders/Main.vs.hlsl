@@ -12,27 +12,22 @@ struct VSOutput
     float2 Uv: TEXCOORD0;
 };
 
-cbuffer PerApplication
+cbuffer PerFrame : register(b0)
 {
-    row_major matrix ProjectionMatrix;
-}
+    row_major matrix viewprojection;
+};
 
-cbuffer PerFrame
+cbuffer PerObject : register(b1)
 {
-    row_major matrix ViewMatrix;
-}
-
-cbuffer PerObject
-{
-    row_major matrix WorldMatrix;
-}
+    row_major matrix modelmatrix;
+};
 
 VSOutput Main(VSInput input)
 {
-    const matrix modelViewProjection = mul(WorldMatrix, mul(ViewMatrix, ProjectionMatrix));
-
     VSOutput output = (VSOutput)0;
-    output.Position = mul(float4(input.Position, 1.0f), modelViewProjection);
+
+    matrix world = mul(viewprojection, modelmatrix);
+    output.Position = mul(world, float4(input.Position, 1.0));
     output.Color = input.Color;
     output.Uv = input.Uv;
     return output;
