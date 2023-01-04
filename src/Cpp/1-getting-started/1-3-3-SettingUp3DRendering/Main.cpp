@@ -1,8 +1,8 @@
-#include "CameraApplication.hpp"
+#include "Setting3DApplication.hpp"
 
 int main()
 {
-    CameraApplication app{ "LearnD3D11 - Camera" };
+    Setting3DApplication app{ "LearnD3D11 - Texturing" };
     app.Run();
     return 0;
 }
