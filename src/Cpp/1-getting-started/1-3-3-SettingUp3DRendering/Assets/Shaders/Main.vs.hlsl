@@ -26,7 +26,7 @@ VSOutput Main(VSInput input)
 {
     VSOutput output = (VSOutput)0;
 
-    matrix world = mul(modelmatrix, viewprojection);
+    matrix world = mul(viewprojection, modelmatrix);
     output.Position = mul(world, float4(input.Position, 1.0));
     output.Color = input.Color;
     output.Uv = input.Uv;
