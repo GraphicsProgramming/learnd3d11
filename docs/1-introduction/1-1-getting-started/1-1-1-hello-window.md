@@ -211,7 +211,7 @@ I will show the whole code first, and then explain again what means what.
 ```cpp
 #pragma once
 
-#include <string_view>
+#include <string>
 #include <iostream>
 
 struct GLFWwindow;
@@ -219,7 +219,7 @@ struct GLFWwindow;
 class Application
 {
 public:
-    Application(const std::string_view title);
+    Application(const std::string& title);
     virtual ~Application();
     void Run();
 
@@ -244,7 +244,7 @@ private:
 #include "Application.hpp"
 #include <GLFW/glfw3.h>
 
-Application::Application(const std::string_view title)
+Application::Application(const std::string& title)
 {
     _title = title;
 }
@@ -317,7 +317,7 @@ bool Application::Initialize()
 class HelloWindowApplication final : public Application
 {
 public:
-    HelloWindowApplication(const std::string_view title);
+    HelloWindowApplication(const std::string& title);
 
 protected:
     bool Load() override;
@@ -331,7 +331,7 @@ protected:
 ```cpp
 #include "HelloWindowApplication.hpp"
 
-HelloWindowApplication::HelloWindowApplication(const std::string_view title)
+HelloWindowApplication::HelloWindowApplication(const std::string& title)
     : Application(title)
 {
 }
