@@ -35,6 +35,12 @@ Rendering3DApplication::~Rendering3DApplication()
     _textureSrv.Reset();
     _cubeIndices.Reset();
     _cubeVertices.Reset();
+    _perFrameConstantBuffer.Reset();
+    _perObjectConstantBuffer.Reset();
+    _rasterState.Reset();
+    _depthState.Reset();
+    _depthTarget.Reset();
+    _shaderCollection.Destroy();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
@@ -125,11 +131,62 @@ bool Rendering3DApplication::Initialize()
     }
 
     CreateSwapchainResources();
-
+    CreateRasterState();
+    CreateDepthStencilView();
+    CreateDepthState();
     CreateConstantBuffers();
     return true;
 }
 
+void Rendering3DApplication::CreateRasterState()
+{
+    D3D11_RASTERIZER_DESC rasterDesc{};
+    rasterDesc.CullMode = D3D11_CULL_NONE;
+    rasterDesc.FillMode = D3D11_FILL_SOLID;
+
+    _device->CreateRasterizerState(&rasterDesc, &_rasterState);
+}
+
+void Rendering3DApplication::CreateDepthStencilView()
+{
+    D3D11_TEXTURE2D_DESC texDesc{};
+    texDesc.Height = GetWindowHeight();
+    texDesc.Width = GetWindowWidth();
+    texDesc.ArraySize = 1;
+    texDesc.SampleDesc.Count = 1;
+    texDesc.MipLevels = 1;
+    texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+
+    ID3D11Texture2D* texture = nullptr;
+    if (FAILED(_device->CreateTexture2D(&texDesc, nullptr, &texture)))
+    {
+        std::cout << "DXGI: Failed to create texture for DepthStencilView\n";
+        return;
+    }
+
+    D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+    dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+    dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    if(FAILED(_device->CreateDepthStencilView(texture, &dsvDesc, &_depthTarget)))
+    {
+        std::cout << "DXGI: Failed to create DepthStencilView\n";
+        texture->Release();
+        return;
+    }
+
+    texture->Release();
+}
+
+void Rendering3DApplication::CreateDepthState()
+{
+    D3D11_DEPTH_STENCIL_DESC depthDesc{};
+    depthDesc.DepthEnable = TRUE;
+    depthDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
+    depthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+
+    _device->CreateDepthStencilState(&depthDesc, &_depthState);
+}
 
 void Rendering3DApplication::CreateConstantBuffers()
 {
@@ -193,7 +250,6 @@ bool Rendering3DApplication::Load()
         //Back
         4, 6, 7,
         7, 5, 4
-
     };
 
     D3D11_BUFFER_DESC bufferInfo = {};
@@ -225,12 +281,6 @@ bool Rendering3DApplication::Load()
         std::cout << "D3D11: Failed to create cube index buffer\n";
         return false;
     }
-
-    D3D11_RASTERIZER_DESC rasterDesc{};
-    rasterDesc.CullMode = D3D11_CULL_NONE;
-    rasterDesc.FillMode = D3D11_FILL_SOLID;
-
-    _device->CreateRasterizerState(&rasterDesc, &_rasterState);
 
     return true;
 }
@@ -268,10 +318,13 @@ void Rendering3DApplication::OnResize(
     const int32_t height)
 {
     Application::OnResize(width, height);
+
+    ID3D11RenderTargetView* nullRTV = nullptr;
+    _deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
     _deviceContext->Flush();
 
     DestroySwapchainResources();
-
+  
     if (FAILED(_swapChain->ResizeBuffers(
         0,
         width,
@@ -284,6 +337,9 @@ void Rendering3DApplication::OnResize(
     }
 
     CreateSwapchainResources();
+
+    _depthTarget.Reset();
+    CreateDepthStencilView();
 }
 
 void Rendering3DApplication::Update()
@@ -342,13 +398,15 @@ void Rendering3DApplication::Render()
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     constexpr uint32_t vertexOffset = 0;
 
-    ID3D11RenderTargetView* nullTarget = nullptr;
+    ID3D11RenderTargetView* nullRTV = nullptr;
 
-    //set to 0 so we can clear properly
-    _deviceContext->OMSetRenderTargets(1, &nullTarget, nullptr);
+    //set to nullptr so we can clear properly
+    _deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+
     _deviceContext->ClearRenderTargetView(_renderTarget.Get(), clearColor);
+    _deviceContext->ClearDepthStencilView(_depthTarget.Get(), D3D11_CLEAR_FLAG::D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-    _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), nullptr);
+    _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), _depthTarget.Get());
 
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -379,6 +437,7 @@ void Rendering3DApplication::Render()
 
     _deviceContext->RSSetViewports(1, &viewport);
     _deviceContext->RSSetState(_rasterState.Get());
+    _deviceContext->OMSetDepthStencilState(_depthState.Get(), 0);
 
     ID3D11Buffer* constantBuffers[2] =
     {
@@ -390,76 +449,4 @@ void Rendering3DApplication::Render()
 
     _deviceContext->DrawIndexed(36, 0, 0);
     _swapChain->Present(1, 0);
-}
-
-bool Rendering3DApplication::CreateDepthStencilStates()
-{
-    //D3D11_DEPTH_STENCIL_DESC depthStencilDescriptor = {};
-    //depthStencilDescriptor.DepthEnable = false;
-    //depthStencilDescriptor.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
-    //depthStencilDescriptor.StencilEnable = false;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthDisabledDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create disabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthEnable = true;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledLessEqualDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledAlwaysDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNeverDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER_EQUAL;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledGreaterEqualDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledEqualDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-    //
-    //depthStencilDescriptor.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
-    //if (FAILED(_device->CreateDepthStencilState(&depthStencilDescriptor, &_depthEnabledNotEqualDepthStencilState)))
-    //{
-    //    std::cout << "D3D11: Failed to create enabled depth stencil state\n";
-    //    return false;
-    //}
-
-    return true;
 }

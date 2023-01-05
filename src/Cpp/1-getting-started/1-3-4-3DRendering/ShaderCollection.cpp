@@ -188,3 +188,10 @@ void ShaderCollection::Set(ID3D11DeviceContext* context)
     context->VSSetShader(_vertexShader.Get(), nullptr, 0);
     context->PSSetShader(_pixelShader.Get(), nullptr, 0);
 }
+
+void ShaderCollection::Destroy()
+{
+    _vertexShader.Reset();
+    _pixelShader.Reset();
+    _inputLayout.Reset();
+}

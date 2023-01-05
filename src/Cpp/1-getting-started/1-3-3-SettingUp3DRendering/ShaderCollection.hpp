@@ -17,11 +17,17 @@ struct ShaderCollectionDescriptor
 class ShaderCollection
 {
 public:
+
     static ShaderCollection CreateShaderCollection(
         const ShaderCollectionDescriptor& settings, ID3D11Device* device);
+
     static size_t GetLayoutByteSize(VertexType vertexType);
+
     void Set(ID3D11DeviceContext* context);
+    void Destroy();
+
 private:
+
     static [[nodiscard]] WRL::ComPtr<ID3D11VertexShader> CreateVertexShader(
        ID3D11Device* device,
        const std::wstring& filePath,

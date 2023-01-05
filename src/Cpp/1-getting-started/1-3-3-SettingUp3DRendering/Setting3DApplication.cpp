@@ -42,6 +42,11 @@ Setting3DApplication::~Setting3DApplication()
     _deviceContext->Flush();
     _textureSrv.Reset();
     _triangleVertices.Reset();
+    _perFrameConstantBuffer.Reset();
+    _perObjectConstantBuffer.Reset();
+    _linearSamplerState.Reset();
+    _rasterState.Reset();
+    _shaderCollection.Destroy();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();

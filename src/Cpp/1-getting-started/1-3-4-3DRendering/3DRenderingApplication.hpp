@@ -36,7 +36,10 @@ protected:
     void Render() override;
 
 private:
-    bool CreateDepthStencilStates();
+
+    void CreateRasterState();
+    void CreateDepthStencilView();
+    void CreateDepthState();
     void CreateConstantBuffers();
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
@@ -46,7 +49,9 @@ private:
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     WRL::ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
+    WRL::ComPtr<ID3D11DepthStencilView> _depthTarget = nullptr;
     WRL::ComPtr<ID3D11RasterizerState> _rasterState = nullptr;
+    WRL::ComPtr<ID3D11DepthStencilState> _depthState = nullptr;
     WRL::ComPtr<ID3D11Buffer> _cubeVertices = nullptr;
     WRL::ComPtr<ID3D11Buffer> _cubeIndices = nullptr;
     WRL::ComPtr<ID3D11Debug> _debug = nullptr;
