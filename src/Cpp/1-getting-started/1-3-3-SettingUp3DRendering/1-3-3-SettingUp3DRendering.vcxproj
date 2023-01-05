@@ -124,7 +124,6 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="ShaderCollection.hpp" />
-    <ClInclude Include="ResourceDescriptor.hpp" />
     <ClInclude Include="Setting3DApplication.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>

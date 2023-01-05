@@ -116,12 +116,8 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
   <ItemGroup>
     <ClInclude Include="3DRenderingApplication.hpp" />
     <ClInclude Include="Definitions.hpp" />
-    <ClInclude Include="ResourceDescriptor.hpp" />
     <ClInclude Include="ShaderCollection.hpp" />
     <ClInclude Include="VertexType.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Assets\Textures\T_Good_Froge.dds" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Main.ps.hlsl">

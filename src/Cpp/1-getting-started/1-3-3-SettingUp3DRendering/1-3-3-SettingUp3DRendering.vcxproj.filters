@@ -25,9 +25,6 @@
     <ClInclude Include="ShaderCollection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceDescriptor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Setting3DApplication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
