@@ -161,7 +161,7 @@ void Rendering3DApplication::CreateDepthStencilView()
     ID3D11Texture2D* texture = nullptr;
     if (FAILED(_device->CreateTexture2D(&texDesc, nullptr, &texture)))
     {
-        std::cout << "DXGI: Failed to create texture for DepthStencilView\n";
+        std::cout << "D3D11: Failed to create texture for DepthStencilView\n";
         return;
     }
 
@@ -170,7 +170,7 @@ void Rendering3DApplication::CreateDepthStencilView()
     dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     if(FAILED(_device->CreateDepthStencilView(texture, &dsvDesc, &_depthTarget)))
     {
-        std::cout << "DXGI: Failed to create DepthStencilView\n";
+        std::cout << "D3D11: Failed to create DepthStencilView\n";
         texture->Release();
         return;
     }
