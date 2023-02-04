@@ -52,7 +52,7 @@ private:
     WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
     WRL::ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
     WRL::ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
-    D3D11_PRIMITIVE_TOPOLOGY _primitiveTopology = {};*
+    D3D11_PRIMITIVE_TOPOLOGY _primitiveTopology = {};
     uint32_t _vertexSize = 0;
     static std::unordered_map<VertexType, std::vector<D3D11_INPUT_ELEMENT_DESC>> _layoutMap;
 };

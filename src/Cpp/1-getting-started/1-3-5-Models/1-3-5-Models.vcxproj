@@ -117,12 +117,14 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LoadingMeshesApplication.cpp" />
+    <ClCompile Include="ShaderCollection.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="LoadingMeshesApplication.hpp" />
     <ClInclude Include="ResourceDescriptor.hpp" />
+    <ClInclude Include="ShaderCollection.hpp" />
     <ClInclude Include="TextureFactory.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>

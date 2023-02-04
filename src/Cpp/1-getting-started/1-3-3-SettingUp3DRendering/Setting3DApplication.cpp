@@ -483,8 +483,7 @@ void Setting3DApplication::Update()
 void Setting3DApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr uint32_t vertexOffset = 0;
-
+    constexpr UINT vertexOffset = 0;
     ID3D11RenderTargetView* nullTarget = nullptr;
 
     //set to 0 so we can clear properly
@@ -497,7 +496,7 @@ void Setting3DApplication::Render()
 
     D3D11_BUFFER_DESC description = {};
     _triangleVertices->GetDesc(&description);
-    UINT stride = sizeof(VertexPositionColorUv);
+    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
     _deviceContext->IASetVertexBuffers(
         0,
         1,
@@ -505,7 +504,7 @@ void Setting3DApplication::Render()
         &stride,
         &vertexOffset);
 
-    _shaderCollection.Set(_deviceContext.Get());
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
 
     D3D11_VIEWPORT viewport = {
         0.0f,

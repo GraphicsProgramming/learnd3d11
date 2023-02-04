@@ -1,7 +1,5 @@
 #include "TexturingApplication.hpp"
-#include "DeviceContext.hpp"
-#include "Pipeline.hpp"
-#include "PipelineFactory.hpp"
+#include "ShaderCollection.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -44,12 +42,13 @@ TexturingApplication::~TexturingApplication()
     _deviceContext->Flush();
     _textureSrv.Reset();
     _triangleVertices.Reset();
-    _pipeline.reset();
-    _pipelineFactory.reset();
+    _linearSamplerState.Reset();
+    _rasterState.Reset();
+    _shaderCollection.Destroy();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.reset();
+    _deviceContext.Reset();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     _debug.Reset();
@@ -101,11 +100,11 @@ bool TexturingApplication::Initialize()
     }
 #endif
 
+    _deviceContext = deviceContext;
+
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
     SetDebugName(deviceContext.Get(), "CTX_Main");
-
-    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -135,8 +134,6 @@ bool TexturingApplication::Initialize()
     }
 
     CreateSwapchainResources();
-
-    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
 
     FreeImage_Initialise();
     return true;
@@ -296,21 +293,11 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
 
 bool TexturingApplication::Load()
 {
-    PipelineDescriptor pipelineDescriptor = {};
-    pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
-    pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineDescriptor.VertexType = VertexType::PositionColorUv;
-    if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
-    {
-        std::cout << "PipelineFactory: Failed to create pipeline\n";
-        return false;
-    }
-
-    _pipeline->SetViewport(
-        0.0f,
-        0.0f,
-        static_cast<float>(GetWindowWidth()),
-        static_cast<float>(GetWindowHeight()));
+    ShaderCollectionDescriptor shaderCollectionDescriptor = {};
+    shaderCollectionDescriptor.VertexShaderFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    shaderCollectionDescriptor.PixelShaderFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    shaderCollectionDescriptor.VertexType = VertexType::PositionColorUv;
+    _shaderCollection = ShaderCollection::CreateShaderCollection(shaderCollectionDescriptor, _device.Get());
 
     constexpr VertexPositionColorUv vertices[] = {
         {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }, Uv{ 0.5f, 0.0f }},
@@ -344,8 +331,6 @@ bool TexturingApplication::Load()
         _textureSrv = _fallbackTextureSrv;
     }
 
-    _pipeline->BindTexture(0, _textureSrv.Get());
-
     D3D11_SAMPLER_DESC linearSamplerStateDescriptor = {};
     linearSamplerStateDescriptor.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
     linearSamplerStateDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
@@ -357,7 +342,6 @@ bool TexturingApplication::Load()
         return false;
     }
 
-    _pipeline->BindSampler(0, _linearSamplerState.Get());
 
     return true;
 }
@@ -421,11 +405,44 @@ void TexturingApplication::Update()
 void TexturingApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr uint32_t vertexOffset = 0;
+    constexpr UINT vertexOffset = 0;
 
-    _deviceContext->Clear(_renderTarget.Get(), clearColor);
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
-    _deviceContext->Draw();
+    ID3D11RenderTargetView* nullTarget = nullptr;
+
+    //set to 0 so we can clear properly
+    _deviceContext->OMSetRenderTargets(1, &nullTarget, nullptr);
+    _deviceContext->ClearRenderTargetView(_renderTarget.Get(), clearColor);
+    _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), nullptr);
+
+    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    D3D11_BUFFER_DESC description = {};
+    _triangleVertices->GetDesc(&description);
+    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices.GetAddressOf(),
+        &stride,
+        &vertexOffset);
+
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
+
+    D3D11_VIEWPORT viewport = {
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()),
+        0.0f,
+        1.0f
+    };
+
+    _deviceContext->RSSetViewports(1, &viewport);
+    _deviceContext->RSSetState(_rasterState.Get());
+
+    _deviceContext->PSSetShaderResources(0, 1, _textureSrv.GetAddressOf());
+    _deviceContext->PSSetSamplers(0, 1, _linearSamplerState.GetAddressOf());
+
+    _deviceContext->Draw(3, 0);
     _swapChain->Present(1, 0);
 }

@@ -401,7 +401,7 @@ void Rendering3DApplication::Update()
 void Rendering3DApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    constexpr uint32_t vertexOffset = 0;
+    constexpr UINT vertexOffset = 0;
 
     ID3D11RenderTargetView* nullRTV = nullptr;
 
@@ -415,7 +415,7 @@ void Rendering3DApplication::Render()
 
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    UINT stride = sizeof(VertexPositionColorUv);
+    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
     _deviceContext->IASetVertexBuffers(
         0,
         1,
@@ -429,7 +429,7 @@ void Rendering3DApplication::Render()
         0
     );
 
-    _shaderCollection.Set(_deviceContext.Get());
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
 
     D3D11_VIEWPORT viewport = {
         0.0f,
