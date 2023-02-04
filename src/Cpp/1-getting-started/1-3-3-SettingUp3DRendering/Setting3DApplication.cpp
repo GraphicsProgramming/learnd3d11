@@ -505,7 +505,7 @@ void Setting3DApplication::Render()
         &stride,
         &vertexOffset);
 
-    _shaderCollection.Set(_deviceContext.Get());
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
 
     D3D11_VIEWPORT viewport = {
         0.0f,

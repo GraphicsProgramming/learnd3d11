@@ -142,15 +142,13 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     <ClCompile Include="..\..\..\..\lib\imgui\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DearImGuiApplication.cpp" />
-    <ClCompile Include="ModelFactory.cpp" />
-    <ClCompile Include="TextureFactory.cpp" />
+    <ClCompile Include="ShaderCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DearImGuiApplication.hpp" />
-    <ClInclude Include="ModelFactory.hpp" />
     <ClInclude Include="ResourceDescriptor.hpp" />
-    <ClInclude Include="TextureFactory.hpp" />
+    <ClInclude Include="ShaderCollection.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
