@@ -14,12 +14,12 @@ struct VSOutput
 
 cbuffer PerFrame : register(b0)
 {
-    row_major matrix viewprojection;
+    matrix viewprojection;
 };
 
 cbuffer PerObject : register(b1)
 {
-    row_major matrix modelmatrix;
+    matrix modelmatrix;
 };
 
 VSOutput Main(VSInput input)
