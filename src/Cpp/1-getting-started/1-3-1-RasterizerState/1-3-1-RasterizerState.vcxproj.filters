@@ -21,9 +21,6 @@
     <ClCompile Include="RasterizerStateApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,9 +33,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VertexType.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DeviceContext.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShaderCollection.hpp">

@@ -20,7 +20,7 @@ public:
 
     static ShaderCollection CreateShaderCollection(
         const ShaderCollectionDescriptor& settings, ID3D11Device* device);
-    static size_t GetLayoutByteSize(VertexType vertexType);
+    static UINT GetLayoutByteSize(VertexType vertexType);
 
     void ApplyToContext(ID3D11DeviceContext* context);
     void Destroy();
@@ -46,7 +46,6 @@ private:
         const std::string& entryPoint,
         const std::string& profile,
         WRL::ComPtr<ID3DBlob>& shaderBlob);
-
 
     WRL::ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
     WRL::ComPtr<ID3D11PixelShader> _pixelShader = nullptr;

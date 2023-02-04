@@ -1,7 +1,5 @@
 #include "RasterizerStateApplication.hpp"
-#include "DeviceContext.hpp"
-#include "Pipeline.hpp"
-#include "PipelineFactory.hpp"
+#include "ShaderCollection.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -40,12 +38,10 @@ RasterizerStateApplication::~RasterizerStateApplication()
     _solidFrameCullFrontRasterizerState.Reset();
     _solidFrameCullNoneRasterizerState.Reset();
 
-    _pipeline.reset();
-    _pipelineFactory.reset();
+    _shaderCollection.Destroy();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.reset();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     _debug.Reset();
@@ -102,7 +98,7 @@ bool RasterizerStateApplication::Initialize()
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
     SetDebugName(deviceContext.Get(), "CTX_Main");
 
-    _deviceContext = std::make_unique<DeviceContext>(_device, std::move(deviceContext));
+    _deviceContext = deviceContext;
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -133,8 +129,17 @@ bool RasterizerStateApplication::Initialize()
 
     CreateSwapchainResources();
 
-    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
+    return true;
+}
 
+bool RasterizerStateApplication::Load()
+{
+    ShaderCollectionDescriptor shaderDescriptor = {};
+    shaderDescriptor.VertexShaderFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    shaderDescriptor.PixelShaderFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    shaderDescriptor.VertexType = VertexType::PositionColor;
+
+    _shaderCollection = ShaderCollection::CreateShaderCollection(shaderDescriptor, _device.Get());
 
     D3D11_BUFFER_DESC triangleBufferDesc{};
     triangleBufferDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
@@ -144,11 +149,10 @@ bool RasterizerStateApplication::Initialize()
     float yPos = 1.0f;
     for (int i = 0; i < _triangleVertices.size(); i++)
     {
-        VertexPositionColor vertices[] =
-        {
-            VertexPositionColor{Position{xPos + 0.5f, yPos - 0.25f, 1.0f}, Color{ 1.0f, 0.0f, 0.0f} },
-            VertexPositionColor{Position{xPos + 0.33f, yPos - 0.5f, 1.0f}, Color{ 0.0f, 1.0f, 0.0f} },
-            VertexPositionColor{Position{xPos + 0.66f, yPos - 0.5f, 1.0f}, Color{ 0.0f, 0.0f, 1.0f} },
+        VertexPositionColor vertices[] = {
+            VertexPositionColor{Position{ xPos + 0.5f, yPos - 0.25f, 1.0f }, Color{ 1.0f, 0.0f, 0.0f }},
+            VertexPositionColor{Position{ xPos + 0.33f, yPos - 0.5f, 1.0f }, Color{ 0.0f, 1.0f, 0.0f }},
+            VertexPositionColor{Position{ xPos + 0.66f, yPos - 0.5f, 1.0f }, Color{ 0.0f, 0.0f, 1.0f }},
         };
 
         D3D11_SUBRESOURCE_DATA sd{};
@@ -163,28 +167,6 @@ bool RasterizerStateApplication::Initialize()
             xPos = -1.0f;
         }
     }
-
-
-    return true;
-}
-
-bool RasterizerStateApplication::Load()
-{
-    PipelineDescriptor pipelineDescriptor = {};
-    pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
-    pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineDescriptor.VertexType = VertexType::PositionColor;
-    if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
-    {
-        std::cout << "PipelineFactory: Failed to create pipeline\n";
-        return false;
-    }
-
-    _pipeline->SetViewport(
-        0.0f,
-        0.0f,
-        static_cast<float>(GetWindowWidth()),
-        static_cast<float>(GetWindowHeight()));
 
     if (!CreateRasterizerStates())
     {
@@ -253,40 +235,85 @@ void RasterizerStateApplication::Update()
 void RasterizerStateApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    ID3D11RenderTargetView* nullRTV = nullptr;
+    constexpr uint32_t vertexOffset = 0;
 
-    _deviceContext->Clear(
-        _renderTarget.Get(),
-        clearColor);
+    D3D11_VIEWPORT viewport = {
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()),
+        0.0f,
+        1.0f
+    };
 
-    _pipeline->SetRasterizerState(_solidFrameCullNoneRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[0].Get(), 0);
-    _deviceContext->Draw();
+    _deviceContext->RSSetViewports(1, &viewport);
+    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    _pipeline->SetRasterizerState(_solidFrameCullFrontRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[1].Get(), 0);
-    _deviceContext->Draw();
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
 
-    _pipeline->SetRasterizerState(_solidFrameCullBackRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[2].Get(), 0);
-    _deviceContext->Draw();
 
-    _pipeline->SetRasterizerState(_wireFrameCullNoneRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[3].Get(), 0);
-    _deviceContext->Draw();
+    _deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 
-    _pipeline->SetRasterizerState(_wireFrameCullFrontRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[4].Get(), 0);
-    _deviceContext->Draw();
+    _deviceContext->ClearRenderTargetView(_renderTarget.Get(), clearColor);
+    _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), nullptr);
 
-    _pipeline->SetRasterizerState(_wireFrameCullBackRasterizerState.Get());
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices[5].Get(), 0);
-    _deviceContext->Draw();
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColor);
+    
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[0].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+
+    _deviceContext->RSSetState(_solidFrameCullNoneRasterizerState.Get());
+    _deviceContext->Draw(3, 0);
+
+    _deviceContext->RSSetState(_solidFrameCullFrontRasterizerState.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[1].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+    _deviceContext->Draw(3, 0);
+
+    _deviceContext->RSSetState(_solidFrameCullBackRasterizerState.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[2].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+    _deviceContext->Draw(3, 0);
+
+    _deviceContext->RSSetState(_wireFrameCullNoneRasterizerState.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[3].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+    _deviceContext->Draw(3, 0);
+
+    _deviceContext->RSSetState(_wireFrameCullFrontRasterizerState.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[4].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+    _deviceContext->Draw(3, 0);
+
+    _deviceContext->RSSetState(_wireFrameCullBackRasterizerState.Get());
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices[5].GetAddressOf(),
+        &stride,
+        &vertexOffset);
+    _deviceContext->Draw(3, 0);
 
     _swapChain->Present(1, 0);
 }

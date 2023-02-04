@@ -80,14 +80,14 @@ ShaderCollection ShaderCollection::CreateShaderCollection(const ShaderCollection
     return collection;
 }
 
-size_t ShaderCollection::GetLayoutByteSize(VertexType vertexType)
+UINT ShaderCollection::GetLayoutByteSize(VertexType vertexType)
 {
     switch (vertexType)
     {
     case VertexType::PositionColor:
-        return sizeof(VertexPositionColor);
+        return static_cast<UINT>(sizeof(VertexPositionColor));
     case VertexType::PositionColorUv:
-        return sizeof(VertexPositionColorUv);
+        return static_cast<UINT>(sizeof(VertexPositionColorUv));
     }
     return 0;
 }

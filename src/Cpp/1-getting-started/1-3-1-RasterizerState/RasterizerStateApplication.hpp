@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Definitions.hpp"
+#include "ShaderCollection.hpp"
 #include <Application.hpp>
 
 #include <DirectXMath.h>
@@ -8,11 +9,6 @@
 
 #include <memory>
 #include <array>
-
-class Pipeline;
-class PipelineFactory;
-class DeviceContext;
-
 
 class RasterizerStateApplication final : public Application
 {
@@ -43,11 +39,10 @@ private:
         NumConstantBufferTypes
     };
 
-    std::unique_ptr<Pipeline> _pipeline = nullptr;
-    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
-    std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
+    ShaderCollection _shaderCollection;
 
     WRL::ComPtr<ID3D11Device> _device = nullptr;
+    WRL::ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     WRL::ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
