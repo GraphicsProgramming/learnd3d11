@@ -70,7 +70,7 @@ WRL::ComPtr<ID3D11VertexShader> ShaderCollection::CreateVertexShader(ID3D11Devic
         nullptr,
         &vertexShader)))
     {
-        std::cout << "D3D11: Failed to compile vertex shader\n";
+        std::cerr << "D3D11: Failed to compile vertex shader\n";
         return nullptr;
     }
 
@@ -92,7 +92,7 @@ WRL::ComPtr<ID3D11PixelShader> ShaderCollection::CreatePixelShader(ID3D11Device*
         nullptr,
         &pixelShader)))
     {
-        std::cout << "D3D11: Failed to compile pixel shader\n";
+        std::cerr << "D3D11: Failed to compile pixel shader\n";
         return nullptr;
     }
 
@@ -109,7 +109,7 @@ bool ShaderCollection::CreateInputLayout(ID3D11Device* device, const VertexType 
         vertexBlob->GetBufferSize(),
         &inputLayout)))
     {
-        std::cout << "D3D11: Failed to create the input layout";
+        std::cerr << "D3D11: Failed to create the input layout";
         return false;
     }
     return true;
@@ -132,10 +132,10 @@ bool ShaderCollection::CompileShader(const std::wstring& filePath, const std::st
         &tempShaderBlob,
         &errorBlob)))
     {
-        std::cout << "D3D11: Failed to read shader from file\n";
+        std::cerr << "D3D11: Failed to read shader from file\n";
         if (errorBlob != nullptr)
         {
-            std::cout << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
+            std::cerr << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
         }
 
         return false;

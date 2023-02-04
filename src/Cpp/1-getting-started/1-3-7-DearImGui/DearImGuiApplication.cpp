@@ -77,7 +77,7 @@ bool DearImGuiApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -100,13 +100,13 @@ bool DearImGuiApplication::Initialize()
             nullptr,
             &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create device and device context\n";
+        std::cerr << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
 
@@ -141,7 +141,7 @@ bool DearImGuiApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create swapchain\n";
+        std::cerr << "DXGI: Failed to create swapchain\n";
         return false;
     }
 
@@ -162,7 +162,7 @@ bool DearImGuiApplication::Load()
     pipelineDescriptor.VertexType = VertexType::PositionColorUv;
     if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
     {
-        std::cout << "PipelineFactory: Failed to create pipeline\n";
+        std::cerr << "PipelineFactory: Failed to create pipeline\n";
         return false;
     }
 
@@ -186,7 +186,7 @@ bool DearImGuiApplication::Load()
     linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
     {
-        std::cout << "D3D11: Failed to create linear sampler state\n";
+        std::cerr << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -208,17 +208,17 @@ bool DearImGuiApplication::Load()
 
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerApplication])))
     {
-        std::cout << "D3D11: Failed to create constant buffer PerApplication\n";
+        std::cerr << "D3D11: Failed to create constant buffer PerApplication\n";
         return false;
     }
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerFrame])))
     {
-        std::cout << "D3D11: Failed to create constant buffer PerFrame\n";
+        std::cerr << "D3D11: Failed to create constant buffer PerFrame\n";
         return false;
     }
     if (FAILED(_device->CreateBuffer(&constantBufferDescriptor, nullptr, &_constantBuffers[ConstantBufferType::PerObject])))
     {
-        std::cout << "D3D11: Failed to create constant buffer PerObject\n";
+        std::cerr << "D3D11: Failed to create constant buffer PerObject\n";
         return false;
     }
 
@@ -243,7 +243,7 @@ bool DearImGuiApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from the swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from the swapchain\n";
         return false;
     }
 
@@ -252,7 +252,7 @@ bool DearImGuiApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -280,7 +280,7 @@ void DearImGuiApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 

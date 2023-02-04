@@ -67,7 +67,7 @@ bool Setting3DApplication::Initialize()
 
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -90,14 +90,14 @@ bool Setting3DApplication::Initialize()
             nullptr,
             &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cerr << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
 
 #if !defined(NDEBUG)
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
 #endif
@@ -132,7 +132,7 @@ bool Setting3DApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cerr << "DXGI: Failed to create SwapChain\n";
         return false;
     }
 
@@ -150,7 +150,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* dev
     DirectX::ScratchImage scratchImage;
     if (FAILED(DirectX::LoadFromDDSFile(pathToDDS.c_str(), DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
     {
-        std::cout << "DXTEX: Failed to load image\n";
+        std::cerr << "DXTEX: Failed to load image\n";
         return nullptr;
     }
 
@@ -162,7 +162,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* dev
             metaData,
             &texture)))
     {
-        std::cout << "DXTEX: Failed to create texture out of image\n";
+        std::cerr << "DXTEX: Failed to create texture out of image\n";
         scratchImage.Release();
         return nullptr;
     }
@@ -176,7 +176,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureViewFromDDS(ID3D11Device* dev
             metaData,
             &srv)))
     {
-        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
+        std::cerr << "DXTEX: Failed to create shader resource view out of texture\n";
         scratchImage.Release();
         return nullptr;
     }
@@ -216,7 +216,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
         if (imageFormat == FIF_UNKNOWN)
         {
             FreeImage_CloseMemory(memHandle);
-            std::cout << "CreateTextureView: Unsupported texture format from file: '" << pathToTexture.c_str() << "'\n";
+            std::cerr << "CreateTextureView: Unsupported texture format from file: '" << pathToTexture.c_str() << "'\n";
             return nullptr;
         }
         image = FreeImage_LoadFromMemory(imageFormat, memHandle);
@@ -262,7 +262,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
     default:
         {
             //we could try to handle some weird bitcount, but these will probably be HDR or some antique format, just exit instead..
-            std::cout << "CreateTextureView: Texture has nontrivial bits per pixel ( " << textureBPP << " ), file: '" << pathToTexture.c_str() << "'\n";
+            std::cerr << "CreateTextureView: Texture has nontrivial bits per pixel ( " << textureBPP << " ), file: '" << pathToTexture.c_str() << "'\n";
             return nullptr;
         }
         break;
@@ -295,7 +295,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
 
     if (FAILED(device->CreateShaderResourceView(texture.Get(), &srvDesc, &srv)))
     {
-        std::cout << "CreateTextureView: Failed to create SRV from texture: " << pathToTexture.c_str() << "\n";
+        std::cerr << "CreateTextureView: Failed to create SRV from texture: " << pathToTexture.c_str() << "\n";
         return nullptr;
     }
 
@@ -343,7 +343,7 @@ bool Setting3DApplication::Load()
             &resourceData,
             &_triangleVertices)))
     {
-        std::cout << "D3D11: Failed to create triangle vertex buffer\n";
+        std::cerr << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
 
@@ -365,7 +365,7 @@ bool Setting3DApplication::Load()
     linearSamplerStateDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
     if (FAILED(_device->CreateSamplerState(&linearSamplerStateDescriptor, &_linearSamplerState)))
     {
-        std::cout << "D3D11: Failed to create linear sampler state\n";
+        std::cerr << "D3D11: Failed to create linear sampler state\n";
         return false;
     }
 
@@ -385,7 +385,7 @@ bool Setting3DApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -394,7 +394,7 @@ bool Setting3DApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -422,7 +422,7 @@ void Setting3DApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 
@@ -438,7 +438,6 @@ void Setting3DApplication::Update()
     static float _yRotation = 0.0f;
     static float _scale = 1.0f;
     static XMFLOAT3 _cameraPosition = {0.0f, 0.0f, -1.0f};
-
 
     _yRotation += _deltaTime;
 

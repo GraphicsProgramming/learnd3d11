@@ -66,7 +66,7 @@ bool Rendering3DApplication::Initialize()
 
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -89,14 +89,14 @@ bool Rendering3DApplication::Initialize()
         nullptr,
         &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cerr << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
 
 #if !defined(NDEBUG)
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
 #endif
@@ -131,7 +131,7 @@ bool Rendering3DApplication::Initialize()
         nullptr,
         &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cerr << "DXGI: Failed to create SwapChain\n";
         return false;
     }
 
@@ -166,7 +166,7 @@ void Rendering3DApplication::CreateDepthStencilView()
     ID3D11Texture2D* texture = nullptr;
     if (FAILED(_device->CreateTexture2D(&texDesc, nullptr, &texture)))
     {
-        std::cout << "D3D11: Failed to create texture for DepthStencilView\n";
+        std::cerr << "D3D11: Failed to create texture for DepthStencilView\n";
         return;
     }
 
@@ -175,7 +175,7 @@ void Rendering3DApplication::CreateDepthStencilView()
     dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     if(FAILED(_device->CreateDepthStencilView(texture, &dsvDesc, &_depthTarget)))
     {
-        std::cout << "D3D11: Failed to create DepthStencilView\n";
+        std::cerr << "D3D11: Failed to create DepthStencilView\n";
         texture->Release();
         return;
     }
@@ -270,7 +270,7 @@ bool Rendering3DApplication::Load()
         &resourceData,
         &_cubeVertices)))
     {
-        std::cout << "D3D11: Failed to create cube vertex buffer\n";
+        std::cerr << "D3D11: Failed to create cube vertex buffer\n";
         return false;
     }
 
@@ -283,7 +283,7 @@ bool Rendering3DApplication::Load()
         &resourceData,
         &_cubeIndices)))
     {
-        std::cout << "D3D11: Failed to create cube index buffer\n";
+        std::cerr << "D3D11: Failed to create cube index buffer\n";
         return false;
     }
 
@@ -297,7 +297,7 @@ bool Rendering3DApplication::CreateSwapchainResources()
         0,
         IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -306,7 +306,7 @@ bool Rendering3DApplication::CreateSwapchainResources()
         nullptr,
         &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -337,7 +337,7 @@ void Rendering3DApplication::OnResize(
         DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
         0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 

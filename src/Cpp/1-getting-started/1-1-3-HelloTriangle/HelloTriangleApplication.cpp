@@ -55,7 +55,7 @@ bool HelloTriangleApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -73,7 +73,7 @@ bool HelloTriangleApplication::Initialize()
             nullptr,
             &_deviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cerr << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
 
@@ -100,7 +100,7 @@ bool HelloTriangleApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cerr << "DXGI: Failed to create SwapChain\n";
         return false;
     }
 
@@ -154,7 +154,7 @@ bool HelloTriangleApplication::Load()
             vertexShaderBlob->GetBufferSize(),
             &_vertexLayout)))
     {
-        std::cout << "D3D11: Failed to create default vertex input layout\n";
+        std::cerr << "D3D11: Failed to create default vertex input layout\n";
         return false;
     }
 
@@ -176,7 +176,7 @@ bool HelloTriangleApplication::Load()
             &resourceData,
             &_triangleVertices)))
     {
-        std::cout << "D3D11: Failed to create triangle vertex buffer\n";
+        std::cerr << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
 
@@ -204,10 +204,10 @@ bool HelloTriangleApplication::CompileShader(
             &tempShaderBlob,
             &errorBlob)))
     {
-        std::cout << "D3D11: Failed to read shader from file\n";
+        std::cerr << "D3D11: Failed to read shader from file\n";
         if (errorBlob != nullptr)
         {
-            std::cout << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
+            std::cerr << "D3D11: With message: " << static_cast<const char*>(errorBlob->GetBufferPointer()) << "\n";
         }
 
         return false;
@@ -233,7 +233,7 @@ HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::C
             nullptr,
             &vertexShader)))
     {
-        std::cout << "D3D11: Failed to compile vertex shader\n";
+        std::cerr << "D3D11: Failed to compile vertex shader\n";
         return nullptr;
     }
 
@@ -255,7 +255,7 @@ HelloTriangleApplication::ComPtr<ID3D11PixelShader> HelloTriangleApplication::Cr
             nullptr,
             &pixelShader)))
     {
-        std::cout << "D3D11: Failed to compile pixel shader\n";
+        std::cerr << "D3D11: Failed to compile pixel shader\n";
         return nullptr;
     }
 
@@ -269,7 +269,7 @@ bool HelloTriangleApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cerr << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
@@ -278,7 +278,7 @@ bool HelloTriangleApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cerr << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
     }
 
@@ -306,7 +306,7 @@ void HelloTriangleApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cerr << "D3D11: Failed to recreate SwapChain buffers\n";
         return;
     }
 

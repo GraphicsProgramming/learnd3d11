@@ -76,7 +76,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /E /Y $(OutDir)Assets $(ProjectDir)Assets\</Command>
+      <Command>xcopy /E /Y $(ProjectDir)Assets $(OutDir)Assets\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -101,7 +101,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /E /Y $(OutDir)Assets $(ProjectDir)Assets\</Command>
+      <Command>xcopy /E /Y $(ProjectDir)Assets $(OutDir)Assets\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

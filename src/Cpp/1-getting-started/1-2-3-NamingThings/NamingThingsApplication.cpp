@@ -54,7 +54,7 @@ bool NamingThingsApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -77,7 +77,7 @@ bool NamingThingsApplication::Initialize()
             nullptr,
             &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create Device and Device Context\n";
+        std::cerr << "D3D11: Failed to create Device and Device Context\n";
         return false;
     }
 
@@ -89,7 +89,7 @@ bool NamingThingsApplication::Initialize()
 
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
 
@@ -116,7 +116,7 @@ bool NamingThingsApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create SwapChain\n";
+        std::cerr << "DXGI: Failed to create SwapChain\n";
         return false;
     }
 
@@ -135,9 +135,9 @@ bool NamingThingsApplication::Load()
     _shaderCollection = ShaderCollection::CreateShaderCollection(shaderCollectionDescriptor, _device.Get());
 
     constexpr VertexPositionColor vertices[] = {
-        {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }},
+        { Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }},
         { Position{ 0.5f, -0.5f, 0.0f }, Color{ 0.44f, 0.75f, 0.35f }},
-        {Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }},
+        { Position{ -0.5f, -0.5f, 0.0f }, Color{ 0.38f, 0.55f, 0.20f }},
     };
     D3D11_BUFFER_DESC bufferInfo = {};
     bufferInfo.ByteWidth = sizeof(vertices);
@@ -152,7 +152,7 @@ bool NamingThingsApplication::Load()
             &resourceData,
             &_triangleVertices)))
     {
-        std::cout << "D3D11: Failed to create triangle vertex buffer\n";
+        std::cerr << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
 
@@ -166,7 +166,7 @@ bool NamingThingsApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cerr << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
@@ -175,7 +175,7 @@ bool NamingThingsApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cerr << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
     }
 
@@ -203,7 +203,7 @@ void NamingThingsApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cerr << "D3D11: Failed to recreate SwapChain buffers\n";
         return;
     }
 

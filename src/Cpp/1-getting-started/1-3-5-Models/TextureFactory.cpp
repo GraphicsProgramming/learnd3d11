@@ -24,7 +24,7 @@ bool TextureFactory::CreateShaderResourceViewFromFile(
     DirectX::ScratchImage scratchImage;
     if (FAILED(DirectX::LoadFromDDSFile(filePath.data(), DirectX::DDS_FLAGS_NONE, &metaData, scratchImage)))
     {
-        std::cout << "DXTEX: Failed to load image\n";
+        std::cerr << "DXTEX: Failed to load image\n";
         return false;
     }
 
@@ -36,7 +36,7 @@ bool TextureFactory::CreateShaderResourceViewFromFile(
             metaData,
             &texture)))
     {
-        std::cout << "DXTEX: Failed to create texture out of image\n";
+        std::cerr << "DXTEX: Failed to create texture out of image\n";
         scratchImage.Release();
         return false;
     }
@@ -48,7 +48,7 @@ bool TextureFactory::CreateShaderResourceViewFromFile(
             metaData,
             &shaderResourceView)))
     {
-        std::cout << "DXTEX: Failed to create shader resource view out of texture\n";
+        std::cerr << "DXTEX: Failed to create shader resource view out of texture\n";
         scratchImage.Release();
         return false;
     }

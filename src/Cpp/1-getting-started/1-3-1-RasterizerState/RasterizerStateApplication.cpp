@@ -60,7 +60,7 @@ bool RasterizerStateApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -83,16 +83,17 @@ bool RasterizerStateApplication::Initialize()
             nullptr,
             &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create device and device context\n";
+        std::cerr << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
+#if !defined(NDEBUG)
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
-
+#endif
 
     constexpr char deviceName[] = "DEV_Main";
     _device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(deviceName), deviceName);
@@ -123,7 +124,7 @@ bool RasterizerStateApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create swapchain\n";
+        std::cerr << "DXGI: Failed to create swapchain\n";
         return false;
     }
 
@@ -183,7 +184,7 @@ bool RasterizerStateApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from the swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from the swapchain\n";
         return false;
     }
 
@@ -192,7 +193,7 @@ bool RasterizerStateApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -220,7 +221,7 @@ void RasterizerStateApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 
@@ -335,21 +336,21 @@ bool RasterizerStateApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullBackRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullFrontRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_solidFrameCullNoneRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
@@ -358,21 +359,21 @@ bool RasterizerStateApplication::CreateRasterizerStates()
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullBackRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullFrontRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
     rasterizerStateDescriptor.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
     if (FAILED(_device->CreateRasterizerState(&rasterizerStateDescriptor, &_wireFrameCullNoneRasterizerState)))
     {
-        std::cout << "D3D11: Failed to create rasterizer state\n";
+        std::cerr << "D3D11: Failed to create rasterizer state\n";
         return false;
     }
 
