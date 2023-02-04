@@ -74,13 +74,7 @@
       <IgnoreSpecificDefaultLibraries>msvcrt</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
-mkdir $(OutDir)Assets\Models\
-mkdir $(OutDir)Assets\Shaders\
-mkdir $(OutDir)Assets\Textures\
-xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
-xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)Assets\Shaders\
-xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
+      <Command>xcopy /E /Y $(OutDir)Assets $(ProjectDir)Assets\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -103,13 +97,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y $(SolutionDir)..\lib\assimp\lib\assimp.dll $(OutDir)
-mkdir $(OutDir)Assets\Models\
-mkdir $(OutDir)Assets\Shaders\
-mkdir $(OutDir)Assets\Textures\
-xcopy /Y $(ProjectDir)Assets\Models\*.* $(OutDir)\Assets\Models\
-xcopy /Y $(ProjectDir)Assets\Shaders\*.* $(OutDir)Assets\Shaders\
-xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
+      <Command>xcopy /E /Y $(OutDir)Assets $(ProjectDir)Assets\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

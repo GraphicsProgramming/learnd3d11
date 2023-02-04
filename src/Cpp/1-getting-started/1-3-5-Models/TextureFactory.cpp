@@ -11,7 +11,6 @@
 #pragma comment(lib, "FreeImageLib.lib")
 #endif
 
-
 TextureFactory::TextureFactory(const WRL::ComPtr<ID3D11Device>& device)
 {
     _device = device;

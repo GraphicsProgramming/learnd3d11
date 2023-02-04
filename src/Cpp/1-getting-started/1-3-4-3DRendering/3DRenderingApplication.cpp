@@ -17,6 +17,11 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#if defined(_DEBUG)
+#pragma comment(lib, "FreeImageLibd.lib")
+#else
+#pragma comment(lib, "FreeImageLib.lib")
+#endif
 
 template <UINT TDebugNameLength>
 inline void SetDebugName(_In_ ID3D11DeviceChild* deviceResource, _In_z_ const char(&debugName)[TDebugNameLength])
