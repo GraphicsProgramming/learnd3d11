@@ -355,7 +355,7 @@ void Rendering3DApplication::Update()
 
     static float _yRotation = 0.0f;
     static float _scale = 1.0f;
-    static XMFLOAT3 _cameraPosition = { 0.0f, 0.0f, -5.0f };
+    static XMFLOAT3 _cameraPosition = { 0.0f, 0.0f, -2.0f };
 
 
     _yRotation += _deltaTime;
@@ -364,8 +364,8 @@ void Rendering3DApplication::Update()
     //This will be our "camera"
     XMVECTOR camPos = XMLoadFloat3(&_cameraPosition);
 
-    XMMATRIX view = XMMatrixLookAtLH(camPos, g_XMZero, { 0,1,0,1 });
-    XMMATRIX proj = XMMatrixPerspectiveFovLH(75.0f * 0.0174533f,
+    XMMATRIX view = XMMatrixLookAtRH(camPos, g_XMZero, { 0,1,0,1 });
+    XMMATRIX proj = XMMatrixPerspectiveFovRH(90.0f * 0.0174533f,
                                             static_cast<float>(_width) / static_cast<float>(_height),
                                             0.1f,
                                             100.0f);
@@ -415,7 +415,7 @@ void Rendering3DApplication::Render()
 
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv);
     _deviceContext->IASetVertexBuffers(
         0,
         1,

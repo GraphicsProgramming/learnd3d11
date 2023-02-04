@@ -418,7 +418,7 @@ void TexturingApplication::Render()
 
     D3D11_BUFFER_DESC description = {};
     _triangleVertices->GetDesc(&description);
-    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv);
     _deviceContext->IASetVertexBuffers(
         0,
         1,

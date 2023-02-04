@@ -7,9 +7,7 @@
 
 #include <memory>
 
-class DeviceContext;
-class Pipeline;
-class PipelineFactory;
+#include "ShaderCollection.hpp"
 
 class NamingThingsApplication final : public Application
 {
@@ -30,14 +28,13 @@ private:
     bool CreateSwapchainResources();
     void DestroySwapchainResources();
 
-    std::unique_ptr<DeviceContext> _deviceContext = nullptr;
-    std::unique_ptr<Pipeline> _pipeline = nullptr;
-    std::unique_ptr<PipelineFactory> _pipelineFactory = nullptr;
-
+    WRL::ComPtr<ID3D11DeviceContext> _deviceContext = nullptr;
     WRL::ComPtr<ID3D11Device> _device = nullptr;
     WRL::ComPtr<IDXGIFactory2> _dxgiFactory = nullptr;
     WRL::ComPtr<IDXGISwapChain1> _swapChain = nullptr;
     WRL::ComPtr<ID3D11RenderTargetView> _renderTarget = nullptr;
     WRL::ComPtr<ID3D11Buffer> _triangleVertices = nullptr;
     WRL::ComPtr<ID3D11Debug> _debug = nullptr;
+
+    ShaderCollection _shaderCollection;
 };

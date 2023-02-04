@@ -446,8 +446,8 @@ void Setting3DApplication::Update()
     //This will be our "camera"
     XMVECTOR camPos = XMLoadFloat3(&_cameraPosition);
 
-    XMMATRIX view = XMMatrixLookAtLH(camPos, g_XMZero, { 0,1,0,1 });
-    XMMATRIX proj = XMMatrixPerspectiveFovLH(90.0f * 0.0174533f,
+    XMMATRIX view = XMMatrixLookAtRH(camPos, g_XMZero, { 0,1,0,1 });
+    XMMATRIX proj = XMMatrixPerspectiveFovRH(90.0f * 0.0174533f,
                                             static_cast<float>(_width) / static_cast<float>(_height),
                                             0.1f,
                                             100.0f);
@@ -496,7 +496,7 @@ void Setting3DApplication::Render()
 
     D3D11_BUFFER_DESC description = {};
     _triangleVertices->GetDesc(&description);
-    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv);
     _deviceContext->IASetVertexBuffers(
         0,
         1,
