@@ -405,13 +405,13 @@ void TexturingApplication::Update()
 void TexturingApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    constexpr UINT vertexOffset = 0;
 
     ID3D11RenderTargetView* nullTarget = nullptr;
 
     //set to 0 so we can clear properly
     _deviceContext->OMSetRenderTargets(1, &nullTarget, nullptr);
     _deviceContext->ClearRenderTargetView(_renderTarget.Get(), clearColor);
-
     _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), nullptr);
 
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -424,7 +424,7 @@ void TexturingApplication::Render()
         1,
         _triangleVertices.GetAddressOf(),
         &stride,
-        nullptr);
+        &vertexOffset);
 
     _shaderCollection.ApplyToContext(_deviceContext.Get());
 

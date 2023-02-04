@@ -483,7 +483,7 @@ void Setting3DApplication::Update()
 void Setting3DApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-
+    constexpr UINT vertexOffset = 0;
     ID3D11RenderTargetView* nullTarget = nullptr;
 
     //set to 0 so we can clear properly
@@ -502,7 +502,7 @@ void Setting3DApplication::Render()
         1,
         _triangleVertices.GetAddressOf(),
         &stride,
-        nullptr);
+        &vertexOffset);
 
     _shaderCollection.ApplyToContext(_deviceContext.Get());
 

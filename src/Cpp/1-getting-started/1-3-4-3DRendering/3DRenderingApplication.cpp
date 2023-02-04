@@ -401,6 +401,7 @@ void Rendering3DApplication::Update()
 void Rendering3DApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    constexpr UINT vertexOffset = 0;
 
     ID3D11RenderTargetView* nullRTV = nullptr;
 
@@ -420,7 +421,7 @@ void Rendering3DApplication::Render()
         1,
         _cubeVertices.GetAddressOf(),
         &stride,
-        nullptr);
+        &vertexOffset);
 
     _deviceContext->IASetIndexBuffer(
         _cubeIndices.Get(),
