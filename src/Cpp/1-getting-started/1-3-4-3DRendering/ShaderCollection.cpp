@@ -182,7 +182,7 @@ bool ShaderCollection::CompileShader(const std::wstring& filePath, const std::st
 }
 
 
-void ShaderCollection::Set(ID3D11DeviceContext* context)
+void ShaderCollection::ApplyToContext(ID3D11DeviceContext* context)
 {
     context->IASetInputLayout(_inputLayout.Get());
     context->VSSetShader(_vertexShader.Get(), nullptr, 0);

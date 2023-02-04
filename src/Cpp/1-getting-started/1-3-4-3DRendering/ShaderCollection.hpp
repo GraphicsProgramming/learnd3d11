@@ -22,7 +22,7 @@ public:
         const ShaderCollectionDescriptor& settings, ID3D11Device* device);
     static size_t GetLayoutByteSize(VertexType vertexType);
 
-    void Set(ID3D11DeviceContext* context);
+    void ApplyToContext(ID3D11DeviceContext* context);
     void Destroy();
 
 private:
