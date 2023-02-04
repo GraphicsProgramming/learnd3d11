@@ -108,16 +108,13 @@
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RasterizerStateApplication.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="PipelineFactory.cpp" />
+    <ClCompile Include="ShaderCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="RasterizerStateApplication.hpp" />
-    <ClInclude Include="Pipeline.hpp" />
-    <ClInclude Include="PipelineFactory.hpp" />
-    <ClInclude Include="ResourceDescriptor.hpp" />
+    <ClInclude Include="ShaderCollection.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>
