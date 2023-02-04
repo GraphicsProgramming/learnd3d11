@@ -194,7 +194,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
     //We open a new local scope here so we don't keep the vector in memory for the entire function call, we can get rid of the memory it holds earlier this way
     {
         std::vector<BYTE> fileDataRaw(fileSize);
-        if (!ReadFile(file, fileDataRaw.data(), fileDataRaw.size(), nullptr, nullptr))
+        if (!ReadFile(file, fileDataRaw.data(), static_cast<DWORD>(fileDataRaw.size()), nullptr, nullptr))
         {
             CloseHandle(file);
             return nullptr;
@@ -203,7 +203,7 @@ WRL::ComPtr<ID3D11ShaderResourceView> CreateTextureView(ID3D11Device* device, co
         //Close our file handle as we don't need it anymore
         CloseHandle(file);
 
-        FIMEMORY* memHandle = FreeImage_OpenMemory(fileDataRaw.data(), fileDataRaw.size());
+        FIMEMORY* memHandle = FreeImage_OpenMemory(fileDataRaw.data(), static_cast<DWORD>(fileDataRaw.size()));
         FREE_IMAGE_FORMAT imageFormat = FreeImage_GetFileTypeFromMemory(memHandle);
         if (imageFormat == FIF_UNKNOWN)
         {
