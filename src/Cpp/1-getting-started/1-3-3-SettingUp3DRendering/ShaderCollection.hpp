@@ -21,7 +21,7 @@ public:
     static ShaderCollection CreateShaderCollection(
         const ShaderCollectionDescriptor& settings, ID3D11Device* device);
 
-    static size_t GetLayoutByteSize(VertexType vertexType);
+    static UINT GetLayoutByteSize(VertexType vertexType);
 
     void ApplyToContext(ID3D11DeviceContext* context);
     void Destroy();
