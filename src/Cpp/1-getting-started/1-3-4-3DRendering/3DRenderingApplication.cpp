@@ -415,7 +415,7 @@ void Rendering3DApplication::Render()
 
     _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    UINT stride = static_cast<UINT>(_shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv));
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColorUv);
     _deviceContext->IASetVertexBuffers(
         0,
         1,
