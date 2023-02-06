@@ -48,18 +48,6 @@ Notice anything?
 
 Exactly, they show names.
 
-Naming things is also useful while debugging your application. In debuggers such as RenderDoc or Nvidia Nsight, the resource name will show up in the Resource Inspector, making it easier to find your resources and check its contents / configuration.
-
-For example, if we name our Triangle vertex buffer using the follows  
-```cpp
-SetDebugName(_triangleVertices.Get(), "Triangle_Vertices");
-```
-In RenderDoc's Resource Inspector tab, we see
-![](../../images/1-2-3-namingthings-renderdoc.png)
-
-Similary, in Nsight's All Resources tab, we see
-![](../../images/1-2-3-namingthings-nsight.png)
-
 [Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-2-3-NamingThings)
 
 [Next chapter](./1-2-4-renderdoc.md)

@@ -726,9 +726,7 @@ do not use all the stages, we can see the top-to-bottom execution of the stages,
 
 You should now be able to run this and see your first triangle!
 
-!!! error
-
-    Provide picture of window with triangle
+![](../images/1-1-3-hello-triangle.png)
 
 [Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-3-HelloTriangle)
 
