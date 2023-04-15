@@ -1,5 +1,9 @@
 # Models
 
+!!! error
+	Please note that this chapter is unfinished and will be finished up at some point in the future.
+
+
 After being able to load and display an 3D cube the next step is getting some more exciting stuff on screen. 
 Models are the next step!
 
@@ -34,11 +38,8 @@ Well just as with textures, we're going to use a library for it. A common choice
 
 !!! error
 
-    raw model loading
+    TODO: model loading
 
-!!! error
-
-    refactoring into ModelFactory
 
 [Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-3-2-LoadingMeshes)
 
