@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{65594d11-0ce4-46ca-954c-37cfb4e90093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Shaders">
+      <UniqueIdentifier>{bc1b63d8-0a47-4d97-ad71-b603d5a65214}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ShaderCollection.cpp" />
+    <ClCompile Include="3DRenderingApplication.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VertexType.hpp" />
+    <ClInclude Include="3DRenderingApplication.hpp" />
+    <ClInclude Include="Definitions.hpp" />
+    <ClInclude Include="ShaderCollection.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\Main.vs.hlsl">
+      <Filter>Assets\Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Main.ps.hlsl">
+      <Filter>Assets\Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

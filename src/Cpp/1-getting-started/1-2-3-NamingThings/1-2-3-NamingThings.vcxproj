@@ -14,7 +14,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{73748C0E-E32A-4276-8848-1DABD5136AE4}</ProjectGuid>
-    <RootNamespace>My13HelloTriangle</RootNamespace>
+    <RootNamespace>LearnD3D11</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -47,15 +47,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(IncludePath);$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(IncludePath);$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\glfw-3.3.6\include\;$(IncludePath);$(SolutionDir)Cpp\Framework\;</IncludePath>
-    <LibraryPath>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\;$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
+    <IncludePath>$(IncludePath);$(SolutionDir)Cpp\Framework\;</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)Cpp\Framework\lib\$(Configuration)\;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -64,12 +64,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lib\glfw-3.3.6\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Framework.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>msvcrt</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>mkdir $(OutDir)Assets\Models\
@@ -89,6 +91,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lib\glfw-3.3.6\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,6 +99,7 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Framework.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\lib\glfw-3.3.6\lib-vc2022\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>mkdir $(OutDir)Assets\Models\
@@ -107,18 +111,14 @@ xcopy /Y $(ProjectDir)Assets\Textures\*.* $(OutDir)Assets\Textures\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NamingThingsApplication.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="PipelineFactory.cpp" />
+    <ClCompile Include="ShaderCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Definitions.hpp" />
-    <ClInclude Include="DeviceContext.hpp" />
     <ClInclude Include="NamingThingsApplication.hpp" />
-    <ClInclude Include="Pipeline.hpp" />
-    <ClInclude Include="PipelineFactory.hpp" />
+    <ClInclude Include="ShaderCollection.hpp" />
     <ClInclude Include="VertexType.hpp" />
   </ItemGroup>
   <ItemGroup>

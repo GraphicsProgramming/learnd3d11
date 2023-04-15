@@ -41,7 +41,7 @@ bool HelloD3D11Application::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -59,7 +59,7 @@ bool HelloD3D11Application::Initialize()
             nullptr,
             &_deviceContext)))
     {
-        std::cout << "D3D11: Failed to create device and device Context\n";
+        std::cerr << "D3D11: Failed to create device and device Context\n";
         return false;
     }
 
@@ -86,7 +86,7 @@ bool HelloD3D11Application::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create swapchain\n";
+        std::cerr << "DXGI: Failed to create swapchain\n";
         return false;
     }
 
@@ -110,7 +110,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from the swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from the swapchain\n";
         return false;
     }
 
@@ -119,7 +119,7 @@ bool HelloD3D11Application::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -147,7 +147,7 @@ void HelloD3D11Application::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 

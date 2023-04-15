@@ -82,7 +82,7 @@ And the implementation side
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")
 
-HelloD3D11Application::HelloD3D11Application(const std::string_view title)
+HelloD3D11Application::HelloD3D11Application(const std::string& title)
     : Application(title)
 {
 }

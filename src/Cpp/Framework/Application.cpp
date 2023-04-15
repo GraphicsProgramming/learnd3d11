@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <ratio>
 
 Application::Application(const std::string& title)
     : _title(title)
@@ -18,7 +19,7 @@ bool Application::Initialize()
 {
     if (!glfwInit())
     {
-        std::cout << "GLFW: Failed to initialize\n";
+        std::cerr << "GLFW: Failed to initialize\n";
         return false;
     }
 
@@ -38,7 +39,7 @@ bool Application::Initialize()
 
     if (_window == nullptr)
     {
-        std::cout << "GLFW: Failed to create a window\n";
+        std::cerr << "GLFW: Failed to create a window\n";
         Cleanup();
         return false;
     }
@@ -49,6 +50,8 @@ bool Application::Initialize()
 
     glfwSetWindowUserPointer(_window, this);
     glfwSetFramebufferSizeCallback(_window, HandleResize);
+
+    _currentTime = std::chrono::high_resolution_clock::now();
     return true;
 }
 
@@ -111,5 +114,10 @@ int32_t Application::GetWindowHeight() const
 
 void Application::Update()
 {
+    auto oldTime = _currentTime;
+    _currentTime = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> timeSpan = (_currentTime - oldTime);
+    _deltaTime = static_cast<float>(timeSpan.count() / 1000.0);
     glfwPollEvents();
 }

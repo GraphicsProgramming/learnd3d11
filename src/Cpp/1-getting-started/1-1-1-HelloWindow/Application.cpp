@@ -44,7 +44,7 @@ bool Application::Initialize()
 {
     if (!glfwInit())
     {
-        std::cout << "GLFW: Failed to initialize\n";
+        std::cerr << "GLFW: Failed to initialize\n";
         return false;
     }
 
@@ -63,7 +63,7 @@ bool Application::Initialize()
         nullptr);
     if (_window == nullptr)
     {
-        std::cout << "GLFW: Failed to create a window\n";
+        std::cerr << "GLFW: Failed to create a window\n";
         Cleanup();
         return false;
     }

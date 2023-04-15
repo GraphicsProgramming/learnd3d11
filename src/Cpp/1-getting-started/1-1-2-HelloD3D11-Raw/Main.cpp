@@ -32,7 +32,7 @@ bool CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get Back Buffer from the SwapChain\n";
+        std::cerr << "D3D11: Failed to get Back Buffer from the SwapChain\n";
         return false;
     }
 
@@ -41,7 +41,7 @@ bool CreateSwapchainResources()
             nullptr,
             &g_RenderTarget)))
     {
-        std::cout << "D3D11: Failed to create RTV from Back Buffer\n";
+        std::cerr << "D3D11: Failed to create RTV from Back Buffer\n";
         return false;
     }
 
@@ -71,7 +71,7 @@ void HandleResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate SwapChain buffers\n";
+        std::cerr << "D3D11: Failed to recreate SwapChain buffers\n";
         return;
     }
 
@@ -82,7 +82,7 @@ int main()
 {
     if (!glfwInit())
     {
-        std::cout << "Unable to initialize GLFW\n";
+        std::cerr << "Unable to initialize GLFW\n";
         return false;
     }
 
@@ -102,7 +102,7 @@ int main()
 
     if (window == nullptr)
     {
-        std::cout << "GLFW: Failed to create window\n";
+        std::cerr << "GLFW: Failed to create window\n";
         glfwTerminate();
         return false;
     }
@@ -116,7 +116,7 @@ int main()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&g_DxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -134,7 +134,7 @@ int main()
             nullptr,
             &g_DeviceContext)))
     {
-        std::cout << "D3D11: Failed to create device and device context\n";
+        std::cerr << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
@@ -161,7 +161,7 @@ int main()
             nullptr,
             &g_SwapChain)))
     {
-        std::cout << "DXGI: Failed to create swapchain\n";
+        std::cerr << "DXGI: Failed to create swapchain\n";
         return false;
     }
 

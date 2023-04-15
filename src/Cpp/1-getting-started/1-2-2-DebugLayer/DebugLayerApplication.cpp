@@ -1,7 +1,4 @@
 #include "DebugLayerApplication.hpp"
-#include "DeviceContext.hpp"
-#include "Pipeline.hpp"
-#include "PipelineFactory.hpp"
 #include "VertexType.hpp"
 
 #include <GLFW/glfw3.h>
@@ -29,12 +26,11 @@ DebugLayerApplication::~DebugLayerApplication()
 {
     _deviceContext->Flush();
     _triangleVertices.Reset();
-    _pipeline.reset();
-    _pipelineFactory.reset();
     DestroySwapchainResources();
     _swapChain.Reset();
     _dxgiFactory.Reset();
-    _deviceContext.reset();
+    _shaderCollection.Destroy();
+    _deviceContext.Reset();
 #if !defined(NDEBUG)
     _debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
     _debug.Reset();
@@ -53,7 +49,7 @@ bool DebugLayerApplication::Initialize()
     // This section initializes DirectX's devices and SwapChain
     if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&_dxgiFactory))))
     {
-        std::cout << "DXGI: Failed to create factory\n";
+        std::cerr << "DXGI: Failed to create factory\n";
         return false;
     }
 
@@ -75,17 +71,19 @@ bool DebugLayerApplication::Initialize()
             nullptr,
             &deviceContext)))
     {
-        std::cout << "D3D11: Failed to create device and device context\n";
+        std::cerr << "D3D11: Failed to create device and device context\n";
         return false;
     }
 
+#if !defined(NDEBUG)
     if (FAILED(_device.As(&_debug)))
     {
-        std::cout << "D3D11: Failed to get the debug layer from the device\n";
+        std::cerr << "D3D11: Failed to get the debug layer from the device\n";
         return false;
     }
+#endif
 
-    _deviceContext = std::make_unique<DeviceContext>(std::move(deviceContext));
+    _deviceContext = deviceContext;
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDescriptor = {};
     swapChainDescriptor.Width = GetWindowWidth();
@@ -110,34 +108,23 @@ bool DebugLayerApplication::Initialize()
             nullptr,
             &_swapChain)))
     {
-        std::cout << "DXGI: Failed to create swapchain\n";
+        std::cerr << "DXGI: Failed to create swapchain\n";
         return false;
     }
 
     CreateSwapchainResources();
-
-    _pipelineFactory = std::make_unique<PipelineFactory>(_device);
 
     return true;
 }
 
 bool DebugLayerApplication::Load()
 {
-    PipelineDescriptor pipelineDescriptor = {};
-    pipelineDescriptor.VertexFilePath = L"Assets/Shaders/Main.vs.hlsl";
-    pipelineDescriptor.PixelFilePath = L"Assets/Shaders/Main.ps.hlsl";
-    pipelineDescriptor.VertexType = VertexType::PositionColor;
-    if (!_pipelineFactory->CreatePipeline(pipelineDescriptor, _pipeline))
-    {
-        std::cout << "PipelineFactory: Failed to create pipeline\n";
-        return false;
-    }
+    ShaderCollectionDescriptor shaderDescriptor = {};
+    shaderDescriptor.VertexShaderFilePath = L"Assets/Shaders/Main.vs.hlsl";
+    shaderDescriptor.PixelShaderFilePath = L"Assets/Shaders/Main.ps.hlsl";
+    shaderDescriptor.VertexType = VertexType::PositionColor;
 
-    _pipeline->SetViewport(
-        0.0f,
-        0.0f,
-        static_cast<float>(GetWindowWidth()),
-        static_cast<float>(GetWindowHeight()));
+    _shaderCollection = ShaderCollection::CreateShaderCollection(shaderDescriptor, _device.Get());
 
     constexpr VertexPositionColor vertices[] = {
         {  Position{ 0.0f, 0.5f, 0.0f }, Color{ 0.25f, 0.39f, 0.19f }},
@@ -157,7 +144,7 @@ bool DebugLayerApplication::Load()
             &resourceData,
             &_triangleVertices)))
     {
-        std::cout << "D3D11: Failed to create triangle vertex buffer\n";
+        std::cerr << "D3D11: Failed to create triangle vertex buffer\n";
         return false;
     }
 
@@ -171,7 +158,7 @@ bool DebugLayerApplication::CreateSwapchainResources()
             0,
             IID_PPV_ARGS(&backBuffer))))
     {
-        std::cout << "D3D11: Failed to get back buffer from swapchain\n";
+        std::cerr << "D3D11: Failed to get back buffer from swapchain\n";
         return false;
     }
 
@@ -180,7 +167,7 @@ bool DebugLayerApplication::CreateSwapchainResources()
             nullptr,
             &_renderTarget)))
     {
-        std::cout << "D3D11: Failed to create rendertarget view from back buffer\n";
+        std::cerr << "D3D11: Failed to create rendertarget view from back buffer\n";
         return false;
     }
 
@@ -208,7 +195,7 @@ void DebugLayerApplication::OnResize(
             DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
             0)))
     {
-        std::cout << "D3D11: Failed to recreate swapchain buffers\n";
+        std::cerr << "D3D11: Failed to recreate swapchain buffers\n";
         return;
     }
 
@@ -223,11 +210,37 @@ void DebugLayerApplication::Update()
 void DebugLayerApplication::Render()
 {
     float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    ID3D11RenderTargetView* nullRTV = nullptr;
     constexpr uint32_t vertexOffset = 0;
 
-    _deviceContext->Clear(_renderTarget.Get(), clearColor);
-    _deviceContext->SetPipeline(_pipeline.get());
-    _deviceContext->SetVertexBuffer(_triangleVertices.Get(), vertexOffset);
-    _deviceContext->Draw();
+    D3D11_VIEWPORT viewport = {
+        0.0f,
+        0.0f,
+        static_cast<float>(GetWindowWidth()),
+        static_cast<float>(GetWindowHeight()),
+        0.0f,
+        1.0f
+    };
+
+    _deviceContext->RSSetViewports(1, &viewport);
+    _deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    _shaderCollection.ApplyToContext(_deviceContext.Get());
+
+    _deviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+
+    _deviceContext->ClearRenderTargetView(_renderTarget.Get(), clearColor);
+    _deviceContext->OMSetRenderTargets(1, _renderTarget.GetAddressOf(), nullptr);
+
+    UINT stride = _shaderCollection.GetLayoutByteSize(VertexType::PositionColor);
+    _deviceContext->IASetVertexBuffers(
+        0,
+        1,
+        _triangleVertices.GetAddressOf(),
+        &stride,
+        &vertexOffset);
+
+    _deviceContext->Draw(3, 0);
+
     _swapChain->Present(1, 0);
 }

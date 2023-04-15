@@ -210,16 +210,16 @@ First, we will declare some functions that will help us compile our shaders more
 
 ```cpp
 bool CompileShader(
-    const std::wstring_view fileName,
-    const std::string_view entryPoint,
-    const std::string_view profile,
+    const std::wstring& fileName,
+    const std::string& entryPoint,
+    const std::string& profile,
     ComPtr<ID3DBlob>& shaderBlob) const;
 
 [[nodiscard]] ComPtr<ID3D11VertexShader> CreateVertexShader(
-    const std::wstring_view fileName,
+    const std::wstring& fileName,
     ComPtr<ID3DBlob>& vertexShaderBlob) const;
 
-[[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring_view fileName) const;
+[[nodiscard]] ComPtr<ID3D11PixelShader> CreatePixelShader(std::wstring& fileName) const;
 ```
 
 In order, we have:
@@ -257,9 +257,9 @@ First things first, let's see `CompileShader`:
 
 ```cpp
 bool HelloTriangleApplication::CompileShader(
-    const std::wstring_view fileName,
-    const std::string_view entryPoint,
-    const std::string_view profile,
+    const std::wstring& fileName,
+    const std::string& entryPoint,
+    const std::string& profile,
     ComPtr<ID3DBlob>& shaderBlob) const
 {
     constexpr UINT compileFlags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -325,7 +325,7 @@ Now let's see `CreateVertexShader` and `CreatePixelShader`:
 
 ```cpp
 HelloTriangleApplication::ComPtr<ID3D11VertexShader> HelloTriangleApplication::CreateVertexShader(
-    const std::wstring_view fileName,
+    const std::wstring& fileName,
     ComPtr<ID3DBlob>& vertexShaderBlob) const
 {
     if (!CompileShader(fileName, "Main", "vs_5_0", vertexShaderBlob))
@@ -364,7 +364,7 @@ And finally
 
 ```cpp
 HelloTriangleApplication::ComPtr<ID3D11PixelShader> 
-HelloTriangleApplication::CreatePixelShader(const std::wstring_view fileName) const
+HelloTriangleApplication::CreatePixelShader(const std::wstring& fileName) const
 {
     ComPtr<ID3DBlob> pixelShaderBlob = nullptr;
     if (!CompileShader(fileName, "Main", "ps_5_0", pixelShaderBlob))

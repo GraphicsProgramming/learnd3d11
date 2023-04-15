@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     windowClassInfo.hIconSm = LoadIcon(windowClassInfo.hInstance, IDI_APPLICATION);
     if (!RegisterClassEx(&windowClassInfo))
     {
-        std::cout << "Failed to register window class\n";
+        std::cerr << "Failed to register window class\n";
         return -1;
     }
     // Actually creates the window and returns a handle to it
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
         nullptr);
     if (windowHandle == nullptr)
     {
-        std::cout << "Failed to create Win32 window\n";
+        std::cerr << "Failed to create Win32 window\n";
         return -1;
     }
     ShowWindow(windowHandle, SW_NORMAL);
