@@ -2,7 +2,7 @@
 
 Now that we know how to work with simple predefined 2D geometry, it's time to take the next step.
 
-Here we're dive into the 3rd dimension, but before we do that, we need to explain some things we're going to need in order to properly display a 3D object.
+Here we dive into the 3rd dimension, but before we do that, we need to explain some things we're going to need in order to properly display a 3D object.
 
 In this chapter we'll talk about the following items:
 
@@ -14,7 +14,7 @@ Because our screen is 2D, we need to be able to "transform" our 3D model into a 
 
 ## The Math
 
-For this we'll need to take a light dive into "Matrix Math", whilst understanding the math behind it all can be really helpful (especially once you start doing more advanced stuff), We'll use a library for all of this and only stick to top-level concepts as not to make this tutorial a math-lesson.
+For this we'll need to take a light dive into "Matrix Math", whilst understanding the math behind it all can be really helpful (especially once you start doing more advanced stuff), we'll use a library for all of this and only stick to top-level concepts as not to make this tutorial a math-lesson.
 
 The "Transformation" we're concerned with is composed out of a set of multiple matrices:
 
@@ -65,17 +65,17 @@ And our 3D object will use the resulting model matrix:
     //Now we create our model matrix
     XMMATRIX modelMatrix = XMMatrixMultiply(translation, XMMatrixMultiply(scaling, rotation));
 
-Because all these main matrix multiplications happen infrequently enough, we "can" do this on the CPU, we only have to recalculate the matrices of 3D objects when/if they move/scale/rotate which for most level geometry is almost never. However...
+Because all these matrix multiplications happen infrequently enough, we "can" do this on the CPU, we only have to recalculate the matrices of 3D objects when they move/scale/rotate which for most level geometry is almost never. However...
 
 The only exception is the camera, which tends to move almost every frame, however we tend to only have 1 of them (or an insignificant amount in other cases).
-The keen readers might realize that because of the the fact that we recalculate the camera matrix, we have to recalculate the world matrix for 'every' 3D object.
+The keen readers might realize that because of the fact that we recalculate the camera matrix, we have to recalculate the world matrix for 'every' 3D object.
 
 What we cannot do however (or well, not with high-poly objects) is transform every vertex on the CPU with the world matrix, luckily GPU's are practically built for this and thus are very good at it. 
 But that means we need a way to get the matrix we need over there somehow.
 
 ## Constant Buffers
 
-In D3D11 we have a thing called "Constant Buffers", this is special buffer to contain values that the GPU can expect not to change during a draw call, this means the values are "constant" or "uniform" for the entire shader invocation.
+In D3D11 we have a thing called a "Constant Buffer", this is a special buffer that contains values that the GPU can expect not to change during a draw call, this means the values are "constant" or "uniform" for the entire shader invocation.
 This is a great place to put our matrix.
 
 In `CreateConstantBuffers()` we create our buffer pretty much the same as we did our vertex buffer back in Hello Triangle, except now in the BindFlags, we specify D3D11_BIND_FLAG::BIND_CONSTANT_BUFFER
@@ -124,15 +124,15 @@ The syntax for this is a little bit different than we're used to in C/C++ but si
 
 	cbuffer PerFrame : register(b0)
 	{
-		row_major matrix viewprojection;
+		matrix viewprojection;
 	};
 
 	cbuffer PerObject : register(b1)
 	{
-		row_major matrix modelmatrix;
+		matrix modelmatrix;
 	};
 	
-We basically declare and define our structure in a single line, `cbuffer` tells the shader it will be a Constant Buffer (and expect the structure like layout), followed by the name of the object `PerFrame`/`PerObject` and lastly which slot to expect it on `: register(b0)`
+We basically declare and define our structure in a single line, `cbuffer` tells the shader it will be a Constant Buffer (and expect the structure-like layout), followed by the name of the object `PerFrame`/`PerObject` and lastly which slot to expect it on `: register(b0)`
 after that we just tell it to expect a single row_major matrix in both buffers.
 
 Now we're free to use the data in the shader.
