@@ -732,4 +732,4 @@ You should now be able to run this and see your first triangle!
 
 [Project on GitHub](https://github.com/GraphicsProgramming/learnd3d11/tree/main/src/Cpp/1-getting-started/1-1-3-HelloTriangle)
 
-[Next chapter](../1-1-4-abstractions/)
+[Next chapter](../../1-2-debug/1-2-0-overview/)

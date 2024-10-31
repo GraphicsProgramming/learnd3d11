@@ -22,4 +22,4 @@ You can find more information [here for NVIDIA](http://developer.download.nvidia
 
 Intel might have something similar, once they release their dedicated graphics cards for laptops.
 
-[Next chapter](../1-3-models/1-3-0-overview.md)
+[Next chapter](../../1-3-basics/1-3-0-overview/)
